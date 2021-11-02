@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_1
+package mpdev.compiler.chapter_02
 
 import java.io.File
 
@@ -7,11 +7,26 @@ import java.io.File
  * Performs the lexical scanner functions
  * Processes the char-by-char input and returns the tokens from the input stream
  */
+
+/////////////////////////////////////////////////////////
+// global special characters definitions
+/////////////////////////////////////////////////////////
+// numeric operators
+val addOp: Char = '+'
+val subOp: Char = '-'
+val mulOp: Char = '*'
+val divOp: Char = '/'
+// parentheses
+val leftParen: Char = '('
+val rightParen: Char = ')'
+/////////////////////////////////////////////////////////
+
+/** this class implements the lexical scanner */
 class InputProgramScanner(inputFile: String = "") {
 
     // the input program as string
-    var inputProgram: String = "";
-    var indx = 0;
+    var inputProgram: String = ""
+    var indx = 0
 
     // the next character from input
     // this is our lookahead character
@@ -79,5 +94,14 @@ class InputProgramScanner(inputFile: String = "") {
 
     /** check for a numeric char */
     fun isNumeric(c: Char): Boolean = c in '0'..'9'
+
+    /** check for an "addop" (+,-) */
+    fun isAddop(c: Char): Boolean = c == addOp || c == subOp
+
+    /** check for a "mulop" (*,/) */
+    fun isMulop(c: Char): Boolean = c == mulOp || c == divOp
+
+    /** check for left parenthesis */
+    fun isLeftParen(c: Char): Boolean = c == leftParen
 
 }

@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_3
+package mpdev.compiler.chapter_05
 
 class M68000Instructions {
 
@@ -6,7 +6,10 @@ class M68000Instructions {
     fun outputCode(s: String) = print("\t$s")
 
     /** output code with newline */
-    fun outputCodeNl(s: String) = outputCode("\t$s\n")
+    fun outputCodeNl(s: String) = outputCode("$s\n")
+
+    /** output a label */
+    fun outputLabel(s: String) = println("$s:")
 
     /** set accumulator to a value */
     fun setAccumulator(value: String) = outputCodeNl("MOVE #${value},D0")
@@ -48,4 +51,12 @@ class M68000Instructions {
         outputCodeNl("MOVE D0,(A0)")
     }
 
+    /** branch if false */
+    fun branchIfFalse(label: String) = outputCodeNl("BEQ $label")
+
+    /** branch */
+    fun branch(label: String) = outputCodeNl("BRA $label")
+
+    /** dummy instruction */
+    fun dummyInstr(cmd: String) = outputCodeNl(cmd)
 }

@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_7
+package mpdev.compiler.chapter_07
 
 ///////////////////////////////////////////////////////////
 // define all the keywords used in our programming language

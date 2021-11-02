@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_4
+package mpdev.compiler.chapter_03
 
 import java.io.File
 
@@ -21,9 +21,6 @@ val leftParen: Char = '('
 val rightParen: Char = ')'
 // equals
 val equalsOp = '='
-// input / output
-val inToken = '?'
-val outToken = '!'
 /////////////////////////////////////////////////////////
 
 /** this class implements the lexical scanner */
@@ -47,9 +44,8 @@ class InputProgramScanner(inputFile: String = "") {
             inputProgram = f.readText() + "\n"
             // set the lookahead character to the first input char
             getNextChar()
-            skipNewline()
         } catch (e: Exception) {
-            abort("could not open file [$inputFile]")
+            verify.current.abort("could not open file [$inputFile]")
         }
     }
 
@@ -64,7 +60,7 @@ class InputProgramScanner(inputFile: String = "") {
         if (indx < inputProgram.length)
             nextChar = inputProgram[indx++]
         else
-            exit("end of input")
+            verify.current.exit("end of input")
     }
 
     /** skip white spaces */
@@ -73,19 +69,13 @@ class InputProgramScanner(inputFile: String = "") {
             skipNextChar()
     }
 
-    /** skip newline */
-    fun skipNewline() {
-        while (isEndOfLine(nextChar))
-            getNextChar()
-    }
-
     /** match a specific input char */
     fun match(x: Char) {
         // return a match when the next char matches x
         if (nextChar == x)
             getNextChar()
         else
-            expected("'$x'")
+            verify.current.expected("'$x'")
     }
 
     /**
@@ -95,7 +85,7 @@ class InputProgramScanner(inputFile: String = "") {
     fun getName(): String {
         var token: String = ""
         if (!isAlpha(nextChar))
-            expected("Identifier")
+            verify.current.expected("Identifier")
         else {
             while (isAlphanumeric(nextChar)) {
                 token += nextChar.uppercase()
@@ -110,10 +100,10 @@ class InputProgramScanner(inputFile: String = "") {
      * get a number
      * <number> ::= [ <digit> ] +
      */
-    fun getNumber(): Int {
+    fun getNumber(): String {
         var value: String = ""
         if (!isNumeric(nextChar)) {
-            expected("Number")
+            verify.current.expected("Number")
         } else {
             while (isNumeric(nextChar)) {
                 value += nextChar.toString()
@@ -121,7 +111,7 @@ class InputProgramScanner(inputFile: String = "") {
             }
             skipWhite()
         }
-        return value.toInt()
+        return value
     }
 
     /** check for an alpha char */
@@ -134,18 +124,18 @@ class InputProgramScanner(inputFile: String = "") {
     fun isAlphanumeric(c: Char): Boolean = isAlpha(c) || isNumeric(c) || c == '_'
 
     /** check for an "addop" (+,-) */
-    fun isAddop(c: Char): Boolean = c == addOp || c == subOp
+    fun isAddop(c: Char): Boolean = c == verify.current.addOp || c == verify.current.subOp
 
     /** check for a "mulop" (*,/) */
-    fun isMulop(c: Char): Boolean = c == mulOp || c == divOp
+    fun isMulop(c: Char): Boolean = c == verify.current.mulOp || c == verify.current.divOp
 
     /** check for left parenthesis */
-    fun isLeftParen(c: Char): Boolean = c == leftParen
-
-    /** check for a white space */
-    fun isWhite(c: Char): Boolean = c == ' ' || c == '\t'
+    fun isLeftParen(c: Char): Boolean = c == verify.current.leftParen
 
     /** check for end of line */
     fun isEndOfLine(c: Char): Boolean = c == '\n' || c == '\r'
+
+    /** check for a white space */
+    fun isWhite(c: Char): Boolean = c == ' ' || c == '\t'
 
 }

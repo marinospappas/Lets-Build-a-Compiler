@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_3
+package mpdev.compiler.chapter_03
 
 /**
  * Program parsing - module

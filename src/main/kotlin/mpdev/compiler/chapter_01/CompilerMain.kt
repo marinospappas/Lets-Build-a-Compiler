@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_2
+package mpdev.compiler.chapter_01
 
 import kotlin.system.exitProcess
 
@@ -6,15 +6,13 @@ import kotlin.system.exitProcess
  * A Simple Compiler
  * Based on the Let's Build a Compiler! series by Jack Crenshaw
  * This version produces Assembly language code for the 68000 microprocessor
- * A future version will produce code for the TI-59 Calculator
- * It will produce output that uses the TI-59 mnemonics that can be keyed directly to the calculator
+ * A future version will produce code for the TI59 Calculator
+ * It will produce output that uses the TI59 mnemonics that can be keyed directly to the calculator
  * Version 1.0 01.10.2021
  */
 
 // the input program scanner
 lateinit var inp: InputProgramScanner
-// the Motorola 68000 instruction set
-val code = M68000Instructions()
 
 /** report an error */
 fun error(errMsg: String) {
@@ -48,5 +46,4 @@ fun initCompiler(args: Array<String>) {
 /** main function */
 fun main(args: Array<String>) {
     initCompiler(args)
-    parseExpression()
 }

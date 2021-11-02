@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_5
+package mpdev.compiler.chapter_04
 
 import java.io.File
 
@@ -21,22 +21,9 @@ val leftParen: Char = '('
 val rightParen: Char = ')'
 // equals
 val equalsOp = '='
-// tokens
-val endProg = '.'
-val ifToken = 'i'
-val endifToken = 'e'
-val elseToken = 'l'
-val whileToken = 'w'
-val endwhileToken = 'e'
-val repeatToken = 'r'
-val untilToken = 'u'
-val forToken = 'f'
-val toToken = 't'
-val endforToken = 'e'
-val breakToken = 'b'
-// end of input mark
-val nullChar = 0
-val endOfInput = nullChar.toChar()
+// input / output
+val inToken = '?'
+val outToken = '!'
 /////////////////////////////////////////////////////////
 
 /** this class implements the lexical scanner */
@@ -50,17 +37,17 @@ class InputProgramScanner(inputFile: String = "") {
     // this is our lookahead character
     var nextChar: Char = ' '
 
-    // the set of tokens that are block terminators
-    val blockTerminators = setOf(endifToken, elseToken, endwhileToken, untilToken, endforToken)
-
     /** initialisation code */
     init {
         try {
             val f = File(inputFile)
             // read the whole program into a string
-            inputProgram = f.readText()
+            // add a dummy \n at the end
+            // this way the lookahead will work properly when we reach the end of input
+            inputProgram = f.readText() + "\n"
             // set the lookahead character to the first input char
             getNextChar()
+            skipNewline()
         } catch (e: Exception) {
             abort("could not open file [$inputFile]")
         }
@@ -77,7 +64,7 @@ class InputProgramScanner(inputFile: String = "") {
         if (indx < inputProgram.length)
             nextChar = inputProgram[indx++]
         else
-            nextChar = endOfInput
+            exit("end of input")
     }
 
     /** skip white spaces */
@@ -86,15 +73,16 @@ class InputProgramScanner(inputFile: String = "") {
             skipNextChar()
     }
 
-    /**
-     * match a specific input char
-     * and advance to next character
-     * also produce a match if called with no input or if input is null character
-     */
-    fun match(x: Char = nullChar.toChar()) {
+    /** skip newline */
+    fun skipNewline() {
+        while (isEndOfLine(nextChar))
+            getNextChar()
+    }
+
+    /** match a specific input char */
+    fun match(x: Char) {
         // return a match when the next char matches x
-        // or when x is null character
-        if (nextChar == x || x == nullChar.toChar())
+        if (nextChar == x)
             getNextChar()
         else
             expected("'$x'")
@@ -122,7 +110,7 @@ class InputProgramScanner(inputFile: String = "") {
      * get a number
      * <number> ::= [ <digit> ] +
      */
-    fun getNumber(): String {
+    fun getNumber(): Int {
         var value: String = ""
         if (!isNumeric(nextChar)) {
             expected("Number")
@@ -133,7 +121,7 @@ class InputProgramScanner(inputFile: String = "") {
             }
             skipWhite()
         }
-        return value
+        return value.toInt()
     }
 
     /** check for an alpha char */
@@ -154,15 +142,10 @@ class InputProgramScanner(inputFile: String = "") {
     /** check for left parenthesis */
     fun isLeftParen(c: Char): Boolean = c == leftParen
 
+    /** check for a white space */
+    fun isWhite(c: Char): Boolean = c == ' ' || c == '\t'
+
     /** check for end of line */
     fun isEndOfLine(c: Char): Boolean = c == '\n' || c == '\r'
 
-    /** check for a white space */
-    fun isWhite(c: Char): Boolean = c == ' ' || c == '\t' || isEndOfLine(c)
-
-    /** check for end of block */
-    fun isEndBlock(c: Char) = blockTerminators.contains(c) || isEndProgram(c)
-
-    /** check for end of program */
-    fun isEndProgram(c: Char): Boolean = c == endProg || c == endOfInput
 }

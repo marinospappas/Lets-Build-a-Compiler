@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_7
+package mpdev.compiler.chapter_07
 
 import java.io.File
 import kotlin.math.*

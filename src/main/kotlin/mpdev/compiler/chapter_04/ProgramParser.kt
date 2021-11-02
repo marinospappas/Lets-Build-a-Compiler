@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_4
+package mpdev.compiler.chapter_04
 
 // the variables' space
 var variable: MutableMap<String, Int> = mutableMapOf()

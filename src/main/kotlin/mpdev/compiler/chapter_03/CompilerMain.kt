@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_7
+package mpdev.compiler.chapter_03
 
 import kotlin.system.exitProcess
 
@@ -18,37 +18,36 @@ val code = M68000Instructions()
 
 /** report an error */
 fun error(errMsg: String) {
-        System.err.println("Error: $errMsg")
+    System.err.println("Error: $errMsg")
 }
 
 /** abort compilation */
 fun abort(errMsg: String) {
-        error(errMsg)
-        exitProcess(1)
+    verify.current.error(errMsg)
+    exitProcess(1)
 }
 
 /** print message and exit */
 fun exit(msg: String) {
-        System.err.println(msg)
-        exitProcess(0)
+    System.err.println(msg)
+    exitProcess(0)
 }
+
+/** report what was expected and abort */
+fun expected(expMsg: String) = verify.current.abort("Expected $expMsg \n found [${verify.current.inp.nextChar}]")
 
 /** compiler initialisation */
 fun initCompiler(args: Array<String>) {
-        if (args.isEmpty())
-                abort("no input file specified")
-        // get a new input program scanner object - initialise from input file
-        inp = InputProgramScanner(args[0])
+    if (args.isEmpty())
+        verify.current.abort("no input file specified")
+    // get a new input program scanner object - initialise from input file
+    inp = InputProgramScanner(args[0])
 }
 
 /** main function */
 fun main(args: Array<String>) {
-        initCompiler(args)
-        parseProgram()
-        var t:Token
-        while(true) {
-                t = inp.match()
-                println("found token: [${t.value}] [${t.encToken}] [${t.type}] [${t.subType}]" )
-                if (t.encToken == Kwd.endOfInput) break
-        }
+    initCompiler(args)
+    parseAssignment()
+    if (!verify.current.inp.isEndOfLine(verify.current.inp.nextChar))
+        verify.current.expected("Newline")
 }

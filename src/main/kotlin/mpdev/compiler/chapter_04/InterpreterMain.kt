@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_4
+package mpdev.compiler.chapter_04
 
 import kotlin.system.exitProcess
 
