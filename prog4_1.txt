@@ -1,0 +1,7 @@
+? BaseLength
+? BaseWidth
+BaseArea = BaseLength * BaseWidth
+! BaseArea
+? Height
+Volume = BaseArea * Height
+! Volume

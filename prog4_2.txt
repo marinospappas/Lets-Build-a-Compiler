@@ -1,0 +1,43 @@
+a = 205
+xy= ( 2 + 3 -4)*2 +a
+
+
+xxx=5
+x=1
+var1 = x + (156 + 144 -200)* 2
+
+c = 1
+! c
+
+
+? a
+? b
+
+c = a * b
+
+! c
+
+
+
+
+b = 4
+
+a = b * 2
+
+
+
+  pi = 314 / 100 + (99 - (45 +6 - 25)* 2 )/ 5
+ alpha = 25
+
+! pi
+!alpha
+
+
+
+beta = 2 * 3 * 4
+pi = 3
+result = (  alpha + beta) * pi * 25
+
+!result
+! pi
+! beta
