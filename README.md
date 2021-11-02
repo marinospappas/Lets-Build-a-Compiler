@@ -1,4 +1,4 @@
-#Let's Build a Compiler
+<h1>Let's Build a Compiler</h1>
 
 Based on the original series ["Let’s Build a Compiler!"](https://compilers.iecc.com/crenshaw) by [Jack Crenshaw](https://jackcrenshaw.com/).
 
