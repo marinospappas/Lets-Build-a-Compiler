@@ -1,2 +1,8 @@
 
 prog*.txt
+build/*
+src/main/kotlin/verify/current/*
+*.class
+*.lock
+*.bin
+*.kotlin_module
