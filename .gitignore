@@ -9,4 +9,6 @@ prog*.txt
 *.bin
 *.kotlin_module
 *.kts
+gradlew
 gradle.*
+gradlew.*
