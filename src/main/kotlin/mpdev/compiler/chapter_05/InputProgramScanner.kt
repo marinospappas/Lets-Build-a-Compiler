@@ -51,9 +51,9 @@ class InputProgramScanner(inputFile: String = "") {
     var nextChar: Char = ' '
 
     // the set of tokens that are block terminators
-    val blockTerminators = setOf(endifToken, elseToken, endwhileToken, untilToken, endforToken)
+    private val blockTerminators = setOf(endifToken, elseToken, endwhileToken, untilToken, endforToken)
 
-    /** initialisation code */
+    /** initialisation code class InputProgramScanner */
     init {
         try {
             val f = File(inputFile)
@@ -105,7 +105,7 @@ class InputProgramScanner(inputFile: String = "") {
      * <identifier> ::= <alpha> [ <alphanumeric> | <_> ] *
      */
     fun getName(): String {
-        var token: String = ""
+        var token = ""
         if (!isAlpha(nextChar))
             expected("Identifier")
         else {
@@ -123,7 +123,7 @@ class InputProgramScanner(inputFile: String = "") {
      * <number> ::= [ <digit> ] +
      */
     fun getNumber(): String {
-        var value: String = ""
+        var value = ""
         if (!isNumeric(nextChar)) {
             expected("Number")
         } else {
