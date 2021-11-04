@@ -35,9 +35,8 @@ fun exit(msg: String) {
 
 /** report what was expected and abort */
 fun expected(expMsg: String) {
-    val foundStr: String
     // setup a meaningful message if we have reached end of input
-    foundStr = if (inp.nextChar==endOfInput) "end of input" else inp.nextChar.toString()
+    val foundStr: String = if (inp.nextChar==endOfInput) "end of input" else inp.nextChar.toString()
     abort("Expected $expMsg \n found [${foundStr}]")
 }
 
