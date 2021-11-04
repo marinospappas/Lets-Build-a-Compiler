@@ -1,8 +1,12 @@
 
-prog*.txt
+.gradle/*
+.idea/*
 build/*
 src/main/kotlin/verify/current/*
+prog*.txt
 *.class
 *.lock
 *.bin
 *.kotlin_module
+*.kts
+gradle.*
