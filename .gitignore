@@ -1,7 +1,7 @@
 
 .gradle/*
-.gradle/wrapper/*
 .idea/*
+gradle/*
 build/*
 src/main/kotlin/verify/current/*
 prog*.txt
