@@ -109,11 +109,11 @@ fun parseFor() {
     val counterName = inp.getName()
     inp.match(equalsOp)
     code.dummyInstr("Allocate space for $counterName and set value to:")
-    parseBlock() // this is the FROM expression
+    parseExpression() // this is the FROM expression
     code.dummyInstr("Decrease $counterName by 1")
     inp.match(toToken)
     code.dummyInstr("Allocate space for TO variable and set value to:")
-    parseBlock() // this is the TO expression
+    parseExpression() // this is the TO expression
     val label1 = newLabel()
     val label2 = newLabel()
     // actual start of the loop
