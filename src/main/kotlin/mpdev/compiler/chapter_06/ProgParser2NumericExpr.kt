@@ -7,12 +7,12 @@ package mpdev.compiler.chapter_06
 
 /**
  * parse assignment
- * <assignment> ::= <identifier> = <expression>
+ * <assignment> ::= <identifier> = <b-expression>
  */
 fun parseAssignment() {
-        var identName: String = inp.getName()
+        val identName: String = inp.getName()
         inp.match(equalsOp)
-        parseExpression()
+        parseBooleanExpression()
         code.assignment(identName)
 }
 
@@ -21,11 +21,7 @@ fun parseAssignment() {
  * <expression> ::= <term> [ <addop> <term> ] *
  */
 fun parseExpression() {
-        if (inp.isAddop(inp.nextChar))
-        // "trick" to deal with -Expression or +Expression
-                code.clearAccumulator()
-        else
-                parseTerm()
+        parseTerm()
         while (inp.isAddop(inp.nextChar)) {
                 code.saveAccumulator()
                 when (inp.nextChar) {
@@ -37,10 +33,10 @@ fun parseExpression() {
 
 /**
  * parse a term
- * <term> ::= <factor> [ <mulop> <factor> ] *
+ * <term> ::= <signed factor> [ <mulop> <factor> ] *
  */
 fun parseTerm() {
-        parseFactor()
+        parseSignedFactor()
         while (inp.isMulop(inp.nextChar)) {
                 code.saveAccumulator()
                 when (inp.nextChar) {
@@ -48,6 +44,27 @@ fun parseTerm() {
                         divOp -> divide()
                 }
         }
+}
+
+/**
+ * parse a signed factor
+ * this can be only the first factor in a term
+ * <signed factor> ::= [ addop ] <factor>
+ */
+fun parseSignedFactor() {
+        if (inp.nextChar == addOp)
+                inp.match()
+        if (inp.nextChar == subOp) {
+                inp.match()
+                if (inp.isNumeric(inp.nextChar))
+                        code.setAccumulator("-${inp.getNumber()}")
+                else {
+                        parseFactor()
+                        code.negateAccumulator()
+                }
+        }
+        else
+                parseFactor()
 }
 
 /**

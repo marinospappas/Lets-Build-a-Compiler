@@ -38,7 +38,7 @@ fun parseBlock(breakLabel: String = "") {
             repeatToken -> parseRepeat()
             forToken -> parseFor()
             breakToken -> parseBreak(breakLabel)
-            else -> parseOther()
+            else -> parseAssignment()
         }
     }
 }
@@ -49,7 +49,7 @@ fun parseBlock(breakLabel: String = "") {
  */
 fun parseIf(breakLabel: String) {
     inp.match()
-    parseCondition()
+    parseBooleanExpression()
     val label1 = newLabel()
     code.branchIfFalse(label1)
     parseBlock(breakLabel)
@@ -75,7 +75,7 @@ fun parseWhile() {
     val label1 = newLabel()
     val label2 = newLabel()
     postLabel(label1)
-    parseCondition()
+    parseBooleanExpression()
     code.branchIfFalse(label2)
     parseBlock(label2)
     inp.match(endwhileToken)
@@ -94,7 +94,7 @@ fun parseRepeat() {
     postLabel(label1)
     parseBlock(label2)
     inp.match(untilToken)
-    parseCondition()
+    parseBooleanExpression()
     code.branchIfFalse(label1)
     postLabel(label2)
 }
@@ -109,11 +109,11 @@ fun parseFor() {
     val counterName = inp.getName()
     inp.match(equalsOp)
     code.dummyInstr("Allocate space for $counterName and set value to:")
-    parseOther() // this is the FROM expression
+    parseBlock() // this is the FROM expression
     code.dummyInstr("Decrease $counterName by 1")
     inp.match(toToken)
     code.dummyInstr("Allocate space for TO variable and set value to:")
-    parseOther() // this is the TO expression
+    parseBlock() // this is the TO expression
     val label1 = newLabel()
     val label2 = newLabel()
     // actual start of the loop
@@ -141,14 +141,5 @@ fun parseBreak(label: String) {
         code.branch(label)
 }
 
-/** dummy parse condition */
-fun parseCondition() {
-    println("\t${inp.getName()}")
-}
-
-/** dummy parse function for anything else than control statements */
-fun parseOther() {
-    parseBooleanExpression()
-}
 
 

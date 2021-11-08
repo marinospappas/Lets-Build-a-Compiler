@@ -27,8 +27,11 @@ class M68000Instructions {
     fun subFromAccumulator() {
         outputCodeNl("SUB (SP)+,D0")
         // negate accumulator as the result is the wrong way round
-        outputCodeNl("NEG D0")
+        negateAccumulator()
     }
+
+    /** negate accumulator */
+    fun negateAccumulator() = outputCodeNl("NEG D0")
 
     /** multiply accumulator by top of stack */
     fun multiplyAccumulator() = outputCodeNl("MULS (SP)+,D0")
