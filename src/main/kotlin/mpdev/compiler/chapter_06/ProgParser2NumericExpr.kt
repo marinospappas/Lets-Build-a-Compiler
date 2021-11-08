@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_07
+package mpdev.compiler.chapter_06
 
 /**
  * Program parsing - module
@@ -6,13 +6,12 @@ package mpdev.compiler.chapter_07
  */
 
 /**
- *
  * parse assignment
  * <assignment> ::= <identifier> = <expression>
  */
 fun parseAssignment() {
-        val identName: String = inp.match(Kwd.identifier).value
-        inp.match(Kwd.equalsOp)
+        var identName: String = inp.getName()
+        inp.match(equalsOp)
         parseExpression()
         code.assignment(identName)
 }
@@ -22,17 +21,16 @@ fun parseAssignment() {
  * <expression> ::= <term> [ <addop> <term> ] *
  */
 fun parseExpression() {
-        if (inp.lookahead().subType == TokSubType.addOps)
+        if (inp.isAddop(inp.nextChar))
         // "trick" to deal with -Expression or +Expression
                 code.clearAccumulator()
         else
                 parseTerm()
-        while (inp.lookahead().subType == TokSubType.addOps) {
+        while (inp.isAddop(inp.nextChar)) {
                 code.saveAccumulator()
-                when (inp.lookahead().encToken) {
-                        Kwd.addOp -> add()
-                        Kwd.subOp -> subtract()
-                        else -> {}
+                when (inp.nextChar) {
+                        addOp -> add()
+                        subOp -> subtract()
                 }
         }
 }
@@ -43,12 +41,11 @@ fun parseExpression() {
  */
 fun parseTerm() {
         parseFactor()
-        while (inp.lookahead().subType == TokSubType.mulOps) {
+        while (inp.isMulop(inp.nextChar)) {
                 code.saveAccumulator()
-                when (inp.lookahead().encToken) {
-                        Kwd.mulOp -> multiply()
-                        Kwd.divOp -> divide()
-                        else -> {}
+                when (inp.nextChar) {
+                        mulOp -> multiply()
+                        divOp -> divide()
                 }
         }
 }
@@ -58,23 +55,19 @@ fun parseTerm() {
  * <factor> ::= ( <expression> ) | <number> | <identifier>
  */
 fun parseFactor() {
-        if (inp.lookahead().encToken == Kwd.leftParen) {
+        if (inp.isLeftParen(inp.nextChar)) {
                 // ( Expression )
                 inp.match()
                 parseExpression()
-                inp.match(Kwd.rightParen)
+                inp.match(rightParen)
         }
         else
-        if (inp.lookahead().encToken == Kwd.identifier)
+        if (inp.isAlpha(inp.nextChar))
                 // Identifier
                 parseIdentifier()
         else
-        if (inp.lookahead().encToken == Kwd.number) {
                 // Number
-                code.setAccumulator(inp.match(Kwd.number).value)
-        }
-        else
-                abort("unrecognised token ${inp.lookahead().value}")
+                code.setAccumulator(inp.getNumber())
 }
 
 /**
@@ -82,11 +75,11 @@ fun parseFactor() {
  * <identifier> ::= <variable> | <function>
  */
 fun parseIdentifier() {
-        val identName: String = inp.match(Kwd.identifier).value
-        if (inp.lookahead().encToken == Kwd.leftParen) {
+        val identName: String = inp.getName()
+        if (inp.isLeftParen(inp.nextChar)) {
                 // function
                 inp.match()
-                inp.match(Kwd.rightParen)
+                inp.match(rightParen)
                 code.callSubroutine(identName)
         }
         else

@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_07
+package mpdev.compiler.work_in_progress
 
 class M68000Instructions {
 
