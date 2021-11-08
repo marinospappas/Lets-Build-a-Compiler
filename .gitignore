@@ -4,6 +4,7 @@
 gradle/*
 build/*
 src/main/kotlin/verify/current/*
+src/main/kotlin/mpdev/compiler/work_in_progress/*
 prog*.txt
 *.class
 *.lock
