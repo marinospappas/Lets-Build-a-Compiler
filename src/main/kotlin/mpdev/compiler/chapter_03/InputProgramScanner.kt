@@ -45,7 +45,7 @@ class InputProgramScanner(inputFile: String = "") {
             // set the lookahead character to the first input char
             getNextChar()
         } catch (e: Exception) {
-            verify.current.abort("could not open file [$inputFile]")
+            abort("could not open file [$inputFile]")
         }
     }
 
@@ -60,7 +60,7 @@ class InputProgramScanner(inputFile: String = "") {
         if (indx < inputProgram.length)
             nextChar = inputProgram[indx++]
         else
-            verify.current.exit("end of input")
+            exit("end of input")
     }
 
     /** skip white spaces */
@@ -75,7 +75,7 @@ class InputProgramScanner(inputFile: String = "") {
         if (nextChar == x)
             getNextChar()
         else
-            verify.current.expected("'$x'")
+            expected("'$x'")
     }
 
     /**
@@ -85,7 +85,7 @@ class InputProgramScanner(inputFile: String = "") {
     fun getName(): String {
         var token: String = ""
         if (!isAlpha(nextChar))
-            verify.current.expected("Identifier")
+            expected("Identifier")
         else {
             while (isAlphanumeric(nextChar)) {
                 token += nextChar.uppercase()
@@ -103,7 +103,7 @@ class InputProgramScanner(inputFile: String = "") {
     fun getNumber(): String {
         var value: String = ""
         if (!isNumeric(nextChar)) {
-            verify.current.expected("Number")
+            expected("Number")
         } else {
             while (isNumeric(nextChar)) {
                 value += nextChar.toString()
@@ -124,13 +124,13 @@ class InputProgramScanner(inputFile: String = "") {
     fun isAlphanumeric(c: Char): Boolean = isAlpha(c) || isNumeric(c) || c == '_'
 
     /** check for an "addop" (+,-) */
-    fun isAddop(c: Char): Boolean = c == verify.current.addOp || c == verify.current.subOp
+    fun isAddop(c: Char): Boolean = c == addOp || c == subOp
 
     /** check for a "mulop" (*,/) */
-    fun isMulop(c: Char): Boolean = c == verify.current.mulOp || c == verify.current.divOp
+    fun isMulop(c: Char): Boolean = c == mulOp || c == divOp
 
     /** check for left parenthesis */
-    fun isLeftParen(c: Char): Boolean = c == verify.current.leftParen
+    fun isLeftParen(c: Char): Boolean = c == leftParen
 
     /** check for end of line */
     fun isEndOfLine(c: Char): Boolean = c == '\n' || c == '\r'

@@ -23,7 +23,7 @@ fun error(errMsg: String) {
 
 /** abort compilation */
 fun abort(errMsg: String) {
-    verify.current.error(errMsg)
+    error(errMsg)
     exitProcess(1)
 }
 
@@ -34,12 +34,12 @@ fun exit(msg: String) {
 }
 
 /** report what was expected and abort */
-fun expected(expMsg: String) = verify.current.abort("Expected $expMsg \n found [${verify.current.inp.nextChar}]")
+fun expected(expMsg: String) = abort("Expected $expMsg \n found [${inp.nextChar}]")
 
 /** compiler initialisation */
 fun initCompiler(args: Array<String>) {
     if (args.isEmpty())
-        verify.current.abort("no input file specified")
+        abort("no input file specified")
     // get a new input program scanner object - initialise from input file
     inp = InputProgramScanner(args[0])
 }
@@ -48,6 +48,6 @@ fun initCompiler(args: Array<String>) {
 fun main(args: Array<String>) {
     initCompiler(args)
     parseAssignment()
-    if (!verify.current.inp.isEndOfLine(verify.current.inp.nextChar))
-        verify.current.expected("Newline")
+    if (!inp.isEndOfLine(inp.nextChar))
+        expected("Newline")
 }
