@@ -98,3 +98,4 @@ fun initOperators() {
     languageTokens.add(
         Token(")",      Kwd.rightParen, TokInfo.operator, TokType.none))
 }
+
