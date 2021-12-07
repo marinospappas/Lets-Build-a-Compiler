@@ -4,7 +4,6 @@
 gradle/*
 build/*
 src/main/kotlin/mpdev/compiler/chapter_09_ix/*
-src/main/kotlin/mpdev/compiler/chapter_08_viii/*
 src/main/kotlin/verify/current/*
 src/main/kotlin/mpdev/compiler/work_in_progress/*
 src/main/kotlin/mpdev/compiler/tmp/*
