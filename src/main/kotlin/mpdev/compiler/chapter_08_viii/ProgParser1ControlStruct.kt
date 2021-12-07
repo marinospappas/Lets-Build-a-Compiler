@@ -30,7 +30,7 @@ fun parseBlock(breakLabel: String = "") {
 
 /**
  * parse a statement
- * <statement> ::= <block> | if | while | repeat | for | break | return | <assignment>
+ * <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> | <return> | <assignment>
  */
 fun parseStatement(breakLabel: String) {
     when (inp.lookahead().encToken) {
@@ -47,7 +47,7 @@ fun parseStatement(breakLabel: String) {
 
 /**
  * parse if statement
- * if ( <condition> ) <block> [ else <block> ]
+ * <if> ::= if ( <b-expression> ) <block> [ else <block> ]
  */
 fun parseIf(breakLabel: String) {
     inp.match()
@@ -72,7 +72,7 @@ fun parseIf(breakLabel: String) {
 
 /**
  * parse while statement
- * while ( <condition> ) <block>
+ * <while> ::= while ( <b-expression> ) <block>
  */
 fun parseWhile() {
     inp.match()
@@ -91,7 +91,7 @@ fun parseWhile() {
 
 /**
  * parse repeat statement
- * repeat <block> until ( <condition> )
+ * <repeat> ::= repeat <block> until ( <b-expression> )
  */
 fun parseRepeat() {
     inp.match()
@@ -111,6 +111,7 @@ fun parseRepeat() {
  * parse for statement
  * dummy version using pseudo-code
  * focuses on parsing of the structure only - not on producing code
+ * <for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
  */
 fun parseFor() {
     inp.match()
@@ -140,7 +141,10 @@ fun parseFor() {
     code.dummyInstr("Release space held for $counterName and TO")
 }
 
-/** parse break statement */
+/**
+ * parse break statement
+ * <break> ::= break
+ */
 fun parseBreak(label: String) {
     inp.match()
     if (label == "")
@@ -151,7 +155,7 @@ fun parseBreak(label: String) {
 
 /**
  * parse return statement
- * <return> ::= return <expression>
+ * <return> ::= return <b-expression>
  */
 fun parseReturn() {
     inp.match()
