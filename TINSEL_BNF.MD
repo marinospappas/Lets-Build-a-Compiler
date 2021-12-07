@@ -22,7 +22,7 @@
 <assignment> ::= <identifier> = <b-expression>
 ```
 
-## control structures
+## Control structures
 
 ```
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
