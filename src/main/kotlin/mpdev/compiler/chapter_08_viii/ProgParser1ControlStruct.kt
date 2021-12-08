@@ -118,11 +118,11 @@ fun parseFor() {
     val counterName = inp.match(Kwd.identifier).value
     inp.match(Kwd.equalsOp)
     code.dummyInstr("Allocate space for $counterName and set value to:")
-    parseExpression() // this is the FROM expression
+    parseBooleanExpression() // this is the FROM expression
     code.dummyInstr("Decrease $counterName by 1")
     inp.match(Kwd.toToken)
     code.dummyInstr("Allocate space for TO variable and set value to:")
-    parseExpression() // this is the TO expression
+    parseBooleanExpression() // this is the TO expression
     val label1 = newLabel()
     val label2 = newLabel()
     // actual start of the loop
@@ -159,6 +159,6 @@ fun parseBreak(label: String) {
  */
 fun parseReturn() {
     inp.match()
-    parseExpression()
+    parseBooleanExpression()
     code.returnFromCall()
 }

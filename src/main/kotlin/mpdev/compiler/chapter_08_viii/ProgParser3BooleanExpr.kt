@@ -11,8 +11,8 @@ package mpdev.compiler.chapter_08_viii
  * and can settle for a numeric one as it goes down the grammar
  *
  * <b-expression> ::= <b-term> [ <orop> <b-term> ] *
- * <b-term> ::= <not-factor> [ AND <not-factor> ] *
- * <not-factor> ::= [ NOT ] <b-factor>
+ * <b-term> ::= <not-factor> [ <andop> <not-factor> ] *
+ * <not-factor> ::= [ <notop> ] <b-factor>
  * <b-factor> ::= <b-literal> | <b-variable> | <relation>
  * <relation> ::= <expression> [ <relop> <expression ]
  * <expression> ::= <term> [ <addop> <term> ] *

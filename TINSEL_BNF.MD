@@ -34,8 +34,8 @@
 ## Expressions
 ```
 <b-expression> ::= <b-term> [ <orop> <b-term> ] *
-<b-term> ::= <not-factor> [ AND <not-factor> ] *
-<not-factor> ::= [ NOT ] <b-factor>
+<b-term> ::= <not-factor> [ <andop> <not-factor> ] *
+<not-factor> ::= [ <notop> ] <b-factor>
 <b-factor> ::= <b-literal> | <b-variable> | <relation>
 <relation> ::= <expression> [ <relop> <expression ]
 <expression> ::= <term> [ <addop> <term> ] *
@@ -45,4 +45,14 @@
 ```
 Note: any Boolean expression can also be Integer expression and vice versa (same as C).
 The compiler will start looking for a Boolean expression and may "settle" for a numeric one as it goes down the list.
-**Important:** Boolean expressions do not allow parentheses - this is what makes this specific logic work (Chapter 6)
+**Important:** *Boolean expressions do not allow parentheses* - this is what makes this specific logic work (Chapter 6)
+
+## Operators
+```
+<orop> ::= '||' | '^^'
+<andop> ::= '&&'
+<notop> ::= '!'
+<relop> := '==' | '!=' | '>' | '<' | '<=' | '>='
+<addop> :== '+' | '-'
+<mulop> :== '*' | '/'
+```
