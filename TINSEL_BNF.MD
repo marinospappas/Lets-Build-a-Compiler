@@ -13,13 +13,17 @@
 ## Statements
 ```
 <block> ::= { [ <statement> ] * }
-<statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> | <return> | <assignment>
+<statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
+                <return> | <read> | <print> | <assignment>
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
+<for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
 <break> ::= break
 <return> ::= return <b-expression>
 <assignment> ::= <identifier> = <b-expression>
+<read> :: = read <identifier> [ , <identifier> ] *
+<print> ::= print <b-expression> [ , <b-expression> ] *
 ```
 
 ## Control structures
@@ -41,7 +45,8 @@
 <expression> ::= <term> [ <addop> <term> ] *
 <term> ::= <signed factor> [ <mulop> factor ] *
 <signed factor>::= [ <addop> ] <factor>
-<factor> ::= <integer> | <variable> | ( <expression> )
+<factor> ::= <integer> | <identifier> | ( <expression> )
+<identifier> ::= <variable> | <function> ( )
 ```
 Note: any Boolean expression can also be Integer expression and vice versa (same as C).
 The compiler will start looking for a Boolean expression and may "settle" for a numeric one as it goes down the list.
