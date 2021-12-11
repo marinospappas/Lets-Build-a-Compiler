@@ -44,7 +44,7 @@
 <relation> ::= <expression> [ <relop> <expression ]
 <expression> ::= <term> [ <addop> <term> ] *
 <term> ::= <signed factor> [ <mulop> factor ] *
-<signed factor>::= [ <addop> ] <factor>
+<signed factor> ::= [ <addop> ] <factor>
 <factor> ::= <integer> | <identifier> | ( <expression> )
 <identifier> ::= <variable> | <function> ( )
 ```
