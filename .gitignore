@@ -3,7 +3,6 @@
 .idea/*
 gradle/*
 build/*
-src/main/kotlin/mpdev/compiler/chapter_10_x/*
 src/main/kotlin/mpdev/compiler/chapter_11_xi/*
 lib/*
 examples_tinsel/*
