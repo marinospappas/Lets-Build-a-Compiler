@@ -1,4 +1,4 @@
-package mpdev.compiler.package_11_xi
+package mpdev.compiler.chapter_11_xi
 
 /**
  * Program parsing - module 0
