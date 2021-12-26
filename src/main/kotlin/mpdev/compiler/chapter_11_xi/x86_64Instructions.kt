@@ -1,4 +1,4 @@
-package mpdev.compiler.package_11_xi
+package mpdev.compiler.chapter_11_xi
 
 /** this class implements all the instructions for the target machine */
 class x86_64Instructions {
