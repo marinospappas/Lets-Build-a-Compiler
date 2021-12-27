@@ -12,7 +12,7 @@ import kotlin.system.exitProcess
  */
 
 // the input program scanner
-lateinit var inp: InputProgramScanner
+lateinit var inp: InputProgramScanner;
 // the Intel x86-64 instruction set
 val code = x86_64Instructions()
 

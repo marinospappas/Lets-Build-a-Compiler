@@ -20,7 +20,7 @@ class Token(val value: String = NO_TOKEN,
             val type: TokType = TokType.none
 )
 
-var languageTokens = mutableListOf<Token>()
+var languageTokens = mutableListOf<Token>();
 
 // our language list of keywords and operands and any other special character sequence
 enum class Kwd {
@@ -46,6 +46,10 @@ enum class Kwd {
 
     readToken, printToken,
 
+    blockComment, inlineComment,
+    blockCommentOut, inlineCommentOut,
+    commentEnd,
+
     startOfProgram, endOfProgram,
     varDecl, funDecl, retTok, mainToken,
     endOfInput, any, invalid, noToken }
@@ -53,6 +57,7 @@ enum class Kwd {
 enum class TokType { addOps, mulOps,
     orOps, andOps, relOps,
     endOfBlock, endOfPRogram, endOfInput,
+    commentStart,
     invalid, none }
 
 enum class TokInfo { identifier, keyword, operator, number, booleanLit, invalid, none }
@@ -124,6 +129,22 @@ fun initKeywords() {
     )
     languageTokens.add(
         Token("print",    Kwd.printToken,     TokInfo.keyword,      TokType.none)
+    )
+
+    languageTokens.add(
+        Token("/*--",     Kwd.blockCommentOut, TokInfo.keyword,     TokType.commentStart)
+    )
+    languageTokens.add(
+        Token("/*",       Kwd.blockComment,  TokInfo.keyword,      TokType.commentStart)
+    )
+    languageTokens.add(
+        Token("*/",      Kwd.commentEnd,     TokInfo.keyword,      TokType.none)
+    )
+    languageTokens.add(
+        Token("//--",     Kwd.inlineCommentOut, TokInfo.keyword,   TokType.commentStart)
+    )
+    languageTokens.add(
+        Token("//",      Kwd.inlineComment,  TokInfo.keyword,      TokType.commentStart)
     )
 
     languageTokens.add(

@@ -11,7 +11,7 @@ package mpdev.compiler.chapter_11_xi
 val variablesSpace = mutableMapOf<String,VariableDecl>()
 
 // the functions space
-val functionsSpace = mutableMapOf<String,VarType>()
+val functionsSpace = mutableMapOf<String,VarType>();
 
 /////////// support for variables declaration /////////
 /** our variable types */
@@ -125,5 +125,5 @@ fun parseMainBlock() {
 fun parseProgEnd() {
     inp.match(Kwd.endOfProgram)
     code.outputCodeNl()
-    code.outputComment("end program")
+    code.outputCommentNl("end program")
 }
