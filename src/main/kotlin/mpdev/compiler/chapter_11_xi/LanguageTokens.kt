@@ -20,7 +20,7 @@ class Token(val value: String = NO_TOKEN,
             val type: TokType = TokType.none
 )
 
-var languageTokens = mutableListOf<Token>();
+var languageTokens = mutableListOf<Token>()
 
 // our language list of keywords and operands and any other special character sequence
 enum class Kwd {

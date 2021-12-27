@@ -3,7 +3,7 @@ package mpdev.compiler.chapter_11_xi
 /** this class implements all the instructions for the target machine */
 class x86_64Instructions {
 
-    val COMMENT = "#";
+    val COMMENT = "#"
     private val MAIN_ENTRYPOINT = "_start"
 
     /** output code */

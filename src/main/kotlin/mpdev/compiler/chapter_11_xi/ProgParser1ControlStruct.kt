@@ -7,7 +7,7 @@ package mpdev.compiler.chapter_11_xi
 
 // global vars
 var labelIndx: Int = 0
-var labelPrefix = "";
+var labelPrefix = ""
 
 /** create a unique label*/
 fun newLabel(): String = "${labelPrefix}_L${labelIndx++}_"

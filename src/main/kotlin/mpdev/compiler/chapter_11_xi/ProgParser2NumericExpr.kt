@@ -21,7 +21,7 @@ fun parseAssignment() {
  * <expression> ::= <term> [ <addop> <term> ] *
  */
 fun parseExpression() {
-    parseTerm();
+    parseTerm()
     while (inp.lookahead().type == TokType.addOps) {
         code.saveAccumulator()
         when (inp.lookahead().encToken) {
