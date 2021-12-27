@@ -3,11 +3,11 @@ package mpdev.compiler.chapter_11_xi
 /** this class implements all the instructions for the target machine */
 class x86_64Instructions {
 
-    private val COMMENT = "#"
+    val COMMENT = "#"
     private val MAIN_ENTRYPOINT = "_start"
 
     /** output code */
-    private fun outputCode(s: String) = print(s)
+    fun outputCode(s: String) = print(s)
 
     /** output code with newline */
     fun outputCodeNl(s: String = "") = outputCode("$s\n")
@@ -19,14 +19,17 @@ class x86_64Instructions {
     fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
 
     /** output comment */
-    fun outputComment(s: String) = outputCode("$COMMENT $s\n")
+    fun outputComment(s: String) = outputCode("$COMMENT ")
+
+    /** output comment with newline*/
+    fun outputCommentNl(s: String) = outputCode("$COMMENT $s\n")
 
     /** output a label */
     fun outputLabel(s: String) = outputCodeNl("$s:")
 
     /** initialisation code for assembler */
     fun progInit(progName: String) {
-        outputComment("program $progName")
+        outputCommentNl("program $progName")
         outputCodeNl(".data")
         outputCodeNl(".align 8")
         // copyright message
@@ -46,22 +49,23 @@ class x86_64Instructions {
     /** initial code for functions */
     fun funInit() {
         outputCodeNl("\n.text")
+        outputCodeNl(".align 8")
         outputCodeNl(".global $MAIN_ENTRYPOINT")
     }
 
     /** declare function */
     fun declareAsmFun (name: String) {
         outputCodeNl()
-        outputComment("function $name")
+        outputCommentNl("function $name")
         outputLabel(name)
     }
 
     /** initial code for main */
     fun mainInit() {
         outputCodeNl()
-        outputComment("main program")
+        outputCommentNl("main program")
         outputLabel(MAIN_ENTRYPOINT)
-        outputComment("print hello message")
+        outputCommentNl("print hello message")
         outputCodeTabNl("pushq\t%rbx")
         outputCodeTabNl("lea\ttinsel_msg_(%rip), %rdi")
         outputCodeTabNl("call\twrite_s_\n")
@@ -70,7 +74,7 @@ class x86_64Instructions {
     /** termination code for assembler */
     fun mainEnd() {
         outputCodeNl()
-        outputComment("end of main")
+        outputCommentNl("end of main")
         outputCodeTabNl("popq\t%rbx")
         outputCodeTabNl("movq\t$60, %rax\t\t$COMMENT exit system call")
         outputCodeTabNl("xorq\t%rdi, %rdi\t\t$COMMENT exit code 0")

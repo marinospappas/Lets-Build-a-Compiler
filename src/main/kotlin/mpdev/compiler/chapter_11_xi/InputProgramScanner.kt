@@ -32,10 +32,13 @@ class InputProgramScanner(inputFile: String = "") {
 
     // the next character from input
     // this is our lookahead character
-    private var nextChar: Char = ' '
+     var nextChar: Char = ' '
 
     // the next token is here so that we can look ahead
     private lateinit var nextToken: Token
+
+    // any comments are kept here so that they can be transferred to the output
+    private var commentString = ""
 
     /** initialisation code - class InputProgramScanner */
     init {
@@ -49,9 +52,10 @@ class InputProgramScanner(inputFile: String = "") {
             initOperators()
             // set the lookahead character to the first input char and skip any white spaces
             nextChar = inputProgram[0]
-            // skipWhite()
             // get the first token from input
             nextToken = scan()
+            // process any initial comments
+            getComment()
         } catch (e: Exception) {
             abort("$e")
         }
@@ -60,20 +64,36 @@ class InputProgramScanner(inputFile: String = "") {
     /**
      * get the next token from the input stream and advance the cursor
      * match this token against a specific given token 'x'
-     * also produce a match if called with no token or if token is "any"
-     * return the token object that has been matched
+     * also produces a match if called with no token or if token is "any"
+     * finally it processes any comments in the code
+     * returns the token object that has been matched
      * called by the parser functions
      */
     fun match(x: Kwd = Kwd.any): Token {
-        if (nextToken.encToken != x && x != Kwd.any)
+        // any comments found in the previous call must be printed in the output code now
+        if (commentString != "") {
+            code.outputCode(commentString)
+            commentString = ""
+        }
+        // check token to match
+        if (x != Kwd.any && nextToken.encToken != x)
             expected(decodeToken(x))
         val thisToken = nextToken
         nextToken = scan()
+        // process any comments
+        getComment()
         return thisToken
     }
 
     /** lookahead function - returns next token without advancing the cursor */
-    fun lookahead(): Token = nextToken
+    fun lookahead(): Token {
+        // any comments found in the previous call must be printed in the output code now
+        if (commentString != "") {
+            code.outputCode(commentString)
+            commentString = ""
+        }
+        return nextToken
+    }
 
     /** get the next token and advance the "cursor" */
     private fun scan(): Token {
@@ -136,7 +156,6 @@ class InputProgramScanner(inputFile: String = "") {
         val t = languageTokens[indx]
         cursor = min(cursor+t.value.length, inputProgram.length)
         nextChar = inputProgram[cursor]
-        // skipWhite()
         return t
     }
 
@@ -150,7 +169,6 @@ class InputProgramScanner(inputFile: String = "") {
             token += nextChar
             getNextChar()
         }
-        // skipWhite()
         return token
     }
 
@@ -164,7 +182,6 @@ class InputProgramScanner(inputFile: String = "") {
             value += nextChar.toString()
             getNextChar()
         }
-        // skipWhite()
         return value
     }
 
@@ -182,6 +199,50 @@ class InputProgramScanner(inputFile: String = "") {
     private fun skipWhite() {
         while (isWhite(nextChar))
             getNextChar()
+    }
+
+    /** get a comment */
+    private fun getComment() {
+        while (nextToken.type == TokType.commentStart)
+            when (nextToken.encToken) {
+                Kwd.blockComment -> getCommentBlock()
+                Kwd.blockCommentOut -> getCommentBlock(true)
+                Kwd.inlineComment -> getCommentInline()
+                Kwd.inlineCommentOut -> getCommentInline(true)
+                else -> expected("start of comment")
+            }
+    }
+
+    /** get a block comment */
+    private fun getCommentBlock(printToOut: Boolean = false) {
+        if (printToOut)
+            commentString += code.COMMENT
+        val endComment: String = decodeToken(Kwd.commentEnd)
+        while (!inputProgram.substring(cursor).startsWith(endComment) && nextChar != endOfInput) {
+            if (printToOut)
+                commentString += nextChar
+            if (nextChar == '\n' && printToOut)
+                commentString += code.COMMENT
+            getNextChar()
+        }
+        if (printToOut)
+            commentString += '\n'
+        nextToken = scan()
+        match(Kwd.commentEnd)
+    }
+
+    /** get an in-line comment */
+    private fun getCommentInline(printToOut: Boolean = false) {
+        if (printToOut)
+            commentString += code.COMMENT
+        while (nextChar != '\n' && nextChar != endOfInput) {
+            if (printToOut)
+                commentString += nextChar
+            getNextChar()
+        }
+        if (printToOut)
+            commentString += '\n'
+        nextToken = scan()
     }
 
     /** check for an alpha char */

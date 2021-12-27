@@ -125,5 +125,5 @@ fun parseMainBlock() {
 fun parseProgEnd() {
     inp.match(Kwd.endOfProgram)
     code.outputCodeNl()
-    code.outputComment("end program")
+    code.outputCommentNl("end program")
 }
