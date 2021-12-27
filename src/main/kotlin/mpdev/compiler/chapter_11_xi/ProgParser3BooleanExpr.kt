@@ -24,7 +24,7 @@ package mpdev.compiler.chapter_11_xi
 
 /** parse a Boolean expression */
 fun parseBooleanExpression() {
-    parseBooleanTerm()
+    parseBooleanTerm();
     while (inp.lookahead().type == TokType.orOps) {
         code.saveAccumulator()
         when (inp.lookahead().encToken) {

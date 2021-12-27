@@ -17,7 +17,7 @@ import kotlin.math.min
 val nullChar = 0
 
 // input program line number
-var lineNumber = 1
+var lineNumber = 1;
 
 /////////////////////////////////////////////////////////
 
