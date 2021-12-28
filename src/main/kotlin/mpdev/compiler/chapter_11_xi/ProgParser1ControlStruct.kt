@@ -31,8 +31,8 @@ fun parseBlock(breakLabel: String = "") {
 
 /**
  * parse a statement
- * <statement> ::= ( <block> | <if> | <while> | <repeat> | <for> | <break> |
- *                 <return> | <read> | <print> | <assignment> | null ) [ ; ]
+ * <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
+ *                 <return> | <read> | <print> | <assignment> | null [ ; ]
  */
 fun parseStatement(breakLabel: String) {
     when (inp.lookahead().encToken) {

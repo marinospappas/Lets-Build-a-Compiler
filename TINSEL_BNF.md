@@ -1,4 +1,5 @@
 # TINSEL Definition in Backus–Naur form (BNF)
+# TINSEL v1.0
 
 ## Program
 ```
@@ -12,9 +13,9 @@
 
 ## Statements
 ```
-<block> ::= { [ <statement> ] * }
+<block> ::= { <statement> * }
 <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
-                <return> | <read> | <print> | <assignment>
+                <return> | <read> | <print> | <assignment> | null [ ; ]
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
@@ -60,4 +61,10 @@ The compiler will start looking for a Boolean expression and may "settle" for a 
 <relop> := '==' | '!=' | '>' | '<' | '<=' | '>='
 <addop> :== '+' | '-'
 <mulop> :== '*' | '/'
+```
+
+## Comments
+```
+<block-comment> ::= /* <comment> */ | /*-- <comment> */
+<inline-comment> ::= // <comment> <newline> | //-- <comment> <newline>
 ```
