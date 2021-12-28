@@ -4,6 +4,9 @@ package mpdev.compiler.chapter_11_xi
 // define all the keywords used in our programming language
 ///////////////////////////////////////////////////////////
 
+// the null char is used as end of input mark
+val nullChar = 0
+
 val NO_TOKEN = "No Token"
 val END_OF_INPUT = "End of Input"
 

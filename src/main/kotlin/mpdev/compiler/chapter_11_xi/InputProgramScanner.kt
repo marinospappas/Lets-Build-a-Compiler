@@ -8,19 +8,6 @@ import kotlin.math.min
  * Performs the lexical scanner functions
  * Processes the char-by-char input and returns the tokens from the input stream
  */
-
-/////////////////////////////////////////////////////////
-// global definitions
-/////////////////////////////////////////////////////////
-
-// end of input mark
-val nullChar = 0
-
-// input program line number
-var lineNumber = 1
-
-/////////////////////////////////////////////////////////
-
 class InputProgramScanner(inputFile: String = "") {
 
     // the input program as string
@@ -36,6 +23,9 @@ class InputProgramScanner(inputFile: String = "") {
 
     // the next token is here so that we can look ahead
     private lateinit var nextToken: Token
+
+    // input program line number
+    var lineNumber = 1
 
     // any comments are kept here so that they can be transferred to the output
     private var commentString = ""
