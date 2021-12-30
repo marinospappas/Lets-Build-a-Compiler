@@ -33,7 +33,7 @@
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
-<for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
+<for> ::= for ( <identifier> = <b-expression> to <b-expression> ) <block>
 ```
 
 ## Expressions
