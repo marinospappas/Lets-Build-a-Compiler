@@ -13,7 +13,7 @@ import kotlin.math.min
 // comments processed in skipWhite
 /////////////////////////////////////////////////////////
 
-class InputProgramScanner2(inputFile: String = "") {
+class InputProgramScanner_1(inputFile: String = "") {
 
     // end of input mark
     val nullChar = 0
@@ -30,7 +30,7 @@ class InputProgramScanner2(inputFile: String = "") {
 
     // the next character from input
     // this is our lookahead character
-     var nextChar: Char = ' '
+    var nextChar: Char = ' '
 
     // the next token is here so that we can look ahead
     private lateinit var nextToken: Token
@@ -89,7 +89,7 @@ class InputProgramScanner2(inputFile: String = "") {
             val name = getName()
             indx = isKeyword(name)
             return (if (indx >= 0) languageTokens[indx]  // keyword found
-                    else Token(name, Kwd.identifier, TokType.none))  /* identifier found */
+            else Token(name, Kwd.identifier, TokType.none))  /* identifier found */
         }
 
         indx = specSeqPresent()            // we have a special character - check for special sequence
@@ -290,7 +290,7 @@ class InputProgramScanner2(inputFile: String = "") {
 
     /** check for end of program - called by parseBlock */
     fun isEndOfProgram(): Boolean = nextToken.encToken == Kwd.endOfProgram ||
-        nextToken.encToken == Kwd.endOfInput
+            nextToken.encToken == Kwd.endOfInput
 
     /** decode an encoded token to token name */
     private fun decodeToken(token: Kwd): String {

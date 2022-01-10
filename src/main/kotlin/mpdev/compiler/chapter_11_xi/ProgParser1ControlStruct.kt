@@ -47,7 +47,7 @@ fun parseStatement(breakLabel: String) {
         Kwd.printToken -> parsePrint()
         Kwd.identifier -> parseAssignment()
         Kwd.semiColon -> inp.match()    // semicolons are simply ignored
-        else -> inp.expected("valid keyword or identifier")
+        else -> inp.expected("valid keyword, semicolon or identifier")
     }
 }
 
@@ -73,7 +73,6 @@ fun parseIf(breakLabel: String) {
     }
     else
         postLabel(label1)
-    // inp.match(Kwd.endifToken) - not needed
 }
 
 /**
@@ -90,7 +89,6 @@ fun parseWhile() {
     inp.match(Kwd.rightParen)
     code.branchIfFalse(label2)
     parseBlock(label2)
-    // inp.match(Kwd.endwhileToken) - not needed
     code.branch(label1)
     postLabel(label2)
 }
@@ -139,7 +137,6 @@ fun parseFor() {
     code.branchIfFalse(label2)
     // execute the body of the loop
     parseBlock(label2)
-    // inp.match(Kwd.endforToken) -  not needed
     // back to the beginning of the loop
     code.branch(label1)
     // exit point of the loop

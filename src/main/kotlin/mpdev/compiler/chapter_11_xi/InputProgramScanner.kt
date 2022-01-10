@@ -89,7 +89,7 @@ class InputProgramScanner(inputFile: String = "") {
             return Token(getNumber(), Kwd.number, TokType.none)
         if (checkAlpha())
             return keywordOrIdentifier(getName())
-        if ((checkSpecialToken()))
+        if (checkSpecialToken())
             return getSpecialToken()
         return getInvalidToken()
     }
