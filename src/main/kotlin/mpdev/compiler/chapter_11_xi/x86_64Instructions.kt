@@ -19,10 +19,10 @@ class x86_64Instructions {
     fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
 
     /** output comment */
-    fun outputComment(s: String) = outputCode("$COMMENT ")
+    fun outputComment(s: String) = outputCode("$COMMENT $s")
 
     /** output comment with newline*/
-    fun outputCommentNl(s: String) = outputCode("$COMMENT $s\n")
+    fun outputCommentNl(s: String) = outputComment("$s\n")
 
     /** output a label */
     fun outputLabel(s: String) = outputCodeNl("$s:")
