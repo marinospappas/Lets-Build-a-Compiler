@@ -8,22 +8,16 @@ class x86_64Instructions {
 
     /** output code */
     fun outputCode(s: String) = print(s)
-
     /** output code with newline */
     fun outputCodeNl(s: String = "") = outputCode("$s\n")
-
     /** output code with tab */
     fun outputCodeTab(s: String) = outputCode("\t$s")
-
     /** output code with tab and newline */
     fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
-
     /** output comment */
     fun outputComment(s: String) = outputCode("$COMMENT $s")
-
     /** output comment with newline*/
     fun outputCommentNl(s: String) = outputComment("$s\n")
-
     /** output a label */
     fun outputLabel(s: String) = outputCodeNl("$s:")
 
@@ -34,7 +28,7 @@ class x86_64Instructions {
         outputCodeNl(".align 8")
         // copyright message
         outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 1.0 for x86-84 (Linux) Dec 2021 (c) M.Pappas\\n\"")
-        // newline
+        // newline string
         outputCodeTabNl("newline_: .string \"\\n\"")
     }
 
@@ -76,8 +70,10 @@ class x86_64Instructions {
         outputCodeNl()
         outputCommentNl("end of main")
         outputCodeTabNl("popq\t%rbx")
-        outputCodeTabNl("movq\t$60, %rax\t\t$COMMENT exit system call")
-        outputCodeTabNl("xorq\t%rdi, %rdi\t\t$COMMENT exit code 0")
+        outputCodeTab("movq\t$60, %rax\t\t")
+        outputCommentNl("exit system call")
+        outputCodeTab("xorq\t%rdi, %rdi\t\t")
+        outputCommentNl("exit code 0")
         outputCodeTabNl("syscall")
     }
 
@@ -121,7 +117,8 @@ class x86_64Instructions {
     fun divideAccumulator() {
         outputCodeTabNl("movq\t%rax, %rbx")
         outputCodeTabNl("popq\t%rax")
-        outputCodeTabNl("cqto\t\t$COMMENT sign extend to rdx")
+        outputCodeTab("cqto\t\t")
+        outputCommentNl("sign extend to rdx")
         outputCodeTabNl("idivq\t%rbx, %rax")
     }
 
