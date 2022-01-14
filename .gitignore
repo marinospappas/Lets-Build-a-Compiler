@@ -3,7 +3,6 @@
 .idea/*
 gradle/*
 build/*
-src/main/kotlin/mpdev/compiler/chapter_12_xii/*
 lib/*
 examples_tinsel/*
 src/main/kotlin/verify/current/*
@@ -12,6 +11,7 @@ src/main/kotlin/mpdev/compiler/tmp/*
 *.iml
 prog*.txt
 prog*.tnsl
+prog*.s
 *.class
 *.lock
 *.bin

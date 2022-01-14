@@ -15,7 +15,7 @@
 ```
 <block> ::= { <statement> * }
 <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
-                <return> | <read> | <print> | <assignment> | null [ ; ]
+                <return> | <read> | <print> | <assignment> | <function_call> | null [ ; ]
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
@@ -23,6 +23,7 @@
 <break> ::= break
 <return> ::= return <b-expression>
 <assignment> ::= <identifier> = <b-expression>
+<funcrion_call> ::= <function_name> ( )
 <read> :: = read <identifier> [ , <identifier> ] *
 <print> ::= print <b-expression> [ , <b-expression> ] *
 ```
@@ -46,8 +47,7 @@
 <expression> ::= <term> [ <addop> <term> ] *
 <term> ::= <signed factor> [ <mulop> factor ] *
 <signed factor> ::= [ <addop> ] <factor>
-<factor> ::= <integer> | <identifier> | ( <expression> )
-<identifier> ::= <variable> | <function> ( )
+<factor> ::= <integer> | <variable> | <function_name> ( ) | ( <expression> )
 ```
 Note: any Boolean expression can also be Integer expression and vice versa (same as C).
 The compiler will start looking for a Boolean expression and may "settle" for a numeric one as it goes down the list.
