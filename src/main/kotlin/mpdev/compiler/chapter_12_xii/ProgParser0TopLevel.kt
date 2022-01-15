@@ -122,6 +122,5 @@ fun parseProgEnd() {
     inp.match(Kwd.endOfProgram)
     code.outputCodeNl()
     code.outputCommentNl("end program")
-    if (inp.lookahead().encToken != Kwd.endOfInput)
-        inp.expected(Kwd.endOfInput.name)
+    inp.match(Kwd.endOfInput)
 }

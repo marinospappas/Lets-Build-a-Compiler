@@ -77,5 +77,5 @@ fun main(args: Array<String>) {
     println("TINSEL(c) compiler v1.1 Jan 2022, Copyright M.Pappas\n")
     initCompiler(args)
     parseProgram()
-    println("Successful compilation, ${inp.inLineNumber()} source lines")
+    println("Successful compilation, ${inp.inLineNumber()-1} source lines")  // -1 is needed as an extra new line was added when the input was read
 }
