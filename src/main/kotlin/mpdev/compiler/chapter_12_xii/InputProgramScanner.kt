@@ -288,7 +288,7 @@ class InputProgramScanner(inputFile: String = "") {
         nextToken.encToken == Kwd.endOfInput
 
     /** decode an encoded token to token name */
-    private fun decodeToken(token: Kwd): String {
+    fun decodeToken(token: Kwd): String {
         for (i in languageTokens.indices)
             if (languageTokens[i].encToken == token)
                 return languageTokens[i].value

@@ -97,7 +97,7 @@ fun parseFunDecl() {
         inp.match(Kwd.leftParen)
         inp.match(Kwd.rightParen)
         declareFun(funName)
-        parseBlock()
+        parseBlock(functionBlock = true)
     }
 }
 

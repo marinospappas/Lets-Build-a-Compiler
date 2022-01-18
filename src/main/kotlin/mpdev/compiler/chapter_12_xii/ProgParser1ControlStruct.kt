@@ -21,36 +21,51 @@ fun postLabel(label: String) = code.outputLabel(label)
  * parse a block
  * <block> ::= { <statement> * }
  */
-fun parseBlock(breakLabel: String = "") {
+fun parseBlock(breakLabel: String = "", functionBlock: Boolean = false): Boolean {
+    var foundReturn = false
     inp.match(Kwd.startBlock)
     while (inp.lookahead().type != TokType.endOfBlock && !inp.isEndOfProgram()) {
-        parseStatement(breakLabel)
+        if (parseStatement(breakLabel))
+            foundReturn = true
     }
+    if (functionBlock && !foundReturn)
+        inp.expected(inp.decodeToken(Kwd.retTok))
     inp.match(Kwd.endBlock)
+    return foundReturn
 }
 
 /**
  * parse a statement
  * <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
- *                 <return> | <read> | <print> | <assignment> | null [ ; ]
+ *                 <return> | <read> | <print> | <assignment> | <function_call> | null [ ; ]
  */
-fun parseStatement(breakLabel: String) {
+fun parseStatement(breakLabel: String): Boolean {
     when (inp.lookahead().encToken) {
-        Kwd.startBlock -> parseBlock(breakLabel)
-        Kwd.ifToken -> parseIf(breakLabel)
-        Kwd.whileToken -> parseWhile()
-        Kwd.repeatToken -> parseRepeat()
-        Kwd.forToken -> parseFor()
-        Kwd.breakToken -> parseBreak(breakLabel)
-        Kwd.retTok -> parseReturn()
-        Kwd.readToken -> parseRead()
-        Kwd.printToken -> parsePrint()
-        Kwd.identifier ->
+        Kwd.startBlock -> return parseBlock(breakLabel)
+        Kwd.ifToken -> return parseIf(breakLabel)
+        Kwd.whileToken -> return parseWhile()
+        Kwd.repeatToken -> return parseRepeat()
+        Kwd.forToken -> return parseFor()
+        Kwd.breakToken -> {
+            parseBreak(breakLabel); return false
+        }
+        Kwd.retTok -> {
+            parseReturn(); return true
+        }
+        Kwd.readToken -> {
+            parseRead(); return false
+        }
+        Kwd.printToken -> {
+            parsePrint(); return false
+        }
+        Kwd.identifier -> {
             if (inp.lookahead().type == TokType.variable) parseAssignment()
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
             else abort("line ${inp.inLineNumber()}: identifier ${inp.lookahead().value} not declared")
-        Kwd.semiColon -> inp.match()    // semicolons are simply ignored
-        else -> inp.expected("valid keyword, semicolon or identifier")
+            return false
+        }
+        Kwd.semiColon -> { inp.match(); return false }    // semicolons are simply ignored
+        else -> { inp.expected("valid keyword, semicolon or identifier"); return false }
     }
 }
 
@@ -58,31 +73,33 @@ fun parseStatement(breakLabel: String) {
  * parse if statement
  * <if> ::= if ( <b-expression> ) <block> [ else <block> ]
  */
-fun parseIf(breakLabel: String) {
+fun parseIf(breakLabel: String): Boolean {
     inp.match()
     inp.match(Kwd.leftParen)
     parseBooleanExpression()
     inp.match(Kwd.rightParen)
     val label1 = newLabel()
     code.branchIfFalse(label1)
-    parseBlock(breakLabel)
+    var foundReturn = parseBlock(breakLabel)
     if (inp.lookahead().encToken == Kwd.elseToken) {
         inp.match()
         val label2 = newLabel()
         code.branch(label2)
         postLabel(label1)
-        parseBlock(breakLabel)
+        if (parseBlock(breakLabel))
+            foundReturn = true
         postLabel(label2)
     }
     else
         postLabel(label1)
+    return foundReturn
 }
 
 /**
  * parse while statement
  * <while> ::= while ( <b-expression> ) <block>
  */
-fun parseWhile() {
+fun parseWhile(): Boolean {
     inp.match()
     val label1 = newLabel()
     val label2 = newLabel()
@@ -91,27 +108,29 @@ fun parseWhile() {
     parseBooleanExpression()
     inp.match(Kwd.rightParen)
     code.branchIfFalse(label2)
-    parseBlock(label2)
+    val foundReturn = parseBlock(label2)
     code.branch(label1)
     postLabel(label2)
+    return foundReturn
 }
 
 /**
  * parse repeat statement
  * <repeat> ::= repeat <block> until ( <b-expression> )
  */
-fun parseRepeat() {
+fun parseRepeat(): Boolean {
     inp.match()
     val label1 = newLabel()
     val label2 = newLabel()
     postLabel(label1)
-    parseBlock(label2)
+    val foundReturn = parseBlock(label2)
     inp.match(Kwd.untilToken)
     inp.match(Kwd.leftParen)
     parseBooleanExpression()
     inp.match(Kwd.rightParen)
     code.branchIfFalse(label1)
     postLabel(label2)
+    return foundReturn
 }
 
 /**
@@ -120,7 +139,7 @@ fun parseRepeat() {
  * focuses on parsing of the structure only - not on producing code
  * <for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
  */
-fun parseFor() {
+fun parseFor(): Boolean {
     inp.match()
     val counterName = inp.match(Kwd.identifier).value
     inp.match(Kwd.equalsOp)
@@ -139,12 +158,13 @@ fun parseFor() {
     code.dummyInstr("Is $counterName <= TO?")
     code.branchIfFalse(label2)
     // execute the body of the loop
-    parseBlock(label2)
+    val foundReturn = parseBlock(label2)
     // back to the beginning of the loop
     code.branch(label1)
     // exit point of the loop
     postLabel(label2)
     code.dummyInstr("Release space held for $counterName and TO")
+    return foundReturn
 }
 
 /**
