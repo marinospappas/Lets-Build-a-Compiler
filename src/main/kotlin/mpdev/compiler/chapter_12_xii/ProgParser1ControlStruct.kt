@@ -46,18 +46,10 @@ fun parseStatement(breakLabel: String): Boolean {
         Kwd.whileToken -> return parseWhile()
         Kwd.repeatToken -> return parseRepeat()
         Kwd.forToken -> return parseFor()
-        Kwd.breakToken -> {
-            parseBreak(breakLabel); return false
-        }
-        Kwd.retTok -> {
-            parseReturn(); return true
-        }
-        Kwd.readToken -> {
-            parseRead(); return false
-        }
-        Kwd.printToken -> {
-            parsePrint(); return false
-        }
+        Kwd.breakToken -> { parseBreak(breakLabel); return false }
+        Kwd.retTok -> { parseReturn(); return true }
+        Kwd.readToken -> { parseRead(); return false }
+        Kwd.printToken -> { parsePrint(); return false }
         Kwd.identifier -> {
             if (inp.lookahead().type == TokType.variable) parseAssignment()
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
