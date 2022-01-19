@@ -97,7 +97,7 @@ fun parseIdentifier() {
     when (inp.lookahead().type) {
         TokType.variable -> parseVariable()
         TokType.function -> parseFunctionCall()
-        else -> abort("line ${inp.inLineNumber()}: identifier ${inp.lookahead().value} not declared")
+        else -> abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
     }
 }
 

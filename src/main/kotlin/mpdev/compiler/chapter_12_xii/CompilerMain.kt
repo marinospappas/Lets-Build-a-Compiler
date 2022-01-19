@@ -12,7 +12,9 @@ import kotlin.system.exitProcess
  * Version 1.0 01.10.2021
  */
 
-const val USAGE = "usage: CompilerMain [-o output_file] input_file"
+const val USAGE = "usage: CompilerMain [-debug] [-o output_file] input_file"
+
+var debugMode = false
 
 // the input and output files
 var inFile = ""
@@ -53,6 +55,7 @@ fun processCmdLineArgs(args: Array<String>) {
         if (arg[0] == '-')
             when (arg) {
                 "-?", "-h", "-H" -> exit(USAGE)
+                "-debug" -> debugMode = true
                 "-o", "-O" -> { outFile = getNextArg(args, ++argIndx, "output_file"); continue }
                 else -> exit("invalid option [$arg]\n$USAGE")
             }
@@ -72,10 +75,28 @@ fun initCompiler(args: Array<String>) {
     inp = InputProgramScanner(inFile)
 }
 
+/** analyse tokens - debug mode */
+fun debugCompiler() {
+    println("starting debug run")
+    var t: Token
+    while(true) {
+        t = inp.match()
+        println("${inp.debugGetLineInfo()}, ${inp.debugGetNextChar()}, ${inp.debugGetCursor()} "+
+            "| current token: [${t.encToken} ${t.type} ${t.value}] " +
+            "| next token: [${inp.lookahead().encToken} ${inp.lookahead().type} ${inp.lookahead().value}] |")
+        if (t.encToken == Kwd.endOfInput)
+            break
+    }
+}
+
 /** main function */
 fun main(args: Array<String>) {
     println("TINSEL(c) compiler v1.1 Jan 2022, Copyright M.Pappas\n")
     initCompiler(args)
+    if (debugMode) {
+        debugCompiler()
+        exit("end of debug run")
+    }
     parseProgram()
-    println("Successful compilation, ${inp.inLineNumber()-1} source lines")  // -1 is needed as an extra new line was added when the input was read
+    println("Successful compilation, ${inp.currentLineNumber-1} source lines")  // -1 is needed as an extra new line was added when the input was read
 }

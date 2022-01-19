@@ -19,16 +19,16 @@ class InputProgramScanner(inputFile: String = "") {
 
     // the next character from input
     // this is our lookahead character
-    var nextChar: Char = ' '
+    private var nextChar: Char = ' '
 
     // the next token is here so that we can look ahead
-    private lateinit var nextToken: Token
+    private var nextToken: Token = Token()
 
-    // input program line number
+    // input program line number (the line where the nextToken is)
     private var lineNumber = 1
 
-    // flag to show tht we are about to process the first token in a new line
-    private var newLine = false
+    // the current token's line number
+    var currentLineNumber = 0
 
     // any comments are kept here so that they can be transferred to the output
     private var commentString = ""
@@ -44,6 +44,8 @@ class InputProgramScanner(inputFile: String = "") {
             initOperators()
             // set the lookahead character to the first input char and skip any white spaces
             nextChar = inputProgram[0]
+            // initialise current line
+            currentLineNumber = lineNumber
             // get the first token from input
             nextToken = scan()
             // process any initial comments
@@ -59,9 +61,12 @@ class InputProgramScanner(inputFile: String = "") {
      * also produces a match if called with no token or if token is "any"
      * finally it processes any comments in the code
      * returns the token object that has been matched
-     * called by the parser functions
+     * also sets the current line number at the beginning as the lineNumber
+     * was pointing to the line of the nextToken at the end of the previous match call
+     * it is called by all the parser functions
      */
     fun match(keyWord: Kwd = Kwd.any): Token {
+        currentLineNumber = lineNumber
         printComment()  // any comments found in the previous call must be printed in the output code now
         if (keyWord != Kwd.any && nextToken.encToken != keyWord)    // check keyword to match
             expected(decodeToken(keyWord))
@@ -79,12 +84,19 @@ class InputProgramScanner(inputFile: String = "") {
         }
     }
 
-    /** lookahead function - returns next token without advancing the cursor */
-    fun lookahead(): Token = nextToken
+    /**
+     * lookahead function
+     * returns next token without advancing the cursor
+     * sets current line number as well (same as match)
+     */
+    fun lookahead(): Token {
+        currentLineNumber = lineNumber
+        return nextToken
+    }
 
     /** get the next token and advance the "cursor" */
     private fun scan(): Token {
-        newLine = skipWhite()
+        skipWhite()
         if (checkEndofInput())
             return Token(END_OF_INPUT, Kwd.endOfInput, TokType.none)
         if (checkNumeric())
@@ -211,14 +223,10 @@ class InputProgramScanner(inputFile: String = "") {
      * skip white spaces
      * returns true when a newline has been skipped
      */
-    private fun skipWhite(): Boolean {
-        var foundNewLine = false
+    private fun skipWhite() {
         while (isWhite(nextChar)) {
-            if (isNewLine(nextChar))
-                foundNewLine = true
             getNextChar()
         }
-        return foundNewLine
     }
 
     /** get a comment */
@@ -295,14 +303,14 @@ class InputProgramScanner(inputFile: String = "") {
         return "*******"
     }
 
-    /**
-     * get line number
-     * includes logic to return previous line if the nextToken points to the first token in the line
-     */
-    fun inLineNumber() = if(newLine) lineNumber-1 else lineNumber
-
     /** report what was expected and abort */
     fun expected(expMsg: String) {
-        abort("line $lineNumber: expected [$expMsg] found [${nextToken.value}]")
+        abort("line $currentLineNumber: expected [$expMsg] found [${nextToken.value}]")
     }
+
+    /** debug functions */
+    fun debugGetNextChar() = "nextChar: [" +
+            (if(nextChar<' ' ) "\\"+nextChar.code.toByte() else nextChar.toString()) + "]"
+    fun debugGetLineInfo() = "curline: $currentLineNumber, line: $lineNumber"
+    fun debugGetCursor() = "cursor: $cursor"
 }

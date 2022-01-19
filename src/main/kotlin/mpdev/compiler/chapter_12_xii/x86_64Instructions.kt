@@ -251,6 +251,12 @@ class x86_64Instructions(outFile: String = "") {
         outputCodeTabNl("call\tread_i_")
     }
 
+    /** end of program */
+    fun progEnd() {
+        outputCodeNl()
+        outputCommentNl("end program")
+    }
+
     /** dummy instruction */
     fun dummyInstr(cmd: String) = outputCodeTabNl(cmd)
 

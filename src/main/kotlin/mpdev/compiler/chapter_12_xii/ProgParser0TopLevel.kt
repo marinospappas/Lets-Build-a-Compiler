@@ -21,7 +21,7 @@ class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolea
 fun declareVar(name: String, initValue: String) {
     // check for duplicate var declaration
     if (identifiersSpace[name] != null)
-        abort ("line ${inp.inLineNumber()}: identifier $name already declared")
+        abort ("line ${inp.currentLineNumber}: identifier $name already declared")
     identifiersSpace[name] = IdentifierDecl(TokType.variable, VarType.int, initValue!="")
     code.declareInt(name, initValue)
 }
@@ -29,7 +29,7 @@ fun declareVar(name: String, initValue: String) {
 /** process a function declaration */
 fun declareFun(name: String) {
     if (identifiersSpace[name] != null)
-        abort ("line ${inp.inLineNumber()}: identifier $name already declared")
+        abort ("line ${inp.currentLineNumber}: identifier $name already declared")
     identifiersSpace[name] = IdentifierDecl(TokType.function, VarType.int)
     code.declareAsmFun(name)
 }
@@ -85,7 +85,7 @@ fun parseOneVarDecl() {
 }
 
 /**
- * parse functions declarations
+ * parse a function declaration
  * <function declaration> ::= fun <identifier> ( ) <block>
  */
 fun parseFunDecl() {
@@ -97,8 +97,15 @@ fun parseFunDecl() {
         inp.match(Kwd.leftParen)
         inp.match(Kwd.rightParen)
         declareFun(funName)
-        parseBlock(functionBlock = true)
+        parseFunctionBlock(funName)
     }
+}
+
+/** parse a function block */
+fun parseFunctionBlock(funName: String) {
+    val hasReturn = parseBlock()
+    if (!hasReturn)
+        abort("line ${inp.currentLineNumber}: function $funName has no ${inp.decodeToken(Kwd.retTok)}")
 }
 
 /**
@@ -120,7 +127,6 @@ fun parseMainBlock() {
  */
 fun parseProgEnd() {
     inp.match(Kwd.endOfProgram)
-    code.outputCodeNl()
-    code.outputCommentNl("end program")
+    code.progEnd()
     inp.match(Kwd.endOfInput)
 }

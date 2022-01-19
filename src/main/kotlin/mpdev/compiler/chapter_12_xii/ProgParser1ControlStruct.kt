@@ -21,15 +21,13 @@ fun postLabel(label: String) = code.outputLabel(label)
  * parse a block
  * <block> ::= { <statement> * }
  */
-fun parseBlock(breakLabel: String = "", functionBlock: Boolean = false): Boolean {
+fun parseBlock(breakLabel: String = ""): Boolean {
     var foundReturn = false
     inp.match(Kwd.startBlock)
     while (inp.lookahead().type != TokType.endOfBlock && !inp.isEndOfProgram()) {
         if (parseStatement(breakLabel))
             foundReturn = true
     }
-    if (functionBlock && !foundReturn)
-        inp.expected(inp.decodeToken(Kwd.retTok))
     inp.match(Kwd.endBlock)
     return foundReturn
 }
@@ -53,7 +51,7 @@ fun parseStatement(breakLabel: String): Boolean {
         Kwd.identifier -> {
             if (inp.lookahead().type == TokType.variable) parseAssignment()
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
-            else abort("line ${inp.inLineNumber()}: identifier ${inp.lookahead().value} not declared")
+            else abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
             return false
         }
         Kwd.semiColon -> { inp.match(); return false }    // semicolons are simply ignored
@@ -166,7 +164,7 @@ fun parseFor(): Boolean {
 fun parseBreak(label: String) {
     inp.match()
     if (label == "")
-        abort("line ${inp.inLineNumber()}: no loop to break of")
+        abort("line ${inp.currentLineNumber}: no loop to break of")
     else
         code.branch(label)
 }
@@ -191,9 +189,9 @@ fun parseRead() {
         inp.match()
         varToken = inp.match(Kwd.identifier)
         if (varToken.type == TokType.none)
-            abort("line ${inp.inLineNumber()}: identifier ${varToken.value} not declared")
+            abort("line ${inp.currentLineNumber}: identifier ${varToken.value} not declared")
         if (varToken.type != TokType.variable)
-            abort("line ${inp.inLineNumber()}: identifier ${varToken.value} is not a variable")
+            abort("line ${inp.currentLineNumber}: identifier ${varToken.value} is not a variable")
         code.readInt(varToken.value)
         code.assignment(varToken.value)
     } while (inp.lookahead().encToken == Kwd.commaToken)
