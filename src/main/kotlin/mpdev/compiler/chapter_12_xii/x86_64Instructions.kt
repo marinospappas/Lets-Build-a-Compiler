@@ -4,7 +4,7 @@ import java.io.File
 import java.io.PrintStream
 import java.lang.System.err
 import java.lang.System.out
-import java.util.*
+import java.util.Date
 
 /** this class implements all the instructions for the target machine */
 class x86_64Instructions(outFile: String = "") {
@@ -12,7 +12,7 @@ class x86_64Instructions(outFile: String = "") {
     val COMMENT = "#"
     private val MAIN_ENTRYPOINT = "_start"
 
-    var outStream: PrintStream = out
+    private var outStream: PrintStream = out
 
     /** initialisation code - class InputProgramScanner */
     init {
