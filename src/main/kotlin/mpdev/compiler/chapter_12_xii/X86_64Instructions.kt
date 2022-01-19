@@ -7,7 +7,7 @@ import java.lang.System.out
 import java.util.Date
 
 /** this class implements all the instructions for the target machine */
-class x86_64Instructions(outFile: String = "") {
+class X86_64Instructions(outFile: String = "") {
 
     val COMMENT = "#"
     private val MAIN_ENTRYPOINT = "_start"

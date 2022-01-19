@@ -23,7 +23,7 @@ var outFile = ""
 // the input program scanner
 lateinit var inp: InputProgramScanner
 // the x86-64 instruction set (AT&T format)
-lateinit var code: x86_64Instructions
+lateinit var code: X86_64Instructions
 
 /** report an error */
 fun error(errMsg: String) {
@@ -70,7 +70,7 @@ fun processCmdLineArgs(args: Array<String>) {
 fun initCompiler(args: Array<String>) {
     processCmdLineArgs(args)
     // initialise the code module
-    code = x86_64Instructions(outFile)
+    code = X86_64Instructions(outFile)
     // initialise the scanner module
     inp = InputProgramScanner(inFile)
 }
