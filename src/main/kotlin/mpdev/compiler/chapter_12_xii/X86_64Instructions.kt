@@ -261,3 +261,4 @@ class X86_64Instructions(outFile: String = "") {
     fun dummyInstr(cmd: String) = outputCodeTabNl(cmd)
 
 }
+
