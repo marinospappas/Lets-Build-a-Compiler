@@ -130,3 +130,4 @@ fun parseProgEnd() {
     code.progEnd()
     inp.match(Kwd.endOfInput)
 }
+
