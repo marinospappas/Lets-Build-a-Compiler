@@ -100,3 +100,4 @@ fun main(args: Array<String>) {
     parseProgram()
     println("Successful compilation, ${inp.currentLineNumber-1} source lines")  // -1 is needed as an extra new line was added when the input was read
 }
+
