@@ -314,3 +314,4 @@ class InputProgramScanner(inputFile: String = "") {
     fun debugGetLineInfo() = "curline: $currentLineNumber, line: $lineNumber"
     fun debugGetCursor() = "cursor: $cursor"
 }
+
