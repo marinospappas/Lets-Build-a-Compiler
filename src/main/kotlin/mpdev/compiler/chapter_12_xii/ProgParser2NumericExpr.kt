@@ -11,6 +11,8 @@ package mpdev.compiler.chapter_12_xii
  */
 fun parseAssignment() {
     val identName: String = inp.match(Kwd.identifier).value
+    if (identifiersSpace[identName]?.canAssign == false)
+        abort ("line ${inp.currentLineNumber}: variable $identName cannot be assigned a value")
     inp.match(Kwd.equalsOp)
     parseBooleanExpression()
     code.assignment(identName)
@@ -112,10 +114,17 @@ fun parseFunctionCall() {
     code.callFunction(funcName)
 }
 
-/** parse a reference to a variable */
+/**
+ * parse a reference to a variable
+ * different code generated for local or global variable
+ */
 fun parseVariable() {
     val varName = inp.match(Kwd.identifier).value
-    code.setAccumulatorToVar(varName)
+    val localVar = identifiersSpace[varName]?.stackVar
+    if (localVar == true)
+        identifiersSpace[varName]?.stackOffset?.let { code.setAccumulatorToLocalVar(it) }
+    else
+        code.setAccumulatorToVar(varName)
 }
 
 /** parse an addition */

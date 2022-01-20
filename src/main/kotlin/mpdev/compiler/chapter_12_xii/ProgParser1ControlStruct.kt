@@ -45,7 +45,7 @@ fun parseStatement(breakLabel: String): Boolean {
         Kwd.repeatToken -> return parseRepeat()
         Kwd.forToken -> return parseFor()
         Kwd.breakToken -> { parseBreak(breakLabel); return false }
-        Kwd.retTok -> { parseReturn(); return true }
+        Kwd.retToken -> { parseReturn(); return true }
         Kwd.readToken -> { parseRead(); return false }
         Kwd.printToken -> { parsePrint(); return false }
         Kwd.identifier -> {
@@ -123,39 +123,8 @@ fun parseRepeat(): Boolean {
     return foundReturn
 }
 
-/**
- * parse for statement
- * dummy version using pseudo-code
- * focuses on parsing of the structure only - not on producing code
- * <for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
- */
-fun parseFor(): Boolean {
-    inp.match()
-    val counterName = inp.match(Kwd.identifier).value
-    inp.match(Kwd.equalsOp)
-    code.dummyInstr("Allocate space for $counterName and set value to:")
-    parseBooleanExpression() // this is the FROM expression
-    code.dummyInstr("Decrease $counterName by 1")
-    inp.match(Kwd.toToken)
-    code.dummyInstr("Allocate space for TO variable and set value to:")
-    parseBooleanExpression() // this is the TO expression
-    val label1 = newLabel()
-    val label2 = newLabel()
-    // actual start of the loop
-    postLabel(label1)
-    // increase counter and check the condition
-    code.dummyInstr("Increase $counterName by 1")
-    code.dummyInstr("Is $counterName <= TO?")
-    code.branchIfFalse(label2)
-    // execute the body of the loop
-    val foundReturn = parseBlock(label2)
-    // back to the beginning of the loop
-    code.branch(label1)
-    // exit point of the loop
-    postLabel(label2)
-    code.dummyInstr("Release space held for $counterName and TO")
-    return foundReturn
-}
+/** parse for statement - in separate module due to increased complexity */
+fun parseFor() = ForParser().parseFor()
 
 /**
  * parse break statement

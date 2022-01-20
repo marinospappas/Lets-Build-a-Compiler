@@ -10,14 +10,18 @@ package mpdev.compiler.chapter_12_xii
 // the identifiers space map
 val identifiersSpace = mutableMapOf<String,IdentifierDecl>()
 
+// the offset from base pointer for the next local variable (in the stack)
+var stackVarOffset = 0
+
 /////////// support for variables and functions declaration /////////
 /** our variable types */
 enum class VarType { int }
 
 /** the declaration space (variables and functions) */
-class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolean = false)
+class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolean = false,
+                     var stackVar: Boolean = false, var stackOffset: Int = 0, var canAssign: Boolean = true)   // default is global var
 
-/** declare a variable */
+/** declare a global variable */
 fun declareVar(name: String, initValue: String) {
     // check for duplicate var declaration
     if (identifiersSpace[name] != null)
@@ -79,7 +83,13 @@ fun parseOneVarDecl() {
     var initValue = ""
     if (inp.lookahead().encToken == Kwd.equalsOp) {
         inp.match()
-        initValue = inp.match(Kwd.number).value
+        var sign = ""
+        if (inp.lookahead().type == TokType.addOps) {
+            val plusMinus = inp.match().value
+            if (plusMinus == "-")
+                sign = "-"
+        }
+        initValue = sign + inp.match(Kwd.number).value
     }
     declareVar(varName, initValue)
 }
@@ -105,7 +115,7 @@ fun parseFunDecl() {
 fun parseFunctionBlock(funName: String) {
     val hasReturn = parseBlock()
     if (!hasReturn)
-        abort("line ${inp.currentLineNumber}: function $funName has no ${inp.decodeToken(Kwd.retTok)}")
+        abort("line ${inp.currentLineNumber}: function $funName has no ${inp.decodeToken(Kwd.retToken)}")
 }
 
 /**

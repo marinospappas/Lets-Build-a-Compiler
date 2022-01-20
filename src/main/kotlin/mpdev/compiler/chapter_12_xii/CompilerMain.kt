@@ -14,6 +14,9 @@ import kotlin.system.exitProcess
 
 const val USAGE = "usage: CompilerMain [-debug] [-o output_file] input_file"
 
+// sizes of various types
+val INT_SIZE = 8    // 64-bit integers
+
 var debugMode = false
 
 // the input and output files

@@ -80,8 +80,9 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeNl()
         outputCommentNl("main program")
         outputLabel(MAIN_ENTRYPOINT)
-        outputCommentNl("print hello message")
+        newStackFrame()
         outputCodeTabNl("pushq\t%rbx")
+        outputCommentNl("print hello message")
         outputCodeTabNl("lea\ttinsel_msg_(%rip), %rdi")
         outputCodeTabNl("call\twrite_s_\n")
     }
@@ -90,13 +91,32 @@ class X86_64Instructions(outFile: String = "") {
     fun mainEnd() {
         outputCodeNl()
         outputCommentNl("end of main")
-        outputCodeTabNl("popq\t%rbx")
+        outputCodeTabNl("movq\t(%rbp), %rbx")
+        restoreStackFrame()
         outputCodeTab("movq\t$60, %rax\t\t")
         outputCommentNl("exit system call")
         outputCodeTab("xorq\t%rdi, %rdi\t\t")
         outputCommentNl("exit code 0")
         outputCodeTabNl("syscall")
     }
+
+    /** set new stack frame */
+    fun newStackFrame() {
+        outputCodeTabNl("pushq\t%rbp")
+        outputCodeTabNl("movq\t%rsp, %rbp")
+    }
+
+    /** restore stack frame */
+    fun restoreStackFrame() {
+        outputCodeTabNl("movq\t%rbp, %rsp")
+        outputCodeTabNl("popq\t%rbp")
+    }
+
+    /** allocate variable space in the stack */
+    fun allocateStackVar(size: Int) = outputCodeTabNl("subq\t$${size}, %rsp")
+
+    /** release variable space in the stack */
+    fun releaeStackVar(size: Int) = outputCodeTabNl("addq\t$${size}, %rsp")
 
     //////////////////////////////////////////////////////////////
 
@@ -107,7 +127,13 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** clear accumulator */
-    fun clearAccumulator() = outputCodeTabNl("xor\t%rax, %rax")
+    fun clearAccumulator() = outputCodeTabNl("xorq\t%rax, %rax")
+
+    /** increment accumulator */
+    fun incAccumulator() = outputCodeTabNl("incq\t%rax")
+
+    /** decrement accumulator */
+    fun decAccumulator() = outputCodeTabNl("decq\t%rax")
 
     /** push accumulator to the stack */
     fun saveAccumulator() = outputCodeTabNl("pushq\t%rax")
@@ -126,7 +152,7 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** negate accumulator */
-    fun negateAccumulator() = outputCodeTabNl("neg\t%rax")
+    fun negateAccumulator() = outputCodeTabNl("negq\t%rax")
 
     /** multiply accumulator by top of stack */
     fun multiplyAccumulator() {
@@ -149,6 +175,15 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("testq\t%rax, %rax")    // also set flags - Z flag set = FALSE
     }
 
+    /** set accumulator to local variable */
+    fun setAccumulatorToLocalVar(offset: Int) {
+        outputCodeTab("movq\t")
+        if (offset != 0)
+            outputCode("${offset}")
+        outputCodeNl("(%rbp), %rax")
+        outputCodeTabNl("testq\t%rax, %rax")    // also set flags - Z flag set = FALSE
+    }
+
     /** call a function */
     fun callFunction(subroutine: String) = outputCodeTabNl("call\t${subroutine}")
 
@@ -157,6 +192,14 @@ class X86_64Instructions(outFile: String = "") {
 
     /** set variable to accumulator */
     fun assignment(identifier: String) = outputCodeTabNl("movq\t%rax, ${identifier}(%rip)")
+
+    /** set stack variable to accumulator */
+    fun assignmentLocalVar(offset: Int) {
+        outputCodeTab("movq\t%rax, ")
+        if (offset != 0)
+            outputCode("${offset}")
+        outputCodeNl("(%rbp)")
+    }
 
     /** branch if false */
     fun branchIfFalse(label: String) = outputCodeTabNl("jz\t$label")    // Z flag set = FALSE

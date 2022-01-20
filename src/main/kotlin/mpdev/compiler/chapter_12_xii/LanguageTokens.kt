@@ -38,10 +38,10 @@ enum class Kwd {
     startBlock, endBlock,
     commaToken, semiColon,
 
-    ifToken, elseToken, endifToken,
-    whileToken, endwhileToken,
+    ifToken, elseToken,
+    whileToken,
     repeatToken, untilToken,
-    forToken, toToken, endforToken,
+    forToken, toToken, stepToken, downToken,
     breakToken,
 
     identifier, number, booleanLit,
@@ -53,15 +53,18 @@ enum class Kwd {
     commentEnd,
 
     startOfProgram, endOfProgram,
-    varDecl, funDecl, retTok, mainToken,
-    endOfInput, any, invalid, noToken }
+    varDecl, funDecl, retToken, mainToken,
+    endOfInput, any, invalid, noToken
+}
 
-enum class TokType { addOps, mulOps,
+enum class TokType {
+    addOps, mulOps,
     orOps, andOps, relOps,
     endOfBlock, endOfPRogram, endOfInput,
     function, variable,
     commentStart,
-    invalid, none }
+    invalid, none
+}
 
 // initialise our lists (= define the language)
 
@@ -80,7 +83,7 @@ fun initKeywords() {
         Token("fun",      Kwd.funDecl,       TokType.none)
     )
     languageTokens.add(
-        Token("return",   Kwd.retTok,        TokType.none)
+        Token("return",   Kwd.retToken,        TokType.none)
     )
     languageTokens.add(
         Token(MAIN_BLOCK,      Kwd.mainToken,      TokType.none)
@@ -112,7 +115,13 @@ fun initKeywords() {
         Token("for",      Kwd.forToken,       TokType.none)
     )
     languageTokens.add(
+        Token("down",     Kwd.downToken,      TokType.none)
+    )
+    languageTokens.add(
         Token("to",       Kwd.toToken,        TokType.none)
+    )
+    languageTokens.add(
+        Token("step",     Kwd.stepToken,      TokType.none)
     )
     languageTokens.add(
         Token("repeat",   Kwd.repeatToken,    TokType.none)
