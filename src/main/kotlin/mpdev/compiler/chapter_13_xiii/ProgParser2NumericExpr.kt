@@ -76,19 +76,16 @@ fun parseSignedFactor() {
  * <factor> ::= ( <expression> ) | <integer> | <identifier>
  */
 fun parseFactor() {
-    if (inp.lookahead().encToken == Kwd.leftParen) {
-        // ( Expression )
-        inp.match()
-        parseExpression()
-        inp.match(Kwd.rightParen)
+    when (inp.lookahead().encToken) {
+        Kwd.leftParen -> {  // ( Expression )
+            inp.match()
+            parseExpression()
+            inp.match(Kwd.rightParen)
+        }
+        Kwd.identifier -> parseIdentifier()
+        Kwd.number -> code.setAccumulator(inp.match(Kwd.number).value)
+        else -> inp.expected("(expression)|identifier|number")
     }
-    else
-    if (inp.lookahead().encToken == Kwd.identifier)
-        // Identifier
-        parseIdentifier()
-    else
-        // Number
-        code.setAccumulator(inp.match(Kwd.number).value)
 }
 
 /**

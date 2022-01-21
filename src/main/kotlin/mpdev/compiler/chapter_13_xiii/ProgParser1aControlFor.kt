@@ -21,12 +21,11 @@ class ForParser {
         val label1 = newLabel()
         val label2 = newLabel()
         postLabel(label1)   // actual start of the loop
-        stepAndCheck()
-        code.branchIfFalse(label2)
+        stepAndCheck()      // increase (or decrease) ctrl var and check
+        code.branchIfFalse(label2)  // if limit reached, exit
         val foundReturn = parseBlock(label2)    // the FOR block
         code.branch(label1) // loop back to the beginning of the loop
         postLabel(label2)   // exit point of the loop
-        releaseLocalVarsSpace()
         return foundReturn
     }
 
@@ -49,12 +48,12 @@ class ForParser {
         inp.match(Kwd.equalsOp)
         // allocate space in the stack for the ctrl var
         code.allocateStackVar(INT_SIZE)
+        stackVarOffset -= INT_SIZE
         ctrlVarOffs = stackVarOffset
         identifiersSpace[controlVarName] = IdentifierDecl(
             TokType.variable, VarType.int, initialised = true,
             stackVar = true, ctrlVarOffs, canAssign = false
         )
-        stackVarOffset += INT_SIZE
         // set the ctrl var to FROM
         parseExpression()
         code.assignmentLocalVar(ctrlVarOffs)
@@ -73,8 +72,8 @@ class ForParser {
         // get TO value and store in the stack
         inp.match(Kwd.toToken)
         code.allocateStackVar(INT_SIZE)
+        stackVarOffset -= INT_SIZE
         toOffs = stackVarOffset
-        stackVarOffset += INT_SIZE
         parseExpression()
         code.assignmentLocalVar(toOffs)
     }
@@ -86,8 +85,8 @@ class ForParser {
             hasStep = true
             // allocate space in the stack and save step value
             code.allocateStackVar(INT_SIZE)
+            stackVarOffset -= INT_SIZE
             stepOffs = stackVarOffset
-            stackVarOffset += INT_SIZE
             parseExpression()
             code.assignmentLocalVar(stepOffs)
         }
@@ -133,12 +132,5 @@ class ForParser {
             code.compareGreaterEqual()
         else
             code.compareLessEqual()
-    }
-
-    /** release local vars space */
-    private fun releaseLocalVarsSpace() {
-        code.releaeStackVar(2 * INT_SIZE)
-        if (hasStep)
-            code.releaeStackVar(INT_SIZE)
     }
 }

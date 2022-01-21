@@ -14,6 +14,8 @@ class X86_64Instructions(outFile: String = "") {
 
     private var outStream: PrintStream = out
 
+    private var outputLines = 0
+
     /** initialisation code - class InputProgramScanner */
     init {
         if (outFile != "") {
@@ -26,8 +28,14 @@ class X86_64Instructions(outFile: String = "") {
         }
     }
 
+    /** output lines */
+    fun getOutputLines() = outputLines
+
     /** output code */
-    fun outputCode(s: String) = outStream.print(s)
+    fun outputCode(s: String) {
+        outStream.print(s)
+        outputLines += s.count { it == '\n' }
+    }
     /** output code with newline */
     fun outputCodeNl(s: String = "") = outputCode("$s\n")
     /** output code with tab */
@@ -63,7 +71,8 @@ class X86_64Instructions(outFile: String = "") {
 
     /** initial code for functions */
     fun funInit() {
-        outputCodeNl("\n.text")
+        outputCodeNl()
+        outputCodeNl(".text")
         outputCodeNl(".align 8")
         outputCodeNl(".global $MAIN_ENTRYPOINT")
     }
@@ -73,6 +82,7 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeNl()
         outputCommentNl("function $name")
         outputLabel(name)
+        newStackFrame()
     }
 
     /** initial code for main */
@@ -84,7 +94,8 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("pushq\t%rbx")
         outputCommentNl("print hello message")
         outputCodeTabNl("lea\ttinsel_msg_(%rip), %rdi")
-        outputCodeTabNl("call\twrite_s_\n")
+        outputCodeTabNl("call\twrite_s_")
+        outputCodeNl()
     }
 
     /** termination code for assembler */
@@ -114,9 +125,6 @@ class X86_64Instructions(outFile: String = "") {
 
     /** allocate variable space in the stack */
     fun allocateStackVar(size: Int) = outputCodeTabNl("subq\t$${size}, %rsp")
-
-    /** release variable space in the stack */
-    fun releaeStackVar(size: Int) = outputCodeTabNl("addq\t$${size}, %rsp")
 
     //////////////////////////////////////////////////////////////
 
@@ -188,7 +196,10 @@ class X86_64Instructions(outFile: String = "") {
     fun callFunction(subroutine: String) = outputCodeTabNl("call\t${subroutine}")
 
     /** return from function */
-    fun returnFromCall() = outputCodeTabNl("ret")
+    fun returnFromCall() {
+        restoreStackFrame()
+        outputCodeTabNl("ret")
+    }
 
     /** set variable to accumulator */
     fun assignment(identifier: String) = outputCodeTabNl("movq\t%rax, ${identifier}(%rip)")

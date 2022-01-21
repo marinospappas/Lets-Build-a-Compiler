@@ -101,5 +101,6 @@ fun main(args: Array<String>) {
         exit("end of debug run")
     }
     parseProgram()
-    println("Successful compilation, ${inp.currentLineNumber-1} source lines")  // -1 is needed as an extra new line was added when the input was read
+    println("Successful compilation, ${inp.currentLineNumber-1} source lines, ${code.getOutputLines()} assembly lines")
+                                        // -1 is needed as an extra new line was added when the input was read
 }

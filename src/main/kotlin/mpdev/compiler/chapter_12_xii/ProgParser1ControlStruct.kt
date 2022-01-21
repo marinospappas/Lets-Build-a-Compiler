@@ -45,7 +45,7 @@ fun parseStatement(breakLabel: String): Boolean {
         Kwd.repeatToken -> return parseRepeat()
         Kwd.forToken -> return parseFor()
         Kwd.breakToken -> { parseBreak(breakLabel); return false }
-        Kwd.retTok -> { parseReturn(); return true }
+        Kwd.retTok -> { parseReturn(); return true }    // only this case returns true
         Kwd.readToken -> { parseRead(); return false }
         Kwd.printToken -> { parsePrint(); return false }
         Kwd.identifier -> {

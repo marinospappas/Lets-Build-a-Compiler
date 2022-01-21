@@ -104,6 +104,7 @@ fun parseFunDecl() {
         val funName = inp.match(Kwd.identifier).value
         labelPrefix = funName        // set label prefix and label index
         labelIndx = 0
+        stackVarOffset = 0  // reset the offset for stack vars for this function
         inp.match(Kwd.leftParen)
         inp.match(Kwd.rightParen)
         declareFun(funName)
@@ -126,6 +127,7 @@ fun parseMainBlock() {
     labelPrefix = "main"        // set label prefix and label index
     labelIndx = 0
     inp.match(Kwd.mainToken)
+    stackVarOffset = 0  // reset the offset for stack vars for main
     code.mainInit()
     parseBlock()
     code.mainEnd()
