@@ -19,7 +19,7 @@
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
-<for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
+<for> ::= ( <identifier> = <expression> [ down ] to <expression> [ step <expression> ] ) <block>
 <break> ::= break
 <return> ::= return <b-expression>
 <assignment> ::= <identifier> = <b-expression>
@@ -52,6 +52,13 @@
 Note: any Boolean expression can also be Integer expression and vice versa (same as C).
 The compiler will start looking for a Boolean expression and may "settle" for a numeric one as it goes down the list.
 **Important:** *Boolean expressions do not allow parentheses* - this is what makes this specific logic work (Chapter 6)
+
+## String expressions
+```
+<s-expression> ::= <s-term> [ + <s-term> ]
+<s-term> ::= <string-literal> | <string-variable>
+<string-literal> ::= " [ <alpha-character> * ] "
+```
 
 ## Operators
 ```

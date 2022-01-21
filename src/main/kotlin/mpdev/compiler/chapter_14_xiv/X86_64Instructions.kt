@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_13_xiii
+package mpdev.compiler.chapter_14_xiv
 
 import java.io.File
 import java.io.PrintStream
@@ -62,11 +62,19 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** declare int variable (64bit) */
-    fun declareInt (varName: String, initValue: String) {
+    fun declareInt(varName: String, initValue: String) {
         if (initValue == "")
-            outputCodeTabNl("$varName:\t.quad 0")       // uninitialised global vars default to 0
+            outputCodeTabNl("$varName:\t.quad 0")       // uninitialised global int vars default to 0
         else
             outputCodeTabNl("$varName:\t.quad $initValue")
+    }
+
+    /** declare string variable */
+    fun declareString(varName: String, initValue: String, length: Int = 0) {
+        if (initValue == "")
+            outputCodeTabNl("$varName:\t.string fill $length,0,1") // uninitialised string vars must have length
+        else
+            outputCodeTabNl("$varName:\t.string \"$initValue\"")
     }
 
     /** initial code for functions */
@@ -204,6 +212,9 @@ class X86_64Instructions(outFile: String = "") {
     /** set variable to accumulator */
     fun assignment(identifier: String) = outputCodeTabNl("movq\t%rax, ${identifier}(%rip)")
 
+    /** get variable address in accumulator */
+    fun getVarAddress(identifier: String) = outputCodeTabNl("lea\t${identifier}(%rip), %rax")
+
     /** set stack variable to accumulator */
     fun assignmentLocalVar(offset: Int) {
         outputCodeTab("movq\t%rax, ")
@@ -293,10 +304,16 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("call\twrite_s_")
     }
 
-    /** print accumulator as integer (with newline for now) */
+    /** print accumulator as integer */
     fun printInt() {
         outputCodeTabNl("movq\t%rax, %rdi\t\t# value to be printed in rdi")
         outputCodeTabNl("call\twrite_i_")
+    }
+
+    /** print string - address in accumulator */
+    fun printStr() {
+        outputCodeTabNl("movq\t%rax, %rdi\t\t# string pointer to be printed in rdi")
+        outputCodeTabNl("call\twrite_s_")
     }
 
     /** read int into variable */

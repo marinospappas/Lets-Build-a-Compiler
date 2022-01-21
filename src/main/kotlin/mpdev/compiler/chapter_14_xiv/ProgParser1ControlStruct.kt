@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_12_xii
+package mpdev.compiler.chapter_14_xiv
 
 /**
  * Program parsing - module 1
@@ -43,18 +43,19 @@ fun parseStatement(breakLabel: String): Boolean {
         Kwd.ifToken -> return parseIf(breakLabel)
         Kwd.whileToken -> return parseWhile()
         Kwd.repeatToken -> return parseRepeat()
-        Kwd.forToken -> return parseFor()
+        Kwd.forToken -> return ForParser().parseFor()   // in separate module due to increased complexity
         Kwd.breakToken -> { parseBreak(breakLabel); return false }
-        Kwd.retTok -> { parseReturn(); return true }    // only this case returns true
+        Kwd.retToken -> { parseReturn(); return true }  // only this case returns true
         Kwd.readToken -> { parseRead(); return false }
         Kwd.printToken -> { parsePrint(); return false }
+        Kwd.printLnToken -> { parsePrintLn(); return false }
         Kwd.identifier -> {
             if (inp.lookahead().type == TokType.variable) parseAssignment()
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
             else abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
             return false
         }
-        Kwd.semiColon -> { inp.match(); return false }    // semicolons are simply ignored
+        Kwd.semiColonToken -> { inp.match(); return false }    // semicolons are simply ignored
         else -> { inp.expected("valid keyword, semicolon or identifier"); return false }
     }
 }
@@ -124,40 +125,6 @@ fun parseRepeat(): Boolean {
 }
 
 /**
- * parse for statement
- * dummy version using pseudo-code
- * focuses on parsing of the structure only - not on producing code
- * <for> ::= ( <identifier> = <b-expression> to <b-expression> ) <block>
- */
-fun parseFor(): Boolean {
-    inp.match()
-    val counterName = inp.match(Kwd.identifier).value
-    inp.match(Kwd.equalsOp)
-    code.dummyInstr("Allocate space for $counterName and set value to:")
-    parseBooleanExpression() // this is the FROM expression
-    code.dummyInstr("Decrease $counterName by 1")
-    inp.match(Kwd.toToken)
-    code.dummyInstr("Allocate space for TO variable and set value to:")
-    parseBooleanExpression() // this is the TO expression
-    val label1 = newLabel()
-    val label2 = newLabel()
-    // actual start of the loop
-    postLabel(label1)
-    // increase counter and check the condition
-    code.dummyInstr("Increase $counterName by 1")
-    code.dummyInstr("Is $counterName <= TO?")
-    code.branchIfFalse(label2)
-    // execute the body of the loop
-    val foundReturn = parseBlock(label2)
-    // back to the beginning of the loop
-    code.branch(label1)
-    // exit point of the loop
-    postLabel(label2)
-    code.dummyInstr("Release space held for $counterName and TO")
-    return foundReturn
-}
-
-/**
  * parse break statement
  * <break> ::= break
  */
@@ -202,11 +169,21 @@ fun parseRead() {
  * <print> ::= print <b-expression> [ , <b-expression> ] *
  */
 fun parsePrint() {
-    do {
-        inp.match()
-        parseBooleanExpression()
-        code.printInt()
-        code.printNewline()
-    } while (inp.lookahead().encToken == Kwd.commaToken)
+    inp.match()
+    printExpression()
+}
+fun parsePrintLn() {
+    inp.match()
+    if (inp.lookahead().encToken != Kwd.semiColonToken)
+        printExpression()
+    code.printNewline()
 }
 
+fun printExpression() {
+    do {
+        if (parseAnyExpression() == VarType.string)
+            code.printStr()
+        else
+            code.printInt()
+    } while (inp.lookahead().encToken == Kwd.commaToken)
+}

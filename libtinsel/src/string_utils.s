@@ -3,14 +3,16 @@
 # implements the well know C functions
 # strlen, strcpy, atoi, itoa
 # to be used in tinsel
-# standard x86-84 call convestion is used - can be tested using a C program
+# standard x86-84 call convention is used - can be tested using a C program
 # author: M. Pappas
-# version: 1.1 28.11.2021
+# version: 1.2 21.01.2022
 ################################################################################
 
 .text
 
 .global strlen_
+.global strcpy_
+.global strcat_
 .global atoi_
 .global itoa_
 
@@ -33,6 +35,58 @@ strlen_next:
 strlen_ret:
         ret
 
+##################################
+# copy string to string
+# params:
+#       rdi: the destination string address
+#       rsi: the source string address
+# returns:
+#       rax: address of destination string
+#
+strcpy_:
+	pushq	%rcx
+	xorq	%rcx, %rcx		# zero %rcx
+
+strcpy_next:
+	cmpb	$0, (%rsi, %rcx)	# check for end of string
+	je	strcpy_ret
+
+	movb	(%rsi, %rcx), %al	# get char from source
+	movb	%al, (%rdi, %rcx)	# copy to destination
+	inc	%rcx
+	jmp	strcpy_next
+
+strcpy_ret:
+	movb	$0, (%rdi, %rcx)
+	movq	%rdi, %rax		# address of dest string in %rax
+	popq	%rcx
+	ret
+       
+##################################
+# concatenate string to string
+# params:
+#       rdi: the destination string address
+#       rsi: the source string address
+# returns:
+#       rax: address of destination string
+#
+strcat_:
+	pushq	%rcx
+	movq	%rdi, %rcx		# save the destination address
+
+strcat_di_end:
+	cmpb	$0, (%rdi)		# fnd the end of the dest string
+	je	strcat_next
+	inc	%rdi
+	jmp	strcat_di_end
+
+strcat_next:
+	call	strcpy_			# caal our own strcpy_
+
+	movq	%rcx, %rax		# address of dest string in %rax
+	popq	%rcx
+	ret
+       
 ###########################
 # convert string to integer
 # params:
