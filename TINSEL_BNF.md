@@ -53,6 +53,13 @@ Note: any Boolean expression can also be Integer expression and vice versa (same
 The compiler will start looking for a Boolean expression and may "settle" for a numeric one as it goes down the list.
 **Important:** *Boolean expressions do not allow parentheses* - this is what makes this specific logic work (Chapter 6)
 
+## String expressions
+```
+<s-expression> ::= <s-term> [ + <s-term> ]
+<s-term> ::= <string-literal> | <string-variable>
+<string-literal> ::= " [ <alpha-character> * ] "
+```
+
 ## Operators
 ```
 <orop> ::= '||' | '^^'
