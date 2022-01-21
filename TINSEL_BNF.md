@@ -65,9 +65,9 @@ The compiler will start looking for a Boolean expression and may "settle" for a 
 <orop> ::= '||' | '^^'
 <andop> ::= '&&'
 <notop> ::= '!'
-<relop> := '==' | '!=' | '>' | '<' | '<=' | '>='
-<addop> :== '+' | '-'
-<mulop> :== '*' | '/'
+<relop> ::= '==' | '!=' | '>' | '<' | '<=' | '>='
+<addop> ::= '+' | '-'
+<mulop> ::= '*' | '/'
 ```
 
 ## Comments
