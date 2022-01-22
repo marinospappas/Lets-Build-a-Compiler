@@ -26,6 +26,7 @@ class ForParser {
         val foundReturn = parseBlock(label2)    // the FOR block
         code.branch(label1) // loop back to the beginning of the loop
         postLabel(label2)   // exit point of the loop
+        cleanUpStack()
         return foundReturn
     }
 
@@ -132,5 +133,16 @@ class ForParser {
             code.compareGreaterEqual()
         else
             code.compareLessEqual()
+    }
+
+    /** release stack variables */
+    private fun cleanUpStack() {
+        identifiersSpace.remove(controlVarName)
+        code.releaseStackVar(2*INT_SIZE)
+        stackVarOffset += 2*INT_SIZE
+        if (hasStep) {
+            code.releaseStackVar(INT_SIZE)
+            stackVarOffset += INT_SIZE
+        }
     }
 }

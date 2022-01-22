@@ -50,7 +50,7 @@ fun parseStatement(breakLabel: String): Boolean {
         Kwd.printToken -> { parsePrint(); return false }
         Kwd.printLnToken -> { parsePrintLn(); return false }
         Kwd.identifier -> {
-            if (inp.lookahead().type == TokType.variable) parseAssignment()
+            if (inp.lookahead().type == TokType.variable) parseAnyAssignment()
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
             else abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
             return false
@@ -181,6 +181,8 @@ fun parsePrintLn() {
 
 fun printExpression() {
     do {
+        if (inp.lookahead().encToken == Kwd.commaToken)
+            inp.match() // skip the comma
         if (parseAnyExpression() == VarType.string)
             code.printStr()
         else

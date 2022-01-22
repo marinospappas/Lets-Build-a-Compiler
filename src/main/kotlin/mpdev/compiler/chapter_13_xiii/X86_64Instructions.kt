@@ -126,6 +126,9 @@ class X86_64Instructions(outFile: String = "") {
     /** allocate variable space in the stack */
     fun allocateStackVar(size: Int) = outputCodeTabNl("subq\t$${size}, %rsp")
 
+    /** release variable space in the stack */
+    fun releaseStackVar(size: Int) = outputCodeTabNl("addq\t$${size}, %rsp")
+
     //////////////////////////////////////////////////////////////
 
     /** set accumulator to a value */

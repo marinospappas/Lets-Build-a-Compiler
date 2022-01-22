@@ -71,8 +71,8 @@ class X86_64Instructions(outFile: String = "") {
 
     /** declare string variable */
     fun declareString(varName: String, initValue: String, length: Int = 0) {
-        if (initValue == "")
-            outputCodeTabNl("$varName:\t.string fill $length,0,1") // uninitialised string vars must have length
+        if (length > 0)
+            outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length
         else
             outputCodeTabNl("$varName:\t.string \"$initValue\"")
     }
@@ -133,6 +133,9 @@ class X86_64Instructions(outFile: String = "") {
 
     /** allocate variable space in the stack */
     fun allocateStackVar(size: Int) = outputCodeTabNl("subq\t$${size}, %rsp")
+
+    /** release variable space in the stack */
+    fun releaseStackVar(size: Int) = outputCodeTabNl("addq\t$${size}, %rsp")
 
     //////////////////////////////////////////////////////////////
 
@@ -211,9 +214,6 @@ class X86_64Instructions(outFile: String = "") {
 
     /** set variable to accumulator */
     fun assignment(identifier: String) = outputCodeTabNl("movq\t%rax, ${identifier}(%rip)")
-
-    /** get variable address in accumulator */
-    fun getVarAddress(identifier: String) = outputCodeTabNl("lea\t${identifier}(%rip), %rax")
 
     /** set stack variable to accumulator */
     fun assignmentLocalVar(offset: Int) {
@@ -310,12 +310,6 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("call\twrite_i_")
     }
 
-    /** print string - address in accumulator */
-    fun printStr() {
-        outputCodeTabNl("movq\t%rax, %rdi\t\t# string pointer to be printed in rdi")
-        outputCodeTabNl("call\twrite_s_")
-    }
-
     /** read int into variable */
     fun readInt(identifier: String) {
         outputCodeTabNl("lea\t$identifier(%rip), %rdi\t\t# address of the variable to be read")
@@ -328,6 +322,43 @@ class X86_64Instructions(outFile: String = "") {
         outputCommentNl("end program")
     }
 
+    ////////// string operations ///////////////////////
+
+    /** get string address in accumulator */
+    fun getStringAddress(identifier: String) = outputCodeTabNl("lea\t${identifier}(%rip), %rax")
+
+    /** save acc string to buffer and address in stack - acc is pointer */
+    fun saveString() {
+        outputCodeTab("movq\t%rax, %rsi\t\t")
+        outputCommentNl("save string - strcpy_(string_buffer, %rax)")
+        outputCodeTabNl("lea\t$STRING_BUFFER(%rip), %rdi")
+        outputCodeTabNl("call\tstrcpy_")
+        outputCodeTabNl("pushq\t%rax")
+    }
+
+    /** add acc string to buf string - both are pointers*/
+    fun addString() {
+        outputCodeTab("popq\t%rdi\t\t")
+        outputCommentNl("add string - strcat_(top-of-stack, %rax)")
+        outputCodeTabNl("movq\t%rax, %rsi")
+        outputCodeTabNl("call\tstrcat_")
+    }
+
+    /** set string variable from accumulator (var and acc are pointers */
+    fun assignmentString(identifier: String) {
+        outputCodeTab("movq\t%rax, %rsi\t\t")
+        outputCommentNl("assign string - strcpy_(identifier, %rax)")
+        outputCodeTabNl("lea\t${identifier}(%rip), %rdi")
+        outputCodeTabNl("call\tstrcpy_")
+    }
+
+    /** print string - address in accumulator */
+    fun printStr() {
+        outputCodeTabNl("movq\t%rax, %rdi\t\t# string pointer to be printed in rdi")
+        outputCodeTabNl("call\twrite_s_")
+    }
+
+    //////////////////////////////////////////////////////////
     /** dummy instruction */
     fun dummyInstr(cmd: String) = outputCodeTabNl(cmd)
 
