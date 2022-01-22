@@ -16,11 +16,15 @@ var stackVarOffset = 0
 // the string constants (will be saved to output at the end
 val stringConstants = mutableMapOf<String,String>()
 var stringCnstIndx = 0
-val stringCnstPrfx = "STRCNST_"
+const val STRING_CONST_PREFIX = "STRCNST_"
+
+// the buffer for string operations
+const val STRING_BUFFER = "string_buffer_"
+const val STR_BUF_SIZE = 1024
 
 /////////// support for variables and functions declaration /////////
 /** our variable types */
-enum class VarType { int, string }
+enum class VarType { int, string, void }
 
 /** the declaration space (variables and functions) */
 class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolean = false,
@@ -149,7 +153,7 @@ fun parseFunDecl() {
     while (inp.lookahead().encToken == Kwd.funDecl) {
         inp.match()
         val funName = inp.match(Kwd.identifier).value
-        labelPrefix = funName        // set label prefix and label index
+        labelPrefix = funName        // set label prefix and label index to function name
         labelIndx = 0
         stackVarOffset = 0  // reset the offset for stack vars for this function
         inp.match(Kwd.leftParen)
@@ -192,11 +196,14 @@ fun parseProgEnd() {
 
 /** add any string constants at the end of the assembler output */
 fun parseStringConstants() {
-    if (stringConstants.isEmpty())
-        return
     code.outputCodeNl()
     code.outputCodeNl(".data")
     code.outputCodeTabNl(".align 8")
+    code.outputCommentNl("buffer for string operations - max str length limit")
+    code.outputCodeTabNl("$STRING_BUFFER:\t.space $STR_BUF_SIZE")
+    if (stringConstants.isEmpty())
+        return
+    code.outputCommentNl("constant string values go here")
     for (s in stringConstants.keys) {
         stringConstants[s]?.let { code.declareString(s, it) }
     }

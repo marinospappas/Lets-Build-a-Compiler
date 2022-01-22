@@ -22,7 +22,7 @@ fun parseAnyExpression(): VarType {
 fun parseStringExpression() {
     parseStringTerm()
     while (inp.lookahead().type == TokType.addOps) {
-        code.saveAccumulator()
+        code.saveString()
         when (inp.lookahead().encToken) {
             Kwd.addOp -> addString()
             else -> inp.expected("add string operator")
@@ -46,9 +46,9 @@ fun parseStringTerm() {
 fun parseStringLiteral() {
     val stringValue = inp.match(Kwd.string).value
     // save the string in the map of constant strings
-    val strAddr = stringCnstPrfx + (++stringCnstIndx).toString()
+    val strAddr = STRING_CONST_PREFIX + (++stringCnstIndx).toString()
     stringConstants[strAddr] = stringValue
-    code.getVarAddress(strAddr)
+    code.getStringAddress(strAddr)
 }
 
 /** parse string identifier */
@@ -63,15 +63,26 @@ fun parseStringIdentifier() {
 /** parse string function call */
 fun parseStringFunctionCall() {}
 
-/** parse string varaible */
+/** parse string variable */
 fun parseStringVariable() {
     val strVarName = inp.match(Kwd.identifier).value
-    code.getVarAddress(strVarName)
+    code.getStringAddress(strVarName)
 }
 
 /** add strings */
 fun addString() {
+    inp.match()
+    parseStringTerm()
+    code.addString()
+}
 
+/** parse assignment of any type */
+fun parseAnyAssignment() {
+    val varName = inp.lookahead().value
+    if (identifiersSpace[varName]?.type == VarType.string)
+        parseStringAssignment()
+    else
+        parseAssignment()
 }
 
 /**
@@ -83,6 +94,6 @@ fun parseStringAssignment() {
     if (identifiersSpace[identName]?.canAssign == false)
         abort ("line ${inp.currentLineNumber}: variable $identName cannot be assigned a value")
     inp.match(Kwd.equalsOp)
-    parseBooleanExpression()
-    code.assignment(identName)
+    parseStringExpression()
+    code.assignmentString(identName)
 }
