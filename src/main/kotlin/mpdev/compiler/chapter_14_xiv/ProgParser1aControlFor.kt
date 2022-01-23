@@ -14,7 +14,7 @@ class ForParser {
     private var stepOffs = 0
 
     /** for parser function */
-    fun parseFor(): Boolean {
+    fun parseFor() {
         inp.match()
         parseForLine()
         presetCtrlVar()
@@ -23,11 +23,10 @@ class ForParser {
         postLabel(label1)   // actual start of the loop
         stepAndCheck()      // increase (or decrease) ctrl var and check
         code.branchIfFalse(label2)  // if limit reached, exit
-        val foundReturn = parseBlock(label2)    // the FOR block
+        parseBlock(label2)    // the FOR block
         code.branch(label1) // loop back to the beginning of the loop
         postLabel(label2)   // exit point of the loop
         cleanUpStack()
-        return foundReturn
     }
 
     /** parse the for line */

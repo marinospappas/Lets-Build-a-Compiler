@@ -5,53 +5,6 @@ package mpdev.compiler.chapter_14_xiv
  * Top Level - program structure
  */
 
-// global vars
-
-// the identifiers space map
-val identifiersSpace = mutableMapOf<String,IdentifierDecl>()
-
-// the offset from base pointer for the next local variable (in the stack)
-var stackVarOffset = 0
-
-// the string constants (will be saved to output at the end
-val stringConstants = mutableMapOf<String,String>()
-var stringCnstIndx = 0
-const val STRING_CONST_PREFIX = "STRCNST_"
-
-// the buffer for string operations
-const val STRING_BUFFER = "string_buffer_"
-const val STR_BUF_SIZE = 1024
-
-/////////// support for variables and functions declaration /////////
-/** our variable types */
-enum class VarType { int, string, void }
-
-/** the declaration space (variables and functions) */
-class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolean = false,
-                     var stackVar: Boolean = false, var stackOffset: Int = 0, var canAssign: Boolean = true)   // default is global var
-
-/** declare a global variable */
-fun declareVar(name: String, type: VarType, initValue: String, length: Int = 0) {
-    // check for duplicate var declaration
-    if (identifiersSpace[name] != null)
-        abort ("line ${inp.currentLineNumber}: identifier $name already declared")
-    identifiersSpace[name] = IdentifierDecl(TokType.variable, type, initValue!="")
-    when (type) {
-        VarType.int -> code.declareInt(name, initValue)
-        VarType.string -> code.declareString(name, initValue, length)
-    }
-}
-
-/** process a function declaration */
-fun declareFun(name: String) {
-    if (identifiersSpace[name] != null)
-        abort ("line ${inp.currentLineNumber}: identifier $name already declared")
-    identifiersSpace[name] = IdentifierDecl(TokType.function, VarType.int)
-    code.declareAsmFun(name)
-}
-
-/////////////////////////////////////////////////////////////////
-
 /**
  * parse a program
  * <program> ::= <prog header> [ <var declarations> ] [ <fun declarations> ] <main block> <prog end>
@@ -152,20 +105,31 @@ fun initStringVar(): String {
 fun parseFunDecl() {
     while (inp.lookahead().encToken == Kwd.funDecl) {
         inp.match()
-        val funName = inp.match(Kwd.identifier).value
-        labelPrefix = funName        // set label prefix and label index to function name
+        val functionName = inp.match(Kwd.identifier).value
+        labelPrefix = functionName        // set label prefix and label index to function name
         labelIndx = 0
+        funName = functionName      // set global var so that we know which funciton we are parsoing
         stackVarOffset = 0  // reset the offset for stack vars for this function
         inp.match(Kwd.leftParen)
         inp.match(Kwd.rightParen)
-        declareFun(funName)
-        parseFunctionBlock(funName)
+        inp.match(Kwd.colonToken)
+        var funType: VarType = VarType.void
+        when (inp.lookahead().encToken) {
+            Kwd.intToken -> funType = VarType.int
+            Kwd.stringToken -> funType = VarType.string
+            Kwd.voidToken -> funType = VarType.void
+            else -> inp.expected("function type (int or string)")
+        }
+        inp.match()
+        declareFun(functionName, funType)
+        parseFunctionBlock()
     }
 }
 
 /** parse a function block */
-fun parseFunctionBlock(funName: String) {
-    val hasReturn = parseBlock()
+fun parseFunctionBlock() {
+    hasReturn = false
+    parseBlock()
     if (!hasReturn)
         abort("line ${inp.currentLineNumber}: function $funName has no ${inp.decodeToken(Kwd.retToken)}")
 }
@@ -207,5 +171,4 @@ fun parseStringConstants() {
     for (s in stringConstants.keys) {
         stringConstants[s]?.let { code.declareString(s, it) }
     }
-
 }

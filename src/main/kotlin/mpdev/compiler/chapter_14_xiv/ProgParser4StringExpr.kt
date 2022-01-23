@@ -53,6 +53,8 @@ fun parseStringLiteral() {
 
 /** parse string identifier */
 fun parseStringIdentifier() {
+    if (getType(inp.lookahead().value) != VarType.string)
+        inp.expected("identifier of type string")
     when (inp.lookahead().type) {
         TokType.variable -> parseStringVariable()
         TokType.function -> parseStringFunctionCall()
@@ -61,7 +63,12 @@ fun parseStringIdentifier() {
 }
 
 /** parse string function call */
-fun parseStringFunctionCall() {}
+fun parseStringFunctionCall() {
+    val functionName = inp.match(Kwd.identifier).value
+    inp.match(Kwd.leftParen)
+    inp.match(Kwd.rightParen)
+    code.callFunction(functionName)
+}
 
 /** parse string variable */
 fun parseStringVariable() {
