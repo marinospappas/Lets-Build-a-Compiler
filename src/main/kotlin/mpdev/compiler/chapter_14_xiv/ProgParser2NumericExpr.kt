@@ -93,6 +93,8 @@ fun parseFactor() {
  * <identifier> ::= <variable> | <function>
  */
 fun parseIdentifier() {
+    if (getType(inp.lookahead().value) != VarType.int)
+        inp.expected("identifier of type int")
     when (inp.lookahead().type) {
         TokType.variable -> parseVariable()
         TokType.function -> parseFunctionCall()
