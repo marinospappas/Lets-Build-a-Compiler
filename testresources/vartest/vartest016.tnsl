@@ -1,0 +1,14 @@
+program vartest
+/*--
+ variables declarations
+*/
+var abc: int = 10, xyz: string = "abcdefg"
+var w: string(20)
+var def: int = -5
+var i: int
+
+// main program here
+main { }
+
+// end of program
+endprogram

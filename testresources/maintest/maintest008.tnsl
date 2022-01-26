@@ -1,0 +1,10 @@
+program testmain
+
+/*--
+ main program
+ goes here
+*/
+main {
+}
+//-- end of program
+endprogram

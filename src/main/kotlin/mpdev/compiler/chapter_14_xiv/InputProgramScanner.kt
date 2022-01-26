@@ -327,7 +327,13 @@ class InputProgramScanner(inputFile: String = "") {
 
     /** report what was expected and abort */
     fun expected(expMsg: String) {
-        abort("line $currentLineNumber: expected [$expMsg] found [${nextToken.value}]")
+        val tokType =
+            if (nextToken.encToken == Kwd.number || nextToken.encToken == Kwd.identifier
+                || nextToken.encToken == Kwd.string || nextToken.encToken == Kwd.booleanLit)
+                "${nextToken.encToken} "
+            else
+                ""
+        abort("line $currentLineNumber: expected [$expMsg] found $tokType[${nextToken.value}]")
     }
 
     /** debug functions */

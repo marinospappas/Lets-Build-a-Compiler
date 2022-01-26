@@ -1,0 +1,5 @@
+program vartest
+
+var abc: int, 123
+
+endprogram

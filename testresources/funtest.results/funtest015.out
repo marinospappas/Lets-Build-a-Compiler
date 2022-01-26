@@ -1,0 +1,77 @@
+# program funtest
+# compiled on Tue Jan 25 17:59:26 CET 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	i:	.quad 5
+
+.text
+.align 8
+.global _start
+#
+# functions section
+#
+
+# function abc
+abc:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$5, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	addq	%rbx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	ret
+
+# function xyz
+xyz:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$8, %rax
+	testq	%rax, %rax
+	movq	%rax, i(%rip)
+	movq	%rbp, %rsp
+	popq	%rbp
+	ret
+
+# function wow
+wow:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	lea	STRCNST_1(%rip), %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	ret
+# main program section
+
+# main program
+_start:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rbx
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+
+# end of main
+	movq	(%rbp), %rbx
+	movq	%rbp, %rsp
+	popq	%rbp
+	movq	$60, %rax		# exit system call
+	xorq	%rdi, %rdi		# exit code 0
+	syscall
+
+# end program
+
+.data
+	.align 8
+# buffer for string operations - max str length limit
+	string_buffer_:	.space 1024
+# constant string values go here
+	STRCNST_1:	.string "hello World!"

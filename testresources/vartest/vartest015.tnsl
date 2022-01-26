@@ -1,0 +1,6 @@
+program vartest
+
+var abc: int = 10, xyz: string = 5
+var xyz: int
+
+endprogram

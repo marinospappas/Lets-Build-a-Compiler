@@ -10,8 +10,9 @@ src/main/kotlin/mpdev/compiler/work_in_progress/*
 src/main/kotlin/mpdev/compiler/tmp/*
 *.iml
 prog*.txt
-prog*.tnsl
+testprog*.tnsl
 prog*.s
+testout.s
 *.class
 *.lock
 *.bin
