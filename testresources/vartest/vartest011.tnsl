@@ -1,0 +1,5 @@
+program vartest
+
+var abc: int, xyz: string(20
+
+endprogram

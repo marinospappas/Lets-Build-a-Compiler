@@ -1,0 +1,10 @@
+program funtest
+
+var i: int = 5
+
+fun abc(): int {
+    return i+5
+}
+
+fun xyz(): void {
+}

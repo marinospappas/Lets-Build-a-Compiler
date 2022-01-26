@@ -1,0 +1,25 @@
+program funtest
+
+var i: int = 5
+
+/*--
+ functions section
+*/
+fun abc(): int {
+    return i+5
+}
+
+fun xyz(): void {
+    i = 8
+    return
+}
+
+fun wow(): string {
+    return "hello World!"
+}
+
+//-- main program section
+main {
+}
+
+endprogram

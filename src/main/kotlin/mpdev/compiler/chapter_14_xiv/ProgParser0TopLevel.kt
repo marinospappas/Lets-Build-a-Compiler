@@ -118,7 +118,7 @@ fun parseFunDecl() {
             Kwd.intToken -> funType = VarType.int
             Kwd.stringToken -> funType = VarType.string
             Kwd.voidToken -> funType = VarType.void
-            else -> inp.expected("function type (int or string)")
+            else -> inp.expected("function type (int, string or void)")
         }
         inp.match()
         declareFun(functionName, funType)

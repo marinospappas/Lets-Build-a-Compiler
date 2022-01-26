@@ -1,0 +1,5 @@
+program vartest
+
+var 1
+
+endprogram
