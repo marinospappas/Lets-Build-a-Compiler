@@ -1,0 +1,10 @@
+program whiletest
+
+var a: int = 1
+
+main {
+    a = 5
+    while ( {
+}
+
+endprogram

@@ -1,0 +1,13 @@
+program readtest
+
+var i: int, j: int
+
+fun a(): void {
+    return
+}
+
+main {
+    read j, a
+}
+
+endprogram

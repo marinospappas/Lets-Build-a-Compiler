@@ -1,0 +1,10 @@
+program printtest
+
+var i: int, s: string = "abcd"
+
+main {
+    print i, " -> ", s
+    println;
+}
+
+endprogram

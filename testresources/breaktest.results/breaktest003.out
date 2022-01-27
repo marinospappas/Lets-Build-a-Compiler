@@ -1,0 +1,101 @@
+# program beaktest
+# compiled on Thu Jan 27 15:19:45 CET 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	i:	.quad 0
+
+.text
+.align 8
+.global _start
+
+# main program
+_start:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rbx
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+main_L0_:
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$0, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setl	%al
+	andq	$1, %rax
+	jz	main_L1_
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$1, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	addq	%rbx, %rax
+	movq	%rax, i(%rip)
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$8, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	sete	%al
+	andq	$1, %rax
+	jz	main_L2_
+	jmp	main_L1_
+main_L2_:
+main_L3_:
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$1, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	addq	%rbx, %rax
+	movq	%rax, i(%rip)
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$10, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setle	%al
+	andq	$1, %rax
+	jz	main_L5_
+	jmp	main_L4_
+main_L5_:
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$20, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setg	%al
+	andq	$1, %rax
+	jz	main_L3_
+main_L4_:
+	jmp	main_L0_
+main_L1_:
+
+# end of main
+	movq	(%rbp), %rbx
+	movq	%rbp, %rsp
+	popq	%rbp
+	movq	$60, %rax		# exit system call
+	xorq	%rdi, %rdi		# exit code 0
+	syscall
+
+# end program
+
+.data
+	.align 8
+# buffer for string operations - max str length limit
+	string_buffer_:	.space 1024

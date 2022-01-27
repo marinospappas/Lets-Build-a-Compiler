@@ -1,10 +1,8 @@
 package mpdev.compiler.chapter_14_xiv
 
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
-import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
 import java.util.stream.Stream
 import kotlin.test.assertEquals
@@ -12,7 +10,7 @@ import kotlin.test.assertEquals
 @DisplayName("Compiler Full Test")
 @TestMethodOrder(OrderAnnotation::class)
 
-class CompilerTest {
+class CompilerDynamicTest {
 
 
     @TestFactory
@@ -22,7 +20,7 @@ class CompilerTest {
         val filesList = getFilesList()
         for (file in filesList)
             tests.add(
-                DynamicTest.dynamicTest(file) {
+                dynamicTest(file) {
                     val expError = getExpectedErr(file)
                     val actualError = getActualError(file)
                     assertEquals(expError, actualError, "Compiler Error Check")

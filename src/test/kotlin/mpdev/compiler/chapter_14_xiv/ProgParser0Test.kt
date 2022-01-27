@@ -1,6 +1,7 @@
 package mpdev.compiler.chapter_14_xiv
 
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.TestInstance.*
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -10,6 +11,7 @@ import kotlin.test.assertEquals
 
 @DisplayName("Program Structure Tests")
 @TestMethodOrder(OrderAnnotation::class)
+@TestInstance(Lifecycle.PER_CLASS)
 
 class ProgParser0Test {
 
@@ -17,48 +19,28 @@ class ProgParser0Test {
     @MethodSource("programTestFileProvider")
     @Order(1)
     fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-        val expError = getExpectedErr(testName)
-        val actualError = getActualError(testName)
-        assertEquals(expError, actualError, "Compiler Error Check")
-        val asmOut = checkAsmOutput(testName)
-        assertEquals("", asmOut, "Compiler Output Check")
-        testReporter.publishEntry("$testName: $PASS_STRING")
+        runTest(testName, testReporter)
     }
 
     @ParameterizedTest
     @MethodSource("varTestFileProvider")
     @Order(2)
     fun `Test Variables Declarations`(testName: String, testReporter: TestReporter) {
-        val expError = getExpectedErr(testName)
-        val actualError = getActualError(testName)
-        assertEquals(expError, actualError, "Compiler Error Check")
-        val asmOut = checkAsmOutput(testName)
-        assertEquals("", asmOut, "Compiler Output Check")
-        testReporter.publishEntry("$testName: $PASS_STRING")
+        runTest(testName, testReporter)
     }
 
     @ParameterizedTest
     @MethodSource("funTestFileProvider")
     @Order(3)
     fun `Test Functions Declarations`(testName: String, testReporter: TestReporter) {
-        val expError = getExpectedErr(testName)
-        val actualError = getActualError(testName)
-        assertEquals(expError, actualError, "Compiler Error Check")
-        val asmOut = checkAsmOutput(testName)
-        assertEquals("", asmOut, "Compiler Output Check")
-        testReporter.publishEntry("$testName: $PASS_STRING")
+        runTest(testName, testReporter)
     }
 
     @ParameterizedTest
     @MethodSource("mainTestFileProvider")
     @Order(4)
     fun `Test Main Block`(testName: String, testReporter: TestReporter) {
-        val expError = getExpectedErr(testName)
-        val actualError = getActualError(testName)
-        assertEquals(expError, actualError, "Compiler Error Check")
-        val asmOut = checkAsmOutput(testName)
-        assertEquals("", asmOut, "Compiler Output Check")
-        testReporter.publishEntry("$testName: $PASS_STRING")
+        runTest(testName, testReporter)
     }
 
     companion object {
@@ -81,16 +63,6 @@ class ProgParser0Test {
         fun mainTestFileProvider(): Stream<String> {
             testDir = "maintest"
             return getFilesList()
-        }
-        /** get the files list from a specific dir */
-        @JvmStatic
-        fun getFilesList(): Stream<String> {
-            val filesList = mutableListOf<String>()
-            File("testresources/$testDir").walk().forEach { file ->
-                if (file.isFile)
-                    filesList.add(file.nameWithoutExtension)
-            }
-            return filesList.stream()
         }
     }
 

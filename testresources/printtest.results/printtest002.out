@@ -1,0 +1,51 @@
+# program printtest
+# compiled on Thu Jan 27 16:33:59 CET 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	i:	.quad 0
+	s:	.string "abcd"
+
+.text
+.align 8
+.global _start
+
+# main program
+_start:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rbx
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	STRCNST_1(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	lea	s(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+
+# end of main
+	movq	(%rbp), %rbx
+	movq	%rbp, %rsp
+	popq	%rbp
+	movq	$60, %rax		# exit system call
+	xorq	%rdi, %rdi		# exit code 0
+	syscall
+
+# end program
+
+.data
+	.align 8
+# buffer for string operations - max str length limit
+	string_buffer_:	.space 1024
+# constant string values go here
+	STRCNST_1:	.string " -> "

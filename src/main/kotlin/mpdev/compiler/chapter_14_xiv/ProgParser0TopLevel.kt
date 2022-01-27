@@ -139,7 +139,7 @@ fun parseFunctionBlock() {
  * <main block> ::= main <block>
  */
 fun parseMainBlock() {
-    labelPrefix = "main"        // set label prefix and label index
+    labelPrefix = MAIN_BLOCK        // set label prefix and label index
     labelIndx = 0
     inp.match(Kwd.mainToken)
     stackVarOffset = 0  // reset the offset for stack vars for main

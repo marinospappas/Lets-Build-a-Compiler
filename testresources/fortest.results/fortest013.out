@@ -1,0 +1,156 @@
+# program fortest
+# compiled on Thu Jan 27 17:47:29 CET 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	limit:	.quad 0
+
+.text
+.align 8
+.global _start
+
+# main program
+_start:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rbx
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+	subq	$8, %rsp
+	movq	$1, %rax
+	testq	%rax, %rax
+	movq	%rax, -8(%rbp)
+	subq	$8, %rsp
+	movq	limit(%rip), %rax
+	testq	%rax, %rax
+	movq	%rax, -16(%rbp)
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	decq	%rax
+	movq	%rax, -8(%rbp)
+main_L0_:
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	incq	%rax
+	movq	%rax, -8(%rbp)
+	pushq	%rax
+	movq	-16(%rbp), %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setle	%al
+	andq	$1, %rax
+	jz	main_L1_
+	subq	$8, %rsp
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	movq	%rax, -24(%rbp)
+	subq	$8, %rsp
+	movq	$1, %rax
+	testq	%rax, %rax
+	movq	%rax, -32(%rbp)
+	movq	-24(%rbp), %rax
+	testq	%rax, %rax
+	incq	%rax
+	movq	%rax, -24(%rbp)
+main_L2_:
+	movq	-24(%rbp), %rax
+	testq	%rax, %rax
+	decq	%rax
+	movq	%rax, -24(%rbp)
+	pushq	%rax
+	movq	-32(%rbp), %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setge	%al
+	andq	$1, %rax
+	jz	main_L3_
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	-24(%rbp), %rax
+	testq	%rax, %rax
+	popq	%rbx
+	imulq	%rbx, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	jmp	main_L2_
+main_L3_:
+	addq	$16, %rsp
+	lea	newline_(%rip), %rdi
+	call	write_s_
+	jmp	main_L0_
+main_L1_:
+	addq	$16, %rsp
+	subq	$8, %rsp
+	movq	$1, %rax
+	testq	%rax, %rax
+	movq	%rax, -8(%rbp)
+	subq	$8, %rsp
+	movq	limit(%rip), %rax
+	testq	%rax, %rax
+	movq	%rax, -16(%rbp)
+	subq	$8, %rsp
+	movq	$3, %rax
+	testq	%rax, %rax
+	movq	%rax, -24(%rbp)
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	-24(%rbp), %rax
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	popq	%rax
+	subq	%rbx, %rax
+	movq	%rax, -8(%rbp)
+main_L4_:
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	-24(%rbp), %rax
+	testq	%rax, %rax
+	popq	%rbx
+	addq	%rbx, %rax
+	movq	%rax, -8(%rbp)
+	pushq	%rax
+	movq	-16(%rbp), %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setle	%al
+	andq	$1, %rax
+	jz	main_L5_
+	lea	STRCNST_1(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	movq	-8(%rbp), %rax
+	testq	%rax, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+	jmp	main_L4_
+main_L5_:
+	addq	$16, %rsp
+	addq	$8, %rsp
+
+# end of main
+	movq	(%rbp), %rbx
+	movq	%rbp, %rsp
+	popq	%rbp
+	movq	$60, %rax		# exit system call
+	xorq	%rdi, %rdi		# exit code 0
+	syscall
+
+# end program
+
+.data
+	.align 8
+# buffer for string operations - max str length limit
+	string_buffer_:	.space 1024
+# constant string values go here
+	STRCNST_1:	.string "every 3 "

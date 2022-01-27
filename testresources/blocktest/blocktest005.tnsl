@@ -1,0 +1,13 @@
+program blocktest
+
+var i: int
+
+/*--
+ testing block
+*/
+main {
+    { i = 1 }
+    i = 2
+}
+
+endprogram

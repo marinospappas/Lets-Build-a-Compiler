@@ -1,0 +1,20 @@
+/*--
+ repeat test
+*/
+program repeattest
+
+var i: int, j: int
+
+// main program
+//-- repeat blocks
+main {
+    i = 10; j = 10
+    repeat {
+        i = i + 1
+        repeat {
+            j = j + 2*i
+        } until(j > 100)
+    } until(i >= j)
+}
+
+endprogram

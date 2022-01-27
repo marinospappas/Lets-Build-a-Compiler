@@ -1,0 +1,15 @@
+program returntest
+
+var i: int, j: int
+
+fun abc(): int {
+    j = i * i
+    return j
+}
+
+main {
+    println abc()
+    return i
+}
+
+endprogram

@@ -1,0 +1,11 @@
+program repeattest
+
+var i: int
+
+main {
+    repeat {
+        i = i + 1
+    } until
+}
+
+endprogram
