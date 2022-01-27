@@ -1,0 +1,63 @@
+# program readtest
+# compiled on Thu Jan 27 15:33:14 CET 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	i:	.quad 0
+	j:	.quad 0
+
+.text
+.align 8
+.global _start
+
+# function a
+a:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	%rbp, %rsp
+	popq	%rbp
+	ret
+
+# main program
+_start:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rbx
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+# read the two variables
+	lea	i(%rip), %rdi		# address of the variable to be read
+	call	read_i_
+	movq	%rax, i(%rip)
+	lea	j(%rip), %rdi		# address of the variable to be read
+	call	read_i_
+	movq	%rax, j(%rip)
+# print the two variables
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	movq	j(%rip), %rax
+	testq	%rax, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+
+# end of main
+	movq	(%rbp), %rbx
+	movq	%rbp, %rsp
+	popq	%rbp
+	movq	$60, %rax		# exit system call
+	xorq	%rdi, %rdi		# exit code 0
+	syscall
+
+# end program
+
+.data
+	.align 8
+# buffer for string operations - max str length limit
+	string_buffer_:	.space 1024

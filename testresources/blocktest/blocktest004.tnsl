@@ -1,0 +1,8 @@
+program blocktest
+
+main {
+    repeats {
+    } until (true)
+}
+
+endprogram

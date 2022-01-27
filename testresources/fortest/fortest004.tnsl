@@ -1,0 +1,9 @@
+program fortest
+
+fun j(): void { return }
+
+main {
+    for(j=
+}
+
+endprogram

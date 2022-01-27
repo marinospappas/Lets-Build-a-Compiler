@@ -1,6 +1,9 @@
 package mpdev.compiler.chapter_14_xiv
 
+import org.junit.jupiter.api.TestReporter
 import java.io.File
+import java.util.stream.Stream
+import kotlin.test.assertEquals
 
 // the pass and fail strings
 const val PASS_STRING = "PASS"
@@ -8,6 +11,31 @@ const val FAIL_STRING = "FAIL"
 
 // the directory that contains the test source programs
 var testDir = ""
+
+class TestCase(var testDir: String, var testName: String) {
+    override fun toString(): String =
+        "Group ${testDir[0].uppercase()}${testDir.substring(1)} : Testcase $testName"
+}
+
+/** get the lisof files */
+fun getFilesList(): Stream<String> {
+    val filesList = mutableListOf<String>()
+    File("testresources/$testDir").walk().forEach { file ->
+        if (file.isFile)
+            filesList.add(file.nameWithoutExtension)
+    }
+    return filesList.stream().sorted()
+}
+
+/** run a specific test */
+fun runTest(testName: String, testReporter: TestReporter) {
+    val expError = getExpectedErr(testName)
+    val actualError = getActualError(testName)
+    assertEquals(expError, actualError, "Compiler Error Check")
+    val asmOut = checkAsmOutput(testName)
+    assertEquals("", asmOut, "Compiler Output Check")
+    testReporter.publishEntry("$testName: $PASS_STRING")
+}
 
 /** get expected result - compiler errors */
 fun getExpectedErr(testName: String): String {

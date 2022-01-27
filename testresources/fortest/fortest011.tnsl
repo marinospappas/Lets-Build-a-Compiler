@@ -1,0 +1,9 @@
+program fortest
+
+var limit: int
+
+main {
+    for(i=1 to limit) {
+}
+
+endprogram

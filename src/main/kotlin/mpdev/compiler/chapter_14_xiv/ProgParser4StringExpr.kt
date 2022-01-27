@@ -2,18 +2,34 @@ package mpdev.compiler.chapter_14_xiv
 
 /** parse an expression of any type and branch to boolean/string or other appropriate expression */
 fun parseAnyExpression(): VarType {
-    if (inp.lookahead().encToken == Kwd.string    // string literal
-        ||
-        (inp.lookahead().encToken == Kwd.identifier
-                && identifiersSpace[inp.lookahead().value]?.type == VarType.string)) {    // string variable
+    if (inp.lookahead().encToken == Kwd.string) {    // string literal
         parseStringExpression()
         return VarType.string
     }
-    else {
+    if (inp.lookahead().encToken == Kwd.number || inp.lookahead().encToken == Kwd.leftParen) {    // numeric expression
         parseBooleanExpression()
         return VarType.int
     }
+    if (inp.lookahead().encToken == Kwd.identifier) {
+        when (identifiersSpace[inp.lookahead().value]?.type) {
+            VarType.string -> {
+                parseStringExpression()
+                return VarType.string
+            }
+            VarType.int -> {
+                parseBooleanExpression()
+                return VarType.int
+            }
+            VarType.void -> abort("line ${inp.currentLineNumber}: function cannot return void")
+            else -> abort("line ${inp.currentLineNumber}: identifier [${inp.lookahead().value}] not declared")
+        }
+    }
+    else
+        inp.expected("valid expression")
+
+    return VarType.none     // dummy return
 }
+
 
 /**
  * parse a string expression

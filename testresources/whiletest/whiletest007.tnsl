@@ -1,0 +1,11 @@
+program whiletest
+
+var a: string = "abc"
+
+main {
+    while (a == "abc") {
+        println
+    }
+}
+
+endprogram

@@ -134,11 +134,14 @@ fun parseBreak(label: String) {
  */
 fun parseReturn() {
     inp.match()
+    if (labelPrefix == MAIN_BLOCK)
+        abort("line ${inp.currentLineNumber}: return is not allowed in [main]")
     hasReturn = true       // set the return flag for this function
     when (getType(funName)) {
         VarType.int -> parseBooleanExpression()
         VarType.string -> parseStringExpression()
         VarType.void -> {}
+        else -> {}
     }
     code.returnFromCall()
 }
@@ -156,6 +159,7 @@ fun parseRead() {
             abort("line ${inp.currentLineNumber}: identifier ${varToken.value} not declared")
         if (varToken.type != TokType.variable)
             abort("line ${inp.currentLineNumber}: identifier ${varToken.value} is not a variable")
+        ////////// check type - String vs. Int ********************************************************************
         code.readInt(varToken.value)
         code.assignment(varToken.value)
     } while (inp.lookahead().encToken == Kwd.commaToken)
@@ -180,7 +184,7 @@ fun printExpression() {
     do {
         if (inp.lookahead().encToken == Kwd.commaToken)
             inp.match() // skip the comma
-        if (parseAnyExpression() == VarType.string)
+        if ( parseAnyExpression() == VarType.string)
             code.printStr()
         else
             code.printInt()

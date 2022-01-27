@@ -1,0 +1,9 @@
+program repeattest
+
+var i: int
+
+main {
+    repeat
+}
+
+endprogram

@@ -1,0 +1,17 @@
+program fortest
+
+var limit: int
+
+main {
+    for(i=1 to limit) {
+        for (j=i down to 1) {
+            print i*j
+        }
+        println;
+    }
+    for (i=1 to limit step 3) {
+        println "every 3 ", i
+    }
+}
+
+endprogram

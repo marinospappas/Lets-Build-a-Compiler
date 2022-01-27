@@ -3,7 +3,7 @@ package mpdev.compiler.chapter_14_xiv
 // global vars
 
 /** our variable types */
-enum class VarType { int, string, void }
+enum class VarType { int, string, void, none }
 
 /** the declaration space (variables and functions) */
 class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolean = false,
@@ -51,7 +51,7 @@ fun declareFun(name: String, type: VarType) {
 }
 
 /** return the type of a var/fun */
-fun getType(identifier: String): VarType = identifiersSpace[identifier]?.type!!
+fun getType(identifier: String): VarType = identifiersSpace[identifier]?.type?:VarType.none
 
 /** return the canAssign flag */
 fun getCanAssign(identifier: String): Boolean = identifiersSpace[identifier]?.canAssign!!

@@ -1,0 +1,12 @@
+program iftest
+
+var i: int
+
+main {
+    if (i<0) {
+        i = 1
+    }
+    else
+}
+
+endprogram

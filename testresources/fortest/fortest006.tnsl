@@ -1,0 +1,9 @@
+program fortest
+
+var j: int
+
+main {
+    for(i=1 to
+}
+
+endprogram
