@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 import java.util.stream.Stream
 import kotlin.test.assertEquals
+import mpdev.compiler.chapter_14_xiv.ParameterizedTestHelper.TestCase
 
 @DisplayName("Program Structure Tests")
 @TestMethodOrder(OrderAnnotation::class)
@@ -15,17 +16,18 @@ import kotlin.test.assertEquals
 
 class ProgParser0Test_a {
 
+    lateinit var h: ParameterizedTestHelper
     @ParameterizedTest
     @MethodSource("testCaseProvider")
     @Order(4)
     fun `Program Test`(testCase: TestCase, testReporter: TestReporter) {
-        testDir = testCase.testDir
-        val expError = getExpectedErr(testCase.testName)
-        val actualError = getActualError(testCase.testName)
+        h = ParameterizedTestHelper(testCase.testDir)
+        val expError = h.getExpectedErr(testCase.testName)
+        val actualError = h.getActualError(testCase.testName)
         assertEquals(expError, actualError, "Compiler Error Check")
-        val asmOut = checkAsmOutput(testCase.testName)
+        val asmOut = h.checkAsmOutput(testCase.testName)
         assertEquals("", asmOut, "Compiler Output Check")
-        testReporter.publishEntry("${testCase.testName}: $PASS_STRING")
+        testReporter.publishEntry("${testCase.testName}: ${ParameterizedTestHelper.PASS_STRING}")
     }
 
     companion object {

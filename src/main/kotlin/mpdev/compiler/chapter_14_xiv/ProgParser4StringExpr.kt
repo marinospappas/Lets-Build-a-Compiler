@@ -11,7 +11,7 @@ fun parseAnyExpression(): VarType {
         return VarType.int
     }
     if (inp.lookahead().encToken == Kwd.identifier) {
-        when (identifiersSpace[inp.lookahead().value]?.type) {
+        when (getType(inp.lookahead().value)) {
             VarType.string -> {
                 parseStringExpression()
                 return VarType.string

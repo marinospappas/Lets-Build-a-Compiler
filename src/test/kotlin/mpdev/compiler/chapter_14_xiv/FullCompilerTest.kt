@@ -5,7 +5,6 @@ import org.junit.jupiter.api.TestInstance.*
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import java.io.File
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
@@ -22,50 +21,54 @@ class FullCompilerTest {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser0Test {
 
+        private lateinit var h1: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("programTestFileProvider")
         @Order(1)
         fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h1.runTest(testName, testReporter)
         }
 
+        private lateinit var h2: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("varTestFileProvider")
         @Order(2)
         fun `Test Variables Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h2.runTest(testName, testReporter)
         }
 
+        private lateinit var h3: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("funTestFileProvider")
         @Order(3)
         fun `Test Functions Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h3.runTest(testName, testReporter)
         }
 
+        private lateinit var h4: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("mainTestFileProvider")
         @Order(4)
         fun `Test Main Block`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h4.runTest(testName, testReporter)
         }
 
         // parameter provider functions
-        fun programTestFileProvider(): Stream<String> {
-            testDir = "programtest"
-            return getFilesList()
+        private fun programTestFileProvider(): Stream<String> {
+            h1 = ParameterizedTestHelper("programtest")
+            return h1.getFilesList()
         }
-        fun varTestFileProvider(): Stream<String> {
-            testDir = "vartest"
-            return getFilesList()
+        private fun varTestFileProvider(): Stream<String> {
+            h2 = ParameterizedTestHelper("vartest")
+            return h2.getFilesList()
         }
-        fun funTestFileProvider(): Stream<String> {
-            testDir = "funtest"
-            return getFilesList()
+        private fun funTestFileProvider(): Stream<String> {
+            h3 = ParameterizedTestHelper("funtest")
+            return h3.getFilesList()
         }
-        fun mainTestFileProvider(): Stream<String> {
-            testDir = "maintest"
-            return getFilesList()
+        private fun mainTestFileProvider(): Stream<String> {
+            h4 = ParameterizedTestHelper("maintest")
+            return h4.getFilesList()
         }
     }
 
@@ -76,108 +79,118 @@ class FullCompilerTest {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser1Test {
 
+        private lateinit var h1: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("blockTestFileProvider")
         @Order(1)
         fun `Test Block Structure`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h1.runTest(testName, testReporter)
         }
 
+        private lateinit var h2: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("ifTestFileProvider")
         @Order(2)
         fun `Test If Structure`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h2.runTest(testName, testReporter)
         }
 
+        private lateinit var h3: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("whileTestFileProvider")
         @Order(3)
         fun `Test While Structure`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h3.runTest(testName, testReporter)
         }
 
+        private lateinit var h4: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("repeatTestFileProvider")
         @Order(4)
         fun `Test Repeat Structure`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h4.runTest(testName, testReporter)
         }
 
+        private lateinit var h5: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("breakTestFileProvider")
         @Order(5)
         fun `Test Break Statement`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h5.runTest(testName, testReporter)
         }
 
+        private lateinit var h6: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("readTestFileProvider")
         @Order(6)
         fun `Test Read Statement`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h6.runTest(testName, testReporter)
         }
 
+        private lateinit var h7: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("printTestFileProvider")
         @Order(7)
         fun `Test Print Statement`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h7.runTest(testName, testReporter)
         }
 
+        private lateinit var h8: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("returnTestFileProvider")
         @Order(8)
         fun `Test Return Statement`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h8.runTest(testName, testReporter)
         }
 
+        private lateinit var h9: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("forTestFileProvider")
         @Order(9)
         fun `Test For Structure`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h9.runTest(testName, testReporter)
         }
 
         // parameter provider functions
-        fun blockTestFileProvider(): Stream<String> {
-            testDir = "blocktest"
-            return getFilesList()
+        private fun blockTestFileProvider(): Stream<String> {
+            h1 = ParameterizedTestHelper("blocktest")
+            return h1.getFilesList()
         }
-        fun ifTestFileProvider(): Stream<String> {
-            testDir = "iftest"
-            return getFilesList()
+        private fun ifTestFileProvider(): Stream<String> {
+            h2 = ParameterizedTestHelper("iftest")
+            return h2.getFilesList()
         }
-        fun whileTestFileProvider(): Stream<String> {
-            testDir = "whiletest"
-            return getFilesList()
+        private fun whileTestFileProvider(): Stream<String> {
+            h3 = ParameterizedTestHelper("whiletest")
+            return h3.getFilesList()
         }
-        fun repeatTestFileProvider(): Stream<String> {
-            testDir = "repeattest"
-            return getFilesList()
+        private fun repeatTestFileProvider(): Stream<String> {
+            h4 = ParameterizedTestHelper("repeattest")
+            return h4.getFilesList()
         }
-        fun breakTestFileProvider(): Stream<String> {
-            testDir = "breaktest"
-            return getFilesList()
+        private fun breakTestFileProvider(): Stream<String> {
+            h5 = ParameterizedTestHelper("breaktest")
+            return h5.getFilesList()
         }
-        fun readTestFileProvider(): Stream<String> {
-            testDir = "readtest"
-            return getFilesList()
+        private fun readTestFileProvider(): Stream<String> {
+            h6 = ParameterizedTestHelper("readtest")
+            return h6.getFilesList()
         }
-        fun printTestFileProvider(): Stream<String> {
-            testDir = "printtest"
-            return getFilesList()
+        private fun printTestFileProvider(): Stream<String> {
+            h7 = ParameterizedTestHelper("printtest")
+            return h7.getFilesList()
         }
-        fun returnTestFileProvider(): Stream<String> {
-            testDir = "returntest"
-            return getFilesList()
+        private fun returnTestFileProvider(): Stream<String> {
+            h8 = ParameterizedTestHelper("returntest")
+            return h8.getFilesList()
         }
-        fun forTestFileProvider(): Stream<String> {
-            testDir = "fortest"
-            return getFilesList()
+        private fun forTestFileProvider(): Stream<String> {
+            h9 = ParameterizedTestHelper("fortest")
+            return h9.getFilesList()
         }
     }
 
+    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @Order(3)
@@ -185,53 +198,22 @@ class FullCompilerTest {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser2Test {
 
+        private lateinit var h1: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("programTestFileProvider")
         @Order(1)
         fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("varTestFileProvider")
-        @Order(2)
-        fun `Test Variables Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("funTestFileProvider")
-        @Order(3)
-        fun `Test Functions Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("mainTestFileProvider")
-        @Order(4)
-        fun `Test Main Block`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h1.runTest(testName, testReporter)
         }
 
         // parameter provider functions
-        fun programTestFileProvider(): Stream<String> {
-            testDir = "programtest"
-            return getFilesList()
-        }
-        fun varTestFileProvider(): Stream<String> {
-            testDir = "vartest"
-            return getFilesList()
-        }
-        fun funTestFileProvider(): Stream<String> {
-            testDir = "funtest"
-            return getFilesList()
-        }
-        fun mainTestFileProvider(): Stream<String> {
-            testDir = "maintest"
-            return getFilesList()
+        private fun programTestFileProvider(): Stream<String> {
+            h1 = ParameterizedTestHelper("programtest")
+            return h1.getFilesList()
         }
     }
 
+    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @Order(4)
@@ -239,53 +221,22 @@ class FullCompilerTest {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser3Test {
 
+        private lateinit var h1: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("programTestFileProvider")
         @Order(1)
         fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("varTestFileProvider")
-        @Order(2)
-        fun `Test Variables Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("funTestFileProvider")
-        @Order(3)
-        fun `Test Functions Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("mainTestFileProvider")
-        @Order(4)
-        fun `Test Main Block`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h1.runTest(testName, testReporter)
         }
 
         // parameter provider functions
-        fun programTestFileProvider(): Stream<String> {
-            testDir = "programtest"
-            return getFilesList()
-        }
-        fun varTestFileProvider(): Stream<String> {
-            testDir = "vartest"
-            return getFilesList()
-        }
-        fun funTestFileProvider(): Stream<String> {
-            testDir = "funtest"
-            return getFilesList()
-        }
-        fun mainTestFileProvider(): Stream<String> {
-            testDir = "maintest"
-            return getFilesList()
+        private fun programTestFileProvider(): Stream<String> {
+            h1 = ParameterizedTestHelper("programtest")
+            return h1.getFilesList()
         }
     }
 
+    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @Order(5)
@@ -293,50 +244,18 @@ class FullCompilerTest {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser4Test {
 
+        private lateinit var h1: ParameterizedTestHelper
         @ParameterizedTest
         @MethodSource("programTestFileProvider")
         @Order(1)
         fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("varTestFileProvider")
-        @Order(2)
-        fun `Test Variables Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("funTestFileProvider")
-        @Order(3)
-        fun `Test Functions Declarations`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
-        }
-
-        @ParameterizedTest
-        @MethodSource("mainTestFileProvider")
-        @Order(4)
-        fun `Test Main Block`(testName: String, testReporter: TestReporter) {
-            runTest(testName, testReporter)
+            h1.runTest(testName, testReporter)
         }
 
         // parameter provider functions
-        fun programTestFileProvider(): Stream<String> {
-            testDir = "programtest"
-            return getFilesList()
-        }
-        fun varTestFileProvider(): Stream<String> {
-            testDir = "vartest"
-            return getFilesList()
-        }
-        fun funTestFileProvider(): Stream<String> {
-            testDir = "funtest"
-            return getFilesList()
-        }
-        fun mainTestFileProvider(): Stream<String> {
-            testDir = "maintest"
-            return getFilesList()
+        private fun programTestFileProvider(): Stream<String> {
+            h1 = ParameterizedTestHelper("programtest")
+            return h1.getFilesList()
         }
     }
 
