@@ -9,12 +9,12 @@ val COMPILER = mutableListOf("/home/marinos/.jdks/azul-13.0.9/bin/java",
     "-Dfile.encoding=UTF-8",
     "-classpath", "/home/marinos/IdeaProjects/CompilerV1/out/production/CompilerV1:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-stdlib.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-reflect.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-test.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-stdlib-jdk7.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-stdlib-jdk8.jar",
     "mpdev.compiler.chapter_14_xiv.CompilerMainKt",
-    "-o", "testout.s")
+    "-o")    // need to add outfile and sourcefile
 
 class ExecuteCompiler {
 
-    fun run(filename: String): String {
-        val pb = ProcessBuilder(COMPILER+filename)
+    fun run(srcFilename: String, outFilename: String): String {
+        val pb = ProcessBuilder(COMPILER + outFilename + srcFilename)
         pb.directory(File("testresources"))
         val proc = pb.start()
         val reader = BufferedReader(InputStreamReader(proc.errorStream))
