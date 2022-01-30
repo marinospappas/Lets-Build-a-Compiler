@@ -1,0 +1,8 @@
+program intvartest
+
+var i1: int
+var s1: string(20)
+
+main {
+    i1 = 1 + s1
+}
