@@ -11,6 +11,9 @@ class ParameterizedTestHelper(var testDir: String = "") {
         // the pass and fail strings
         const val PASS_STRING = "PASS"
         const val FAIL_STRING = "FAIL"
+        // the list of threads and test results
+        val threadList = mutableListOf<Thread>()
+        val resultMap = mutableMapOf<Long,AssertionError>()
     }
 
     class TestCase(var testDir: String, var testName: String) {
@@ -30,6 +33,7 @@ class ParameterizedTestHelper(var testDir: String = "") {
 
     /** run a specific test */
     fun runTest(testName: String, testReporter: TestReporter) = runTestSingleThread(testName, testReporter)
+    //fun runTest(testName: String, testReporter: TestReporter) = runTestMultiThread(testName, testReporter)
 
     /** run a specific test single thread */
     private fun runTestSingleThread(testName: String, testReporter: TestReporter) {
@@ -41,17 +45,27 @@ class ParameterizedTestHelper(var testDir: String = "") {
         testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().getId()}")
     }
 
-    /** run a specific test multi-thread */
+    /**
+     * run a specific test multi-thread
+     * not working yet as assertions do not work on a different thread
+     */
     private fun runTestMultiThread(testName: String, testReporter: TestReporter) {
         val t = Thread {
-            val expError = getExpectedErr(testName)
-            val actualError = getActualError(testName)
-            assertEquals(expError, actualError, "Compiler Error Check")
-            val asmOut = checkAsmOutput(testName)
-            assertEquals("", asmOut, "Compiler Output Check")
-            testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().id}")
+            try {
+                val expError = getExpectedErr(testName)
+                val actualError = getActualError(testName)
+                assertEquals(expError, actualError, "Compiler Error Check - $testName")
+                val asmOut = checkAsmOutput(testName)
+                assertEquals("", asmOut, "Compiler Output Check - $testName")
+                testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().id}")
+            }
+            catch (e: AssertionError) {
+                // store the assert exception so that the calling thread can check
+                resultMap.put(Thread.currentThread().id, e)
+            }
         }
         t.start()
+        threadList.add(t)
     }
 
     /** get expected result - compiler errors */
@@ -69,14 +83,14 @@ class ParameterizedTestHelper(var testDir: String = "") {
     /** run compiler and get error message */
     fun getActualError(testName: String): String {
         val srcFile = "$testDir/$testName.tnsl"
-        val outFile = "compiler.out/$testName.out"
+        val outFile = "_compiler.out/$testName.out"
         return ExecuteCompiler().run(srcFile, outFile)
     }
 
     /** check for assembler output */
     fun checkAsmOutput(testName: String): String {
         val expOutFile = "testresources/$testDir.results/$testName.out"
-        val actualOutFile = "testresources/compiler.out/$testName.out"
+        val actualOutFile = "testresources/_compiler.out/$testName.out"
         if (File(expOutFile).exists())
             return compareFiles(expOutFile, actualOutFile)
         else

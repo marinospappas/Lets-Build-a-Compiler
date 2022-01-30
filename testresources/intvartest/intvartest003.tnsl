@@ -1,0 +1,8 @@
+program intvartest
+
+var i1: int, i2: int
+
+main {
+    i1 = +i2 + ((-i2) + 5) *8
+    println i1+10
+}

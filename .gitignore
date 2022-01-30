@@ -18,6 +18,7 @@ testout.s
 *.bin
 *.kotlin_module
 *.kts
+testresources/_compiler.out/*
 
 gradlew
 gradle.*

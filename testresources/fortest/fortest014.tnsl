@@ -4,7 +4,9 @@ var limit: int
 
 main {
     for(i=1 to limit) {
-        i = 5
+        for (j=i down to 1) {
+            print i*j
+        }
         println;
     }
     for (i=1 to limit step 3) {

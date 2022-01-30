@@ -1,0 +1,9 @@
+program numtest
+
+var i1: int
+
+main {
+    i1 = 5 + (6 * 2 +
+}
+
+endprogram

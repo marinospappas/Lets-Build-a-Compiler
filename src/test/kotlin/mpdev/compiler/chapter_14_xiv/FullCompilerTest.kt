@@ -6,7 +6,6 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
-import kotlin.test.assertEquals
 
 @DisplayName("Full Compiler Test")
 @TestInstance(Lifecycle.PER_CLASS)
@@ -14,6 +13,7 @@ import kotlin.test.assertEquals
 
 class FullCompilerTest {
 
+    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @Order(1)
@@ -70,8 +70,19 @@ class FullCompilerTest {
             h4 = ParameterizedTestHelper("maintest")
             return h4.getFilesList()
         }
+
+        @AfterAll
+        fun checkResults() {
+            for (t in ParameterizedTestHelper.threadList) {
+                t.join()
+                val exc = ParameterizedTestHelper.resultMap[t.id]
+                if (exc != null)
+                    throw exc
+            }
+        }
     }
 
+    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @Order(2)
@@ -190,7 +201,6 @@ class FullCompilerTest {
         }
     }
 
-    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @Order(3)
@@ -200,16 +210,41 @@ class FullCompilerTest {
 
         private lateinit var h1: ParameterizedTestHelper
         @ParameterizedTest
-        @MethodSource("programTestFileProvider")
+        @MethodSource("integerNumTestFileProvider")
         @Order(1)
-        fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
+        fun `Test Integer Numbers`(testName: String, testReporter: TestReporter) {
             h1.runTest(testName, testReporter)
         }
 
+        private lateinit var h2: ParameterizedTestHelper
+        @ParameterizedTest
+        @MethodSource("integerVarTestFileProvider")
+        @Order(2)
+        fun `Test Integer Variables`(testName: String, testReporter: TestReporter) {
+            h2.runTest(testName, testReporter)
+        }
+
+        private lateinit var h3: ParameterizedTestHelper
+        @Disabled
+        @ParameterizedTest
+        @MethodSource("integerFunTestFileProvider")
+        @Order(3)
+        fun `Test Integer Functions`(testName: String, testReporter: TestReporter) {
+            h3.runTest(testName, testReporter)
+        }
+
         // parameter provider functions
-        private fun programTestFileProvider(): Stream<String> {
-            h1 = ParameterizedTestHelper("programtest")
+        private fun integerNumTestFileProvider(): Stream<String> {
+            h1 = ParameterizedTestHelper("intnumtest")
             return h1.getFilesList()
+        }
+        private fun integerVarTestFileProvider(): Stream<String> {
+            h2 = ParameterizedTestHelper("intvartest")
+            return h2.getFilesList()
+        }
+        private fun integerFunTestFileProvider(): Stream<String> {
+            h3 = ParameterizedTestHelper("intfuntest")
+            return h3.getFilesList()
         }
     }
 
