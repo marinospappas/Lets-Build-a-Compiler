@@ -6,6 +6,7 @@
 	newline_: .string "\n"
 	i:	.quad 0
 	j:	.quad 0
+	s:	.space 20
 
 .text
 .align 8

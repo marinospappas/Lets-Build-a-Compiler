@@ -59,7 +59,7 @@ class TestHelper(var testDir: String = "") {
         assertEquals(expError, actualError, "Compiler Error Check [$testName]")
         val asmOut = checkAsmOutput(testName)
         assertEquals("", asmOut, "Compiler Output Check [$testName]")
-        testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().id}")
+        testReporter.publishEntry("$testDir:${testName.substring(4)}: $PASS_STRING, threadId = ${Thread.currentThread().id}")
     }
 
     /** run all tests in testDir - multithreaded */
@@ -91,10 +91,10 @@ class TestHelper(var testDir: String = "") {
                 assertEquals(expError, actualError, "Compiler Error Check [$testName]")
                 val asmOut = checkAsmOutput(testName)
                 assertEquals("", asmOut, "Compiler Output Check [$testName]")
-                testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().id}")
+                testReporter.publishEntry("$testDir:${testName.substring(4)}: $PASS_STRING, threadId = ${Thread.currentThread().id}")
             }
             catch (e: AssertionError) {
-                testReporter.publishEntry("$testName: $FAIL_STRING, threadId = ${Thread.currentThread().id}")
+                testReporter.publishEntry("$testDir:${testName.substring(4)}: $FAIL_STRING, threadId = ${Thread.currentThread().id}")
                 // store the assertion exception so that the main thread can check the outcome
                 resultMap[Thread.currentThread().id] = e
             }

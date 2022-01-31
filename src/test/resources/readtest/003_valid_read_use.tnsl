@@ -1,6 +1,7 @@
 program readtest
 
 var i: int, j: int
+var s: string(20)
 
 fun a(): void {
     return
@@ -9,6 +10,8 @@ fun a(): void {
 main {
     //-- read the two variables
     read i, j
+    // read a string
+    read s
     //-- print the two variables
     println i, j
 }

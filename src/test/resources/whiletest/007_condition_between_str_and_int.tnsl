@@ -1,6 +1,6 @@
 program whiletest
 
-var a: string = "abc"
+var a: int = 5
 
 main {
     while (a == "abc") {

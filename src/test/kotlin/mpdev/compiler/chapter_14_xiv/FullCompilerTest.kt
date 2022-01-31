@@ -215,7 +215,6 @@ class FullCompilerTest {
         }
 
         private lateinit var h3: TestHelper
-        @Disabled
         @ParameterizedTest
         @MethodSource("integerFunTestFileProvider")
         @Order(3)
