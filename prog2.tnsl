@@ -1,0 +1,28 @@
+
+program TestTinsel1
+
+var a, bb, x
+fun b() {
+    return a*a+1
+}
+
+main {
+    a = 1
+    a = b() + 1*a*b() + 1
+    read a
+    bb = 1
+    a = 1 +bb
+    x = b()
+    //-- call b
+    b()
+    //-- if a
+    if (a) {
+        print 1111111
+    }
+    else {
+        print 0
+    }
+    a = a / 2 ;
+}
+
+endprogram

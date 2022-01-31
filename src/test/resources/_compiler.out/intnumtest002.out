@@ -1,0 +1,24 @@
+# program numtest
+# compiled on Mon Jan 31 10:09:03 CET 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	i1:	.quad 0
+
+.text
+.align 8
+.global _start
+
+# main program
+_start:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rbx
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+	movq	$5, %rax
+	testq	%rax, %rax
+	pushq	%rax

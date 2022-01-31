@@ -7,7 +7,13 @@ import kotlin.test.assertEquals
 
 class ParameterizedTestHelper(var testDir: String = "") {
 
+    fun init() {
+        val dirname = File("./.idea").canonicalPath.toString().replace(".idea","")
+    }
+
     companion object {
+        // directories
+        val TEST_RESOURCES = "src/test/resources"
         // the pass and fail strings
         const val PASS_STRING = "PASS"
         const val FAIL_STRING = "FAIL"
@@ -21,22 +27,25 @@ class ParameterizedTestHelper(var testDir: String = "") {
             "Group ${testDir[0].uppercase()}${testDir.substring(1)} : Testcase $testName"
     }
 
+    /** run all tests in testDir */
+    fun runAllTests(testReporter: TestReporter) {
+        for (test in getFilesList()) {
+            runTest(test, testReporter)
+        }
+    }
+
     /** get the listof files */
     fun getFilesList(): Stream<String> {
         val filesList = mutableListOf<String>()
-        File("testresources/$testDir").walk().forEach { file ->
+        File("$TEST_RESOURCES/$testDir").walk().forEach { file ->
             if (file.isFile)
                 filesList.add(file.nameWithoutExtension)
         }
         return filesList.stream().sorted()
     }
 
-    /** run a specific test */
-    fun runTest(testName: String, testReporter: TestReporter) = runTestSingleThread(testName, testReporter)
-    //fun runTest(testName: String, testReporter: TestReporter) = runTestMultiThread(testName, testReporter)
-
     /** run a specific test single thread */
-    private fun runTestSingleThread(testName: String, testReporter: TestReporter) {
+    fun runTest(testName: String, testReporter: TestReporter) {
         val expError = getExpectedErr(testName)
         val actualError = getActualError(testName)
         assertEquals(expError, actualError, "Compiler Error Check")
@@ -71,7 +80,7 @@ class ParameterizedTestHelper(var testDir: String = "") {
     /** get expected result - compiler errors */
     fun getExpectedErr(testName: String): String {
         var expResult = ""
-        val testDirName = "testresources/$testDir"
+        val testDirName = "$TEST_RESOURCES/$testDir"
         val errFile = "$testDirName.results/$testName.err"
         try {
             expResult = File(errFile).readText()
@@ -89,8 +98,8 @@ class ParameterizedTestHelper(var testDir: String = "") {
 
     /** check for assembler output */
     fun checkAsmOutput(testName: String): String {
-        val expOutFile = "testresources/$testDir.results/$testName.out"
-        val actualOutFile = "testresources/_compiler.out/$testName.out"
+        val expOutFile = "$TEST_RESOURCES/$testDir.results/$testName.out"
+        val actualOutFile = "$TEST_RESOURCES/_compiler.out/$testName.out"
         if (File(expOutFile).exists())
             return compareFiles(expOutFile, actualOutFile)
         else

@@ -9,14 +9,12 @@ import java.util.stream.Stream
 
 @DisplayName("Full Compiler Test")
 @TestInstance(Lifecycle.PER_CLASS)
-//@TestClassOrder(ClassOrderer.OrderAnnotation::class)
 
-class FullCompilerTest {
+class FullCompilerTestV2 {
 
     @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
-    //@Order(1)
     @DisplayName("Program Structure Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser0Test {
@@ -85,7 +83,6 @@ class FullCompilerTest {
     @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
-    //@Order(2)
     @DisplayName("Control Structures Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser1Test {
@@ -203,55 +200,33 @@ class FullCompilerTest {
 
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
-    //@Order(3)
     @DisplayName("Numerical Expressions Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser2Test {
 
-        private lateinit var h1: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("integerNumTestFileProvider")
+        @Test
         @Order(1)
-        fun `Test Integer Numbers`(testName: String, testReporter: TestReporter) {
-            h1.runTest(testName, testReporter)
+        fun `Test Integer Numbers`(testReporter: TestReporter) {
+            ParameterizedTestHelper("intnumtest").runAllTests(testReporter)
         }
 
-        private lateinit var h2: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("integerVarTestFileProvider")
+        @Test
         @Order(2)
-        fun `Test Integer Variables`(testName: String, testReporter: TestReporter) {
-            h2.runTest(testName, testReporter)
+        fun `Test Integer Variables`(testReporter: TestReporter) {
+            ParameterizedTestHelper("intvartest").runAllTests(testReporter)
         }
 
-        private lateinit var h3: ParameterizedTestHelper
         @Disabled
-        @ParameterizedTest
-        @MethodSource("integerFunTestFileProvider")
+        @Test
         @Order(3)
-        fun `Test Integer Functions`(testName: String, testReporter: TestReporter) {
-            h3.runTest(testName, testReporter)
-        }
-
-        // parameter provider functions
-        private fun integerNumTestFileProvider(): Stream<String> {
-            h1 = ParameterizedTestHelper("intnumtest")
-            return h1.getFilesList()
-        }
-        private fun integerVarTestFileProvider(): Stream<String> {
-            h2 = ParameterizedTestHelper("intvartest")
-            return h2.getFilesList()
-        }
-        private fun integerFunTestFileProvider(): Stream<String> {
-            h3 = ParameterizedTestHelper("intfuntest")
-            return h3.getFilesList()
+        fun `Test Integer Functions`(testReporter: TestReporter) {
+            ParameterizedTestHelper("intfuntest").runAllTests(testReporter)
         }
     }
 
     @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
-    //@Order(4)
     @DisplayName("Boolean Expressions Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser3Test {
@@ -274,7 +249,6 @@ class FullCompilerTest {
     @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
-    //@Order(5)
     @DisplayName("String Expressions Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser4Test {
