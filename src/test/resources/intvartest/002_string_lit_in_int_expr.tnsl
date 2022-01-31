@@ -1,0 +1,7 @@
+program intvartest
+
+var i1: int
+
+main {
+    i1 = 1 + "123"
+}

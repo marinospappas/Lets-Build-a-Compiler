@@ -1,0 +1,14 @@
+program funtest
+
+var i: int = 2
+
+fun a_fun(): int {
+    return 5*i
+}
+
+main {
+    a_fun()
+    i = i * 2 + (a_fun() + 1)/2 - 5*a_fun()
+}
+
+endprogram

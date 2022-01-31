@@ -93,12 +93,10 @@ fun parseFactor() {
  * <identifier> ::= <variable> | <function>
  */
 fun parseIdentifier() {
-    if (getType(inp.lookahead().value) != VarType.int)
-        inp.expected("identifier of type int")
     when (inp.lookahead().type) {
         TokType.variable -> parseVariable()
         TokType.function -> parseFunctionCall()
-        else -> abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
+        else -> abort("line ${inp.currentLineNumber}: undeclared identifier [${inp.lookahead().value}]")
     }
 }
 
@@ -107,6 +105,8 @@ fun parseIdentifier() {
  * <function_call> ::= <function_name> ( )
  */
 fun parseFunctionCall() {
+    if (getType(inp.lookahead().value) != VarType.int)
+        inp.expected("function of type int")
     val funcName = inp.match(Kwd.identifier).value
     inp.match(Kwd.leftParen)
     inp.match(Kwd.rightParen)
@@ -118,6 +118,8 @@ fun parseFunctionCall() {
  * different code generated for local or global variable
  */
 fun parseVariable() {
+    if (getType(inp.lookahead().value) != VarType.int)
+        inp.expected("variable of type int")
     val varName = inp.match(Kwd.identifier).value
     val localVar = identifiersSpace[varName]?.stackVar
     if (localVar == true)

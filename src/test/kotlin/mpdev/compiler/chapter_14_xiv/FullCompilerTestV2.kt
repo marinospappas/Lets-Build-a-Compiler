@@ -7,194 +7,96 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
-@DisplayName("Full Compiler Test")
+/**
+ * Full Compiler Test Version 2
+ * Each section of the compiler is again tested in an inner class marked @Nested
+ * Each group of tests (test dir) is run under one unit test and each test in that group is run in a different thread
+ * Achieves reduction by more than 75% in execution time compared parameterized tests
+ * where each individual test is run as a separate unit test sequentially
+ */
+@DisplayName("Full Compiler Test V2")
 @TestInstance(Lifecycle.PER_CLASS)
-
 class FullCompilerTestV2 {
 
-    @Disabled
+    // multithreaded flag - set to true to activate mutlithreading (each test will be run in different thread)
+    val multiThreaded = true
+
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @DisplayName("Program Structure Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser0Test {
-
-        private lateinit var h1: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("programTestFileProvider")
+        @Test
         @Order(1)
-        fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            h1.runTest(testName, testReporter)
+        fun `Test Overall Program`(testReporter: TestReporter) {
+            TestHelper("programtest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h2: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("varTestFileProvider")
+        @Test
         @Order(2)
-        fun `Test Variables Declarations`(testName: String, testReporter: TestReporter) {
-            h2.runTest(testName, testReporter)
+        fun `Test Variables Declarations`(testReporter: TestReporter) {
+            TestHelper("vartest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h3: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("funTestFileProvider")
+        @Test
         @Order(3)
-        fun `Test Functions Declarations`(testName: String, testReporter: TestReporter) {
-            h3.runTest(testName, testReporter)
+        fun `Test Functions Declarations`(testReporter: TestReporter) {
+            TestHelper("funtest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h4: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("mainTestFileProvider")
+        @Test
         @Order(4)
-        fun `Test Main Block`(testName: String, testReporter: TestReporter) {
-            h4.runTest(testName, testReporter)
-        }
-
-        // parameter provider functions
-        private fun programTestFileProvider(): Stream<String> {
-            h1 = ParameterizedTestHelper("programtest")
-            return h1.getFilesList()
-        }
-        private fun varTestFileProvider(): Stream<String> {
-            h2 = ParameterizedTestHelper("vartest")
-            return h2.getFilesList()
-        }
-        private fun funTestFileProvider(): Stream<String> {
-            h3 = ParameterizedTestHelper("funtest")
-            return h3.getFilesList()
-        }
-        private fun mainTestFileProvider(): Stream<String> {
-            h4 = ParameterizedTestHelper("maintest")
-            return h4.getFilesList()
-        }
-
-        @AfterAll
-        fun checkResults() {
-            for (t in ParameterizedTestHelper.threadList) {
-                t.join()
-                val exc = ParameterizedTestHelper.resultMap[t.id]
-                if (exc != null)
-                    throw exc
-            }
+        fun `Test Main Block`(testReporter: TestReporter) {
+            TestHelper("maintest").runAllTests(testReporter, multiThreaded)
         }
     }
 
-    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @DisplayName("Control Structures Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser1Test {
-
-        private lateinit var h1: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("blockTestFileProvider")
+        @Test
         @Order(1)
-        fun `Test Block Structure`(testName: String, testReporter: TestReporter) {
-            h1.runTest(testName, testReporter)
+        fun `Test Block Structure`(testReporter: TestReporter) {
+            TestHelper("blocktest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h2: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("ifTestFileProvider")
+        @Test
         @Order(2)
-        fun `Test If Structure`(testName: String, testReporter: TestReporter) {
-            h2.runTest(testName, testReporter)
+        fun `Test If Structure`(testReporter: TestReporter) {
+            TestHelper("iftest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h3: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("whileTestFileProvider")
+        @Test
         @Order(3)
-        fun `Test While Structure`(testName: String, testReporter: TestReporter) {
-            h3.runTest(testName, testReporter)
+        fun `Test While Structure`(testReporter: TestReporter) {
+            TestHelper("whiletest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h4: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("repeatTestFileProvider")
+        @Test
         @Order(4)
-        fun `Test Repeat Structure`(testName: String, testReporter: TestReporter) {
-            h4.runTest(testName, testReporter)
+        fun `Test Repeat Structure`(testReporter: TestReporter) {
+            TestHelper("repeattest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h5: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("breakTestFileProvider")
+        @Test
         @Order(5)
-        fun `Test Break Statement`(testName: String, testReporter: TestReporter) {
-            h5.runTest(testName, testReporter)
+        fun `Test Break Statement`(testReporter: TestReporter) {
+            TestHelper("breaktest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h6: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("readTestFileProvider")
+        @Test
         @Order(6)
-        fun `Test Read Statement`(testName: String, testReporter: TestReporter) {
-            h6.runTest(testName, testReporter)
+        fun `Test Read Statement`(testReporter: TestReporter) {
+            TestHelper("readtest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h7: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("printTestFileProvider")
+        @Test
         @Order(7)
-        fun `Test Print Statement`(testName: String, testReporter: TestReporter) {
-            h7.runTest(testName, testReporter)
+        fun `Test Print Statement`(testReporter: TestReporter) {
+            TestHelper("printtest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h8: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("returnTestFileProvider")
+        @Test
         @Order(8)
-        fun `Test Return Statement`(testName: String, testReporter: TestReporter) {
-            h8.runTest(testName, testReporter)
+        fun `Test Return Statement`(testReporter: TestReporter) {
+            TestHelper("returntest").runAllTests(testReporter, multiThreaded)
         }
-
-        private lateinit var h9: ParameterizedTestHelper
-        @ParameterizedTest
-        @MethodSource("forTestFileProvider")
+        @Test
         @Order(9)
-        fun `Test For Structure`(testName: String, testReporter: TestReporter) {
-            h9.runTest(testName, testReporter)
-        }
-
-        // parameter provider functions
-        private fun blockTestFileProvider(): Stream<String> {
-            h1 = ParameterizedTestHelper("blocktest")
-            return h1.getFilesList()
-        }
-        private fun ifTestFileProvider(): Stream<String> {
-            h2 = ParameterizedTestHelper("iftest")
-            return h2.getFilesList()
-        }
-        private fun whileTestFileProvider(): Stream<String> {
-            h3 = ParameterizedTestHelper("whiletest")
-            return h3.getFilesList()
-        }
-        private fun repeatTestFileProvider(): Stream<String> {
-            h4 = ParameterizedTestHelper("repeattest")
-            return h4.getFilesList()
-        }
-        private fun breakTestFileProvider(): Stream<String> {
-            h5 = ParameterizedTestHelper("breaktest")
-            return h5.getFilesList()
-        }
-        private fun readTestFileProvider(): Stream<String> {
-            h6 = ParameterizedTestHelper("readtest")
-            return h6.getFilesList()
-        }
-        private fun printTestFileProvider(): Stream<String> {
-            h7 = ParameterizedTestHelper("printtest")
-            return h7.getFilesList()
-        }
-        private fun returnTestFileProvider(): Stream<String> {
-            h8 = ParameterizedTestHelper("returntest")
-            return h8.getFilesList()
-        }
-        private fun forTestFileProvider(): Stream<String> {
-            h9 = ParameterizedTestHelper("fortest")
-            return h9.getFilesList()
+        fun `Test For Structure`(testReporter: TestReporter) {
+            TestHelper("fortest").runAllTests(testReporter, multiThreaded)
         }
     }
 
@@ -203,24 +105,20 @@ class FullCompilerTestV2 {
     @DisplayName("Numerical Expressions Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser2Test {
-
         @Test
         @Order(1)
         fun `Test Integer Numbers`(testReporter: TestReporter) {
-            ParameterizedTestHelper("intnumtest").runAllTests(testReporter)
+            TestHelper("intnumtest").runAllTests(testReporter, multiThreaded)
         }
-
         @Test
         @Order(2)
         fun `Test Integer Variables`(testReporter: TestReporter) {
-            ParameterizedTestHelper("intvartest").runAllTests(testReporter)
+            TestHelper("intvartest").runAllTests(testReporter, multiThreaded)
         }
-
-        @Disabled
         @Test
         @Order(3)
         fun `Test Integer Functions`(testReporter: TestReporter) {
-            ParameterizedTestHelper("intfuntest").runAllTests(testReporter)
+            TestHelper("intfuntest").runAllTests(testReporter, multiThreaded)
         }
     }
 
@@ -231,7 +129,7 @@ class FullCompilerTestV2 {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser3Test {
 
-        private lateinit var h1: ParameterizedTestHelper
+        private lateinit var h1: TestHelper
         @ParameterizedTest
         @MethodSource("programTestFileProvider")
         @Order(1)
@@ -241,7 +139,7 @@ class FullCompilerTestV2 {
 
         // parameter provider functions
         private fun programTestFileProvider(): Stream<String> {
-            h1 = ParameterizedTestHelper("programtest")
+            h1 = TestHelper("programtest")
             return h1.getFilesList()
         }
     }
@@ -253,7 +151,7 @@ class FullCompilerTestV2 {
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser4Test {
 
-        private lateinit var h1: ParameterizedTestHelper
+        private lateinit var h1: TestHelper
         @ParameterizedTest
         @MethodSource("programTestFileProvider")
         @Order(1)
@@ -263,7 +161,7 @@ class FullCompilerTestV2 {
 
         // parameter provider functions
         private fun programTestFileProvider(): Stream<String> {
-            h1 = ParameterizedTestHelper("programtest")
+            h1 = TestHelper("programtest")
             return h1.getFilesList()
         }
     }

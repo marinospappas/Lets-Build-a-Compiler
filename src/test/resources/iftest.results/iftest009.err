@@ -1,1 +1,1 @@
-Error: line 6: expected [identifier of type int] found identifier [s]
+Error: line 6: expected [variable of type int] found identifier [s]

@@ -12,12 +12,12 @@ import kotlin.test.assertEquals
 
 class CompilerDynamicTest {
 
-    private lateinit var h: ParameterizedTestHelper
+    private lateinit var h: TestHelper
 
     @TestFactory
     fun `Overall Program Test`(): Stream<DynamicTest> {
         val tests = mutableListOf<DynamicTest>()
-        h = ParameterizedTestHelper("programtest")
+        h = TestHelper("programtest")
         val filesList = getFilesList()
         for (file in filesList)
             tests.add(
@@ -34,7 +34,7 @@ class CompilerDynamicTest {
 
     private fun getFilesList(): Stream<String> {
         val filesList = mutableListOf<String>()
-        File("testresources/${h.testDir}").walk().forEach { file ->
+        File("src/test/resources/${h.testDir}").walk().forEach { file ->
             if (file.isFile)
                 filesList.add(file.nameWithoutExtension)
         }

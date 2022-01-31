@@ -1,11 +1,13 @@
 package mpdev.compiler.chapter_14_xiv
 
+import org.junit.Assert
 import org.junit.jupiter.api.TestReporter
 import java.io.File
+import java.lang.System.err
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-class ParameterizedTestHelper(var testDir: String = "") {
+class TestHelper(var testDir: String = "") {
 
     fun init() {
         val dirname = File("./.idea").canonicalPath.toString().replace(".idea","")
@@ -15,12 +17,13 @@ class ParameterizedTestHelper(var testDir: String = "") {
         // directories
         val TEST_RESOURCES = "src/test/resources"
         // the pass and fail strings
-        const val PASS_STRING = "PASS"
-        const val FAIL_STRING = "FAIL"
-        // the list of threads and test results
-        val threadList = mutableListOf<Thread>()
-        val resultMap = mutableMapOf<Long,AssertionError>()
+        const val PASS_STRING = "\u001b[32mPASS\u001B[39m"
+        const val FAIL_STRING = "\u001B[31mFAIL\u001B[39m"
     }
+
+    // the list of threads and test results
+    private val threadList = mutableListOf<Thread>()
+    private val resultMap = mutableMapOf<Long,AssertionError>()
 
     class TestCase(var testDir: String, var testName: String) {
         override fun toString(): String =
@@ -28,13 +31,18 @@ class ParameterizedTestHelper(var testDir: String = "") {
     }
 
     /** run all tests in testDir */
-    fun runAllTests(testReporter: TestReporter) {
-        for (test in getFilesList()) {
-            runTest(test, testReporter)
+    fun runAllTests(testReporter: TestReporter, multiThreaded: Boolean = false) {
+        if (!multiThreaded) {
+            // run all tests in the main thread one after the other
+            for (test in getFilesList())
+                runTest(test, testReporter)
         }
+        else
+            // multithreaded version
+            runAllTestsMultiThreaded(testReporter)
     }
 
-    /** get the listof files */
+    /** get the list of files */
     fun getFilesList(): Stream<String> {
         val filesList = mutableListOf<String>()
         File("$TEST_RESOURCES/$testDir").walk().forEach { file ->
@@ -48,29 +56,47 @@ class ParameterizedTestHelper(var testDir: String = "") {
     fun runTest(testName: String, testReporter: TestReporter) {
         val expError = getExpectedErr(testName)
         val actualError = getActualError(testName)
-        assertEquals(expError, actualError, "Compiler Error Check")
+        assertEquals(expError, actualError, "Compiler Error Check [$testName]")
         val asmOut = checkAsmOutput(testName)
-        assertEquals("", asmOut, "Compiler Output Check")
-        testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().getId()}")
+        assertEquals("", asmOut, "Compiler Output Check [$testName]")
+        testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().id}")
     }
 
-    /**
-     * run a specific test multi-thread
-     * not working yet as assertions do not work on a different thread
-     */
+    /** run all tests in testDir - multithreaded */
+    private fun runAllTestsMultiThreaded(testReporter: TestReporter) {
+        // execute all tests each in a different thread
+        for (test in getFilesList()) {
+            runTestMultiThread(test, testReporter)
+        }
+        // wait until all threads are done and check if any of them raised an exception
+        var failed = false
+        for (t in threadList) {
+            t.join()
+            val exc = resultMap[t.id]
+            if (exc != null) {
+                err.println(exc.toString())
+                failed = true
+            }
+        }
+        if (failed)
+            throw AssertionError("$testDir test FAILED")
+    }
+
+    /** run a specific test multi-thread */
     private fun runTestMultiThread(testName: String, testReporter: TestReporter) {
         val t = Thread {
             try {
                 val expError = getExpectedErr(testName)
                 val actualError = getActualError(testName)
-                assertEquals(expError, actualError, "Compiler Error Check - $testName")
+                assertEquals(expError, actualError, "Compiler Error Check [$testName]")
                 val asmOut = checkAsmOutput(testName)
-                assertEquals("", asmOut, "Compiler Output Check - $testName")
+                assertEquals("", asmOut, "Compiler Output Check [$testName]")
                 testReporter.publishEntry("$testName: $PASS_STRING, threadId = ${Thread.currentThread().id}")
             }
             catch (e: AssertionError) {
-                // store the assert exception so that the calling thread can check
-                resultMap.put(Thread.currentThread().id, e)
+                testReporter.publishEntry("$testName: $FAIL_STRING, threadId = ${Thread.currentThread().id}")
+                // store the assertion exception so that the main thread can check the outcome
+                resultMap[Thread.currentThread().id] = e
             }
         }
         t.start()
@@ -100,14 +126,14 @@ class ParameterizedTestHelper(var testDir: String = "") {
     fun checkAsmOutput(testName: String): String {
         val expOutFile = "$TEST_RESOURCES/$testDir.results/$testName.out"
         val actualOutFile = "$TEST_RESOURCES/_compiler.out/$testName.out"
-        if (File(expOutFile).exists())
-            return compareFiles(expOutFile, actualOutFile)
+        return if (File(expOutFile).exists())
+            compareFiles(expOutFile, actualOutFile)
         else
-            return ""
+            ""
     }
 
     /** compare two files line by line */
-    fun compareFiles(expFile: String, outFile: String): String {
+    private fun compareFiles(expFile: String, outFile: String): String {
         val expList = mutableListOf<String>()
         File(expFile).forEachLine { expList.add(it) }
         val outList = mutableListOf<String>()

@@ -1,15 +1,29 @@
-# program intvartest
-# compiled on Mon Jan 31 10:09:09 CET 2022
+# program funtest
+# compiled on Mon Jan 31 16:24:51 CET 2022
 .data
 .align 8
 	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
 	newline_: .string "\n"
-	i1:	.quad 0
-	i2:	.quad 0
+	i:	.quad 2
 
 .text
 .align 8
 .global _start
+
+# function a_fun
+a_fun:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$5, %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	popq	%rbx
+	imulq	%rbx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	ret
 
 # main program
 _start:
@@ -20,36 +34,41 @@ _start:
 	lea	tinsel_msg_(%rip), %rdi
 	call	write_s_
 
-	movq	i2(%rip), %rax
+	call	a_fun
+	movq	i(%rip), %rax
 	testq	%rax, %rax
 	pushq	%rax
-	movq	i2(%rip), %rax
-	testq	%rax, %rax
-	negq	%rax
-	pushq	%rax
-	movq	$5, %rax
-	testq	%rax, %rax
-	popq	%rbx
-	addq	%rbx, %rax
-	pushq	%rax
-	movq	$8, %rax
+	movq	$2, %rax
 	testq	%rax, %rax
 	popq	%rbx
 	imulq	%rbx, %rax
+	pushq	%rax
+	call	a_fun
+	pushq	%rax
+	movq	$1, %rax
+	testq	%rax, %rax
 	popq	%rbx
 	addq	%rbx, %rax
-	movq	%rax, i1(%rip)
-	movq	i1(%rip), %rax
+	pushq	%rax
+	movq	$2, %rax
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	popq	%rax
+	cqto		# sign extend to rdx
+	idivq	%rbx, %rax
+	popq	%rbx
+	addq	%rbx, %rax
+	pushq	%rax
+	movq	$5, %rax
 	testq	%rax, %rax
 	pushq	%rax
-	movq	$10, %rax
-	testq	%rax, %rax
+	call	a_fun
 	popq	%rbx
-	addq	%rbx, %rax
-	movq	%rax, %rdi		# value to be printed in rdi
-	call	write_i_
-	lea	newline_(%rip), %rdi
-	call	write_s_
+	imulq	%rbx, %rax
+	movq	%rax, %rbx
+	popq	%rax
+	subq	%rbx, %rax
+	movq	%rax, i(%rip)
 
 # end of main
 	movq	(%rbp), %rbx

@@ -1,0 +1,13 @@
+program funtest
+
+var i: int = 2
+
+fun a_fun(): string {
+    return "123"
+}
+
+main {
+    i = 5 + a_fun()
+}
+
+endprog
