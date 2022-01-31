@@ -4,10 +4,10 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 
-val COMPILER = mutableListOf("/home/marinos/.jdks/azul-13.0.9/bin/java",
-    "-javaagent:/snap/intellij-idea-community/342/lib/idea_rt.jar=45231:/snap/intellij-idea-community/342/bin",
+val COMPILER = mutableListOf("/home/marinos/.jdks/openjdk-17.0.1/bin/java",
+    "-javaagent:/snap/intellij-idea-community/345/lib/idea_rt.jar=40081:/snap/intellij-idea-community/345/bin",
     "-Dfile.encoding=UTF-8",
-    "-classpath", "/home/marinos/IdeaProjects/CompilerV1/out/production/CompilerV1:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-stdlib.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-reflect.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-test.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-stdlib-jdk7.jar:/home/marinos/IdeaProjects/CompilerV1/lib/kotlin-stdlib-jdk8.jar",
+    "-classpath", "/home/marinos/IdeaProjects/CompilerV2/out/production/CompilerV2:/home/marinos/IdeaProjects/CompilerV2/lib/kotlin-stdlib.jar:/home/marinos/IdeaProjects/CompilerV2/lib/kotlin-reflect.jar:/home/marinos/IdeaProjects/CompilerV2/lib/kotlin-test.jar:/home/marinos/IdeaProjects/CompilerV2/lib/kotlin-stdlib-jdk7.jar:/home/marinos/IdeaProjects/CompilerV2/lib/kotlin-stdlib-jdk8.jar",
     "mpdev.compiler.chapter_14_xiv.CompilerMainKt",
     "-o")    // need to add outfile and sourcefile
 
