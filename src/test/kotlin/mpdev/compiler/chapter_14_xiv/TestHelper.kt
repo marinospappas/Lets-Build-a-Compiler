@@ -1,6 +1,5 @@
 package mpdev.compiler.chapter_14_xiv
 
-import org.junit.Assert
 import org.junit.jupiter.api.TestReporter
 import java.io.File
 import java.lang.System.err
@@ -16,19 +15,15 @@ class TestHelper(var testDir: String = "") {
     companion object {
         // directories
         val TEST_RESOURCES = "src/test/resources"
+        val COMPILER_OUTPUT = "_compiler.out"
         // the pass and fail strings
-        const val PASS_STRING = "\u001b[32mPASS\u001B[39m"
+        const val PASS_STRING = "\u001B[32mPASS\u001B[39m"
         const val FAIL_STRING = "\u001B[31mFAIL\u001B[39m"
     }
 
     // the list of threads and test results
     private val threadList = mutableListOf<Thread>()
     private val resultMap = mutableMapOf<Long,AssertionError>()
-
-    class TestCase(var testDir: String, var testName: String) {
-        override fun toString(): String =
-            "Group ${testDir[0].uppercase()}${testDir.substring(1)} : Testcase $testName"
-    }
 
     /** run all tests in testDir */
     fun runAllTests(testReporter: TestReporter, multiThreaded: Boolean = false) {
@@ -42,16 +37,6 @@ class TestHelper(var testDir: String = "") {
             runAllTestsMultiThreaded(testReporter)
     }
 
-    /** get the list of files */
-    fun getFilesList(): Stream<String> {
-        val filesList = mutableListOf<String>()
-        File("$TEST_RESOURCES/$testDir").walk().forEach { file ->
-            if (file.isFile)
-                filesList.add(file.nameWithoutExtension)
-        }
-        return filesList.stream().sorted()
-    }
-
     /** run a specific test single thread */
     fun runTest(testName: String, testReporter: TestReporter) {
         val expError = getExpectedErr(testName)
@@ -59,7 +44,7 @@ class TestHelper(var testDir: String = "") {
         assertEquals(expError, actualError, "Compiler Error Check [$testName]")
         val asmOut = checkAsmOutput(testName)
         assertEquals("", asmOut, "Compiler Output Check [$testName]")
-        testReporter.publishEntry("$testDir:${testName.substring(4)}: $PASS_STRING, threadId = ${Thread.currentThread().id}")
+        testReporter.publishEntry("$testDir:${testName.substring(4)}: $PASS_STRING, threadId=${Thread.currentThread().id}")
     }
 
     /** run all tests in testDir - multithreaded */
@@ -79,10 +64,20 @@ class TestHelper(var testDir: String = "") {
             }
         }
         if (failed)
-            throw AssertionError("$testDir test FAILED")
+            throw AssertionError("[$testDir] FAILED")
     }
 
-    /** run a specific test multi-thread */
+    /** get the list of files */
+    fun getFilesList(): Stream<String> {
+        val filesList = mutableListOf<String>()
+        File("$TEST_RESOURCES/$testDir").walk().forEach { file ->
+            if (file.isFile)
+                filesList.add(file.nameWithoutExtension)
+        }
+        return filesList.stream().sorted()
+    }
+
+    /** run a specific test in a new thread */
     private fun runTestMultiThread(testName: String, testReporter: TestReporter) {
         val t = Thread {
             try {
@@ -91,15 +86,16 @@ class TestHelper(var testDir: String = "") {
                 assertEquals(expError, actualError, "Compiler Error Check [$testName]")
                 val asmOut = checkAsmOutput(testName)
                 assertEquals("", asmOut, "Compiler Output Check [$testName]")
-                testReporter.publishEntry("$testDir:${testName.substring(4)}: $PASS_STRING, threadId = ${Thread.currentThread().id}")
+                testReporter.publishEntry("$testDir:${testName.substring(4)}: $PASS_STRING, threadId=${Thread.currentThread().id}")
             }
             catch (e: AssertionError) {
-                testReporter.publishEntry("$testDir:${testName.substring(4)}: $FAIL_STRING, threadId = ${Thread.currentThread().id}")
+                testReporter.publishEntry("$testDir:${testName.substring(4)}: $FAIL_STRING, threadId=${Thread.currentThread().id}")
                 // store the assertion exception so that the main thread can check the outcome
                 resultMap[Thread.currentThread().id] = e
             }
         }
         t.start()
+        // keep the thread in the list so that it can be checked at the end
         threadList.add(t)
     }
 
@@ -110,22 +106,22 @@ class TestHelper(var testDir: String = "") {
         val errFile = "$testDirName.results/$testName.err"
         try {
             expResult = File(errFile).readText()
-        } catch (ignored: Exception) {
         }
+        catch (_: Exception) {}
         return expResult
     }
 
     /** run compiler and get error message */
     fun getActualError(testName: String): String {
         val srcFile = "$testDir/$testName.tnsl"
-        val outFile = "_compiler.out/$testName.out"
-        return ExecuteCompiler().run(srcFile, outFile)
+        val outFile = "$COMPILER_OUTPUT/$testName.out"
+        return ExecuteCompiler().run(TEST_RESOURCES, srcFile, outFile)
     }
 
     /** check for assembler output */
     fun checkAsmOutput(testName: String): String {
         val expOutFile = "$TEST_RESOURCES/$testDir.results/$testName.out"
-        val actualOutFile = "$TEST_RESOURCES/_compiler.out/$testName.out"
+        val actualOutFile = "$TEST_RESOURCES/$COMPILER_OUTPUT/$testName.out"
         return if (File(expOutFile).exists())
             compareFiles(expOutFile, actualOutFile)
         else

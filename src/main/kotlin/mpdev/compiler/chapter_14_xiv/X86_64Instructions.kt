@@ -9,6 +9,7 @@ import java.util.Date
 /** this class implements all the instructions for the target machine */
 class X86_64Instructions(outFile: String = "") {
 
+    private val CODE_ID = "x86-64 Assembly Code - AT&T format"
     val COMMENT = "#"
     private val MAIN_ENTRYPOINT = "_start"
 
@@ -51,12 +52,13 @@ class X86_64Instructions(outFile: String = "") {
 
     /** initialisation code for assembler */
     fun progInit(progName: String) {
+        outputCommentNl(CODE_ID)
         outputCommentNl("program $progName")
         outputCommentNl("compiled on ${Date()}")
         outputCodeNl(".data")
         outputCodeNl(".align 8")
         // copyright message
-        outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\\n\"")
+        outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\\n\"")
         // newline string
         outputCodeTabNl("newline_: .string \"\\n\"")
     }
@@ -86,7 +88,7 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** declare function */
-    fun declareAsmFun (name: String) {
+    fun declareAsmFun(name: String) {
         outputCodeNl()
         outputCommentNl("function $name")
         outputLabel(name)

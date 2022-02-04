@@ -12,7 +12,6 @@ src/main/kotlin/mpdev/compiler/tmp/*
 prog*.txt
 testprog*.tnsl
 testprog*.s
-testout.s
 *.class
 *.lock
 *.bin

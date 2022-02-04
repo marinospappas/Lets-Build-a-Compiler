@@ -2,7 +2,7 @@ package mpdev.compiler.chapter_14_xiv
 
 /**
  * parse for in a separate class/file due to increased complexity
- * <for> ::= ( <identifier> = <expression> [ down ] to <expression> [ step <expression> ] ) <block>
+ * <for> ::= for ( <identifier> = <expression> [ down ] to <expression> [ step <expression> ] ) <block>
  */
 class ForParser {
 
@@ -136,12 +136,12 @@ class ForParser {
 
     /** release stack variables */
     private fun cleanUpStack() {
-        identifiersSpace.remove(controlVarName)
-        code.releaseStackVar(2*INT_SIZE)
-        stackVarOffset += 2*INT_SIZE
         if (hasStep) {
             code.releaseStackVar(INT_SIZE)
             stackVarOffset += INT_SIZE
         }
+        identifiersSpace.remove(controlVarName)
+        code.releaseStackVar(2*INT_SIZE)
+        stackVarOffset += 2*INT_SIZE
     }
 }

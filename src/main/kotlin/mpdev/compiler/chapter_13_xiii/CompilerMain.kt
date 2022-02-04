@@ -94,7 +94,7 @@ fun debugCompiler() {
 
 /** main function */
 fun main(args: Array<String>) {
-    println("TINSEL(c) compiler v1.1 Jan 2022, Copyright M.Pappas\n")
+    println("TINSEL(c) compiler v1.2 Jan 2022, Copyright M.Pappas\n")
     initCompiler(args)
     if (debugMode) {
         debugCompiler()

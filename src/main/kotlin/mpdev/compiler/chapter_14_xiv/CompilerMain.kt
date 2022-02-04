@@ -1,6 +1,5 @@
 package mpdev.compiler.chapter_14_xiv
 
-import java.io.File
 import java.lang.System.err
 import kotlin.system.exitProcess
 
@@ -81,7 +80,9 @@ fun initCompiler(args: Array<String>) {
 
 /** analyse tokens - debug mode */
 fun debugCompiler() {
-    println("starting debug run")
+    println("environment")
+    System.getenv().forEach { (k, v) -> println("$k-> [$v]") }
+    println("\nstarting debug run")
     var t: Token
     while(true) {
         t = inp.match()
@@ -95,7 +96,7 @@ fun debugCompiler() {
 
 /** main function */
 fun main(args: Array<String>) {
-    println("TINSEL(c) compiler v1.1 Jan 2022, Copyright M.Pappas\n")
+    println("TINSEL(c) compiler v2.0 Feb 2022, Copyright M.Pappas\n")
     initCompiler(args)
     if (debugMode) {
         debugCompiler()

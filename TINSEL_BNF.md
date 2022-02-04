@@ -19,7 +19,7 @@
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
-<for> ::= ( <identifier> = <expression> [ down ] to <expression> [ step <expression> ] ) <block>
+<for> ::= for ( <identifier> = <expression> [ down ] to <expression> [ step <expression> ] ) <block>
 <break> ::= break
 <return> ::= return <b-expression>
 <assignment> ::= <identifier> = <b-expression>
