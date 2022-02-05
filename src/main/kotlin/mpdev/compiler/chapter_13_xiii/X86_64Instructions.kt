@@ -92,8 +92,9 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeNl()
         outputCommentNl("main program")
         outputLabel(MAIN_ENTRYPOINT)
+        outputCodeTab("pushq\t%rbx\t\t")
+        outputCommentNl("save \"callee\"-save registers")
         newStackFrame()
-        outputCodeTabNl("pushq\t%rbx")
         outputCommentNl("print hello message")
         outputCodeTabNl("lea\ttinsel_msg_(%rip), %rdi")
         outputCodeTabNl("call\twrite_s_")
@@ -104,8 +105,9 @@ class X86_64Instructions(outFile: String = "") {
     fun mainEnd() {
         outputCodeNl()
         outputCommentNl("end of main")
-        outputCodeTabNl("movq\t(%rbp), %rbx")
         restoreStackFrame()
+        outputCodeTab("popq\t%rbx\t\t")
+        outputCommentNl("restore \"callee\"-save registers")
         outputCodeTab("movq\t$60, %rax\t\t")
         outputCommentNl("exit system call")
         outputCodeTab("xorq\t%rdi, %rdi\t\t")
@@ -115,13 +117,15 @@ class X86_64Instructions(outFile: String = "") {
 
     /** set new stack frame */
     fun newStackFrame() {
-        outputCodeTabNl("pushq\t%rbp")
+        outputCodeTab("pushq\t%rbp\t\t")
+        outputCommentNl("new stack frame")
         outputCodeTabNl("movq\t%rsp, %rbp")
     }
 
     /** restore stack frame */
     fun restoreStackFrame() {
-        outputCodeTabNl("movq\t%rbp, %rsp")
+        outputCodeTab("movq\t%rbp, %rsp\t\t")
+        outputCommentNl("restore stack frame")
         outputCodeTabNl("popq\t%rbp")
     }
 
