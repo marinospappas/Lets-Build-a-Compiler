@@ -3,10 +3,8 @@ package mpdev.compiler.chapter_14_xiv
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.*
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
-
+/*
 /**
  * Full Compiler Test Version 1
  * Each section of the compiler is tested in an inner class marked @Nested
@@ -283,3 +281,6 @@ class FullCompilerTest {
     }
 
 }
+
+
+ */

@@ -17,8 +17,7 @@ class TestHelper(var testDir: String = "") {
 
     companion object {
         // directories
-        //val TEST_RESOURCES = "src/test/resources"
-        val TEST_RESOURCES = "resources"
+        val TEST_RESOURCES = "src/test/resources"
         val COMPILER_OUTPUT = "_compiler.out"
         // the pass and fail strings
         const val PASS_STRING = "\u001B[32mPASS\u001B[39m"

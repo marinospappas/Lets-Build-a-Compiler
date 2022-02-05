@@ -3,8 +3,6 @@ package mpdev.compiler.chapter_14_xiv
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.*
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
 /**
@@ -130,8 +128,7 @@ class FullCompilerTestV2 {
     inner class ProgParser3Test {
 
         private lateinit var h1: TestHelper
-        @ParameterizedTest
-        @MethodSource("programTestFileProvider")
+        @Test
         @Order(1)
         fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
             h1.runTest(testName, testReporter)
@@ -152,8 +149,7 @@ class FullCompilerTestV2 {
     inner class ProgParser4Test {
 
         private lateinit var h1: TestHelper
-        @ParameterizedTest
-        @MethodSource("programTestFileProvider")
+        @Test
         @Order(1)
         fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
             h1.runTest(testName, testReporter)
