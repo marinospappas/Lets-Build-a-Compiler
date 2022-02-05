@@ -1,8 +1,9 @@
+# x86-64 Assembly Code - AT&T format
 # program fortest
 # compiled on Thu Jan 27 17:47:29 CET 2022
 .data
 .align 8
-	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\n"
 	newline_: .string "\n"
 	limit:	.quad 0
 
@@ -135,8 +136,8 @@ main_L4_:
 	call	write_s_
 	jmp	main_L4_
 main_L5_:
-	addq	$16, %rsp
 	addq	$8, %rsp
+	addq	$16, %rsp
 
 # end of main
 	movq	(%rbp), %rbx

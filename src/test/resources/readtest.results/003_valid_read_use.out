@@ -1,8 +1,9 @@
+# x86-64 Assembly Code - AT&T format
 # program readtest
 # compiled on Thu Jan 27 15:33:14 CET 2022
 .data
 .align 8
-	tinsel_msg_: .string "TINSEL version 1.1 for x86-84 (Linux) Jan 2022 (c) M.Pappas\n"
+	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\n"
 	newline_: .string "\n"
 	i:	.quad 0
 	j:	.quad 0

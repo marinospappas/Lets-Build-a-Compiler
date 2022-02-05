@@ -4,17 +4,21 @@ import org.junit.jupiter.api.TestReporter
 import java.io.File
 import java.lang.System.err
 import java.util.stream.Stream
+import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf.Type.Argument.Projection
 import kotlin.test.assertEquals
+
+var PROJECT_DIR: String = "./"
 
 class TestHelper(var testDir: String = "") {
 
-    fun init() {
-        val dirname = File("./.idea").canonicalPath.toString().replace(".idea","")
+    init {
+        PROJECT_DIR = File("./.idea").canonicalPath.toString().replace(".idea","")
     }
 
     companion object {
         // directories
-        val TEST_RESOURCES = "src/test/resources"
+        //val TEST_RESOURCES = "src/test/resources"
+        val TEST_RESOURCES = "resources"
         val COMPILER_OUTPUT = "_compiler.out"
         // the pass and fail strings
         const val PASS_STRING = "\u001B[32mPASS\u001B[39m"
