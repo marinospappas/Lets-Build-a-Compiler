@@ -40,13 +40,13 @@ class X86_64Instructions(outFile: String = "") {
     /** output code with newline */
     fun outputCodeNl(s: String = "") = outputCode("$s\n")
     /** output code with tab */
-    private fun outputCodeTab(s: String) = outputCode("\t$s")
+    fun outputCodeTab(s: String) = outputCode("\t$s")
     /** output code with tab and newline */
-    private fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
+    fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
     /** output comment */
-    private fun outputComment(s: String) = outputCode("$COMMENT $s")
+    fun outputComment(s: String) = outputCode("$COMMENT $s")
     /** output comment with newline*/
-    private fun outputCommentNl(s: String) = outputComment("$s\n")
+    fun outputCommentNl(s: String) = outputComment("$s\n")
     /** output a label */
     fun outputLabel(s: String) = outputCodeNl("$s:")
 
