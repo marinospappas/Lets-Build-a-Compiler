@@ -40,13 +40,13 @@ class X86_64Instructions(outFile: String = "") {
     /** output code with newline */
     fun outputCodeNl(s: String = "") = outputCode("$s\n")
     /** output code with tab */
-    fun outputCodeTab(s: String) = outputCode("\t$s")
+    private fun outputCodeTab(s: String) = outputCode("\t$s")
     /** output code with tab and newline */
-    fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
+    private fun outputCodeTabNl(s: String) = outputCodeTab("$s\n")
     /** output comment */
-    fun outputComment(s: String) = outputCode("$COMMENT $s")
+    private fun outputComment(s: String) = outputCode("$COMMENT $s")
     /** output comment with newline*/
-    fun outputCommentNl(s: String) = outputComment("$s\n")
+    private fun outputCommentNl(s: String) = outputComment("$s\n")
     /** output a label */
     fun outputLabel(s: String) = outputCodeNl("$s:")
 
@@ -87,6 +87,11 @@ class X86_64Instructions(outFile: String = "") {
         newStackFrame()
     }
 
+    /** end of function - tidy up stack */
+    private fun funEnd() {
+        restoreStackFrame()
+    }
+
     /** initial code for main */
     fun mainInit() {
         outputCodeNl()
@@ -116,14 +121,14 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** set new stack frame */
-    fun newStackFrame() {
+    private fun newStackFrame() {
         outputCodeTab("pushq\t%rbp\t\t")
         outputCommentNl("new stack frame")
         outputCodeTabNl("movq\t%rsp, %rbp")
     }
 
     /** restore stack frame */
-    fun restoreStackFrame() {
+    private fun restoreStackFrame() {
         outputCodeTab("movq\t%rbp, %rsp\t\t")
         outputCommentNl("restore stack frame")
         outputCodeTabNl("popq\t%rbp")
@@ -196,7 +201,7 @@ class X86_64Instructions(outFile: String = "") {
     fun setAccumulatorToLocalVar(offset: Int) {
         outputCodeTab("movq\t")
         if (offset != 0)
-            outputCode("${offset}")
+            outputCode("$offset")
         outputCodeNl("(%rbp), %rax")
         outputCodeTabNl("testq\t%rax, %rax")    // also set flags - Z flag set = FALSE
     }
@@ -206,7 +211,7 @@ class X86_64Instructions(outFile: String = "") {
 
     /** return from function */
     fun returnFromCall() {
-        restoreStackFrame()
+        funEnd()
         outputCodeTabNl("ret")
     }
 
@@ -217,7 +222,7 @@ class X86_64Instructions(outFile: String = "") {
     fun assignmentLocalVar(offset: Int) {
         outputCodeTab("movq\t%rax, ")
         if (offset != 0)
-            outputCode("${offset}")
+            outputCode("$offset")
         outputCodeNl("(%rbp)")
     }
 
