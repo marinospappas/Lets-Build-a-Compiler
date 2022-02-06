@@ -4,14 +4,13 @@
 gradle/*
 build/*
 lib/*
-examples_tinsel/*
 src/main/kotlin/verify/current/*
 src/main/kotlin/mpdev/compiler/work_in_progress/*
 src/main/kotlin/mpdev/compiler/tmp/*
 *.iml
 prog*.txt
 testprog*.tnsl
-testprog*.s
+*.s
 *.class
 *.lock
 *.bin
