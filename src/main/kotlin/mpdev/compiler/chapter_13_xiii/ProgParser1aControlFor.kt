@@ -48,9 +48,7 @@ class ForParser {
             abort("line ${inp.currentLineNumber}: identifier $controlVarName already declared")
         inp.match(Kwd.equalsOp)
         // allocate space in the stack for the ctrl var
-        code.allocateStackVar(INT_SIZE)
-        stackVarOffset -= INT_SIZE
-        ctrlVarOffs = stackVarOffset
+        ctrlVarOffs = code.allocateStackVar(INT_SIZE)
         identifiersSpace[controlVarName] = IdentifierDecl(
             TokType.variable, VarType.int, initialised = true,
             stackVar = true, ctrlVarOffs, canAssign = false
@@ -72,9 +70,7 @@ class ForParser {
     private fun parseTo() {
         // get TO value and store in the stack
         inp.match(Kwd.toToken)
-        code.allocateStackVar(INT_SIZE)
-        stackVarOffset -= INT_SIZE
-        toOffs = stackVarOffset
+        toOffs = code.allocateStackVar(INT_SIZE)
         parseExpression()
         code.assignmentLocalVar(toOffs)
     }
@@ -85,9 +81,7 @@ class ForParser {
             inp.match()
             hasStep = true
             // allocate space in the stack and save step value
-            code.allocateStackVar(INT_SIZE)
-            stackVarOffset -= INT_SIZE
-            stepOffs = stackVarOffset
+            stepOffs = code.allocateStackVar(INT_SIZE)
             parseExpression()
             code.assignmentLocalVar(stepOffs)
         }
@@ -137,12 +131,9 @@ class ForParser {
 
     /** release stack variables */
     private fun cleanUpStack() {
-        if (hasStep) {
+        if (hasStep)
             code.releaseStackVar(INT_SIZE)
-            stackVarOffset += INT_SIZE
-        }
         identifiersSpace.remove(controlVarName)
         code.releaseStackVar(2*INT_SIZE)
-        stackVarOffset += 2*INT_SIZE
     }
 }
