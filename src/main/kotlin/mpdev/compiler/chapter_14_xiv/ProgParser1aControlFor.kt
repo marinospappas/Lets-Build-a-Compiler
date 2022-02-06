@@ -22,9 +22,9 @@ class ForParser {
         val label2 = newLabel()
         postLabel(label1)   // actual start of the loop
         stepAndCheck()      // increase (or decrease) ctrl var and check
-        code.branchIfFalse(label2)  // if limit reached, exit
+        code.jumpIfFalse(label2)  // if limit reached, exit
         parseBlock(label2)    // the FOR block
-        code.branch(label1) // loop back to the beginning of the loop
+        code.jump(label1) // loop back to the beginning of the loop
         postLabel(label2)   // exit point of the loop
         cleanUpStack()
     }

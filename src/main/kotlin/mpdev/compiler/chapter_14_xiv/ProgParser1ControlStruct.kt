@@ -21,10 +21,10 @@ fun postLabel(label: String) = code.outputLabel(label)
  * parse a block
  * <block> ::= { <statement> * }
  */
-fun parseBlock(breakLabel: String = "") {
+fun parseBlock(breakLabel: String = "", continueLabel: String = "") {
     inp.match(Kwd.startBlock)
     while (inp.lookahead().type != TokType.endOfBlock && !inp.isEndOfProgram()) {
-        parseStatement(breakLabel)
+        parseStatement(breakLabel, continueLabel)
     }
     inp.match(Kwd.endBlock)
 }
@@ -34,14 +34,15 @@ fun parseBlock(breakLabel: String = "") {
  * <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
  *                 <return> | <read> | <print> | <assignment> | <function_call> | null [ ; ]
  */
-fun parseStatement(breakLabel: String) {
+fun parseStatement(breakLabel: String, continueLabel: String) {
     when (inp.lookahead().encToken) {
-        Kwd.startBlock -> parseBlock(breakLabel)
-        Kwd.ifToken -> parseIf(breakLabel)
+        Kwd.startBlock -> parseBlock(breakLabel, continueLabel)
+        Kwd.ifToken -> parseIf(breakLabel, continueLabel)
         Kwd.whileToken -> parseWhile()
         Kwd.repeatToken -> parseRepeat()
         Kwd.forToken -> ForParser().parseFor()   // in separate module due to increased complexity
         Kwd.breakToken -> parseBreak(breakLabel)
+        Kwd.continueToken -> parseContinue(continueLabel)
         Kwd.retToken -> parseReturn()
         Kwd.readToken -> parseRead()
         Kwd.printToken -> parsePrint()
@@ -60,20 +61,20 @@ fun parseStatement(breakLabel: String) {
  * parse if statement
  * <if> ::= if ( <b-expression> ) <block> [ else <block> ]
  */
-fun parseIf(breakLabel: String) {
+fun parseIf(breakLabel: String, continueLabel: String) {
     inp.match()
     inp.match(Kwd.leftParen)
     parseBooleanExpression()
     inp.match(Kwd.rightParen)
     val label1 = newLabel()
-    code.branchIfFalse(label1)
-    parseBlock(breakLabel)
+    code.jumpIfFalse(label1)
+    parseBlock(breakLabel, continueLabel)
     if (inp.lookahead().encToken == Kwd.elseToken) {
         inp.match()
         val label2 = newLabel()
-        code.branch(label2)
+        code.jump(label2)
         postLabel(label1)
-        parseBlock(breakLabel)
+        parseBlock(breakLabel, continueLabel)
         postLabel(label2)
     }
     else
@@ -92,9 +93,9 @@ fun parseWhile() {
     inp.match(Kwd.leftParen)
     parseBooleanExpression()
     inp.match(Kwd.rightParen)
-    code.branchIfFalse(label2)
-    parseBlock(label2)
-    code.branch(label1)
+    code.jumpIfFalse(label2)
+    parseBlock(label2, label1)
+    code.jump(label1)
     postLabel(label2)
 }
 
@@ -107,12 +108,12 @@ fun parseRepeat() {
     val label1 = newLabel()
     val label2 = newLabel()
     postLabel(label1)
-    parseBlock(label2)
+    parseBlock(label2, label1)
     inp.match(Kwd.untilToken)
     inp.match(Kwd.leftParen)
     parseBooleanExpression()
     inp.match(Kwd.rightParen)
-    code.branchIfFalse(label1)
+    code.jumpIfFalse(label1)
     postLabel(label2)
 }
 
@@ -124,8 +125,18 @@ fun parseBreak(label: String) {
     inp.match()
     if (label == "")
         abort("line ${inp.currentLineNumber}: no loop to break of")
-    else
-        code.branch(label)
+    code.jump(label)
+}
+
+/**
+ * parse break statement
+ * <continue> ::= continue
+ */
+fun parseContinue(label: String) {
+    inp.match()
+    if (label == "")
+        abort("line ${inp.currentLineNumber}: no loop to continue")
+    code.jump(label)
 }
 
 /**
@@ -140,7 +151,6 @@ fun parseReturn() {
     when (getType(funName)) {
         VarType.int -> parseBooleanExpression()
         VarType.string -> parseStringExpression()
-        VarType.void -> {}
         else -> {}
     }
     code.returnFromCall()

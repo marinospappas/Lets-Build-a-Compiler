@@ -42,7 +42,7 @@ enum class Kwd {
     whileToken,
     repeatToken, untilToken,
     forToken, toToken, stepToken, downToken,
-    breakToken,
+    breakToken, continueToken,
 
     identifier, number, booleanLit,
 
@@ -83,7 +83,7 @@ fun initKeywords() {
         Token("fun",      Kwd.funDecl,       TokType.none)
     )
     languageTokens.add(
-        Token("return",   Kwd.retToken,        TokType.none)
+        Token("return",   Kwd.retToken,      TokType.none)
     )
     languageTokens.add(
         Token(MAIN_BLOCK,      Kwd.mainToken,      TokType.none)
@@ -132,6 +132,9 @@ fun initKeywords() {
     languageTokens.add(
         Token("break",    Kwd.breakToken,     TokType.none)
     )
+    languageTokens.add(
+        Token("continue", Kwd.continueToken,  TokType.none)
+    )
 
     languageTokens.add(
         Token("read",     Kwd.readToken,      TokType.none)
@@ -164,14 +167,14 @@ fun initKeywords() {
     )
 
     languageTokens.add(
-        Token(END_OF_INPUT,  Kwd.endOfInput, TokType.none)
+        Token(END_OF_INPUT,    Kwd.endOfInput,      TokType.none)
     )
 
     languageTokens.add(
-        Token("Identifier", Kwd.identifier,    TokType.none)
+        Token("Identifier", Kwd.identifier,   TokType.none)
     )
     languageTokens.add(
-        Token("Number",    Kwd.number,         TokType.none)
+        Token("Number",   Kwd.number,         TokType.none)
     )
 }
 

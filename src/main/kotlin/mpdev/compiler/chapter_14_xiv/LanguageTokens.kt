@@ -45,7 +45,7 @@ enum class Kwd {
 
     repeatToken, untilToken,
     forToken, toToken, stepToken, downToken,
-    breakToken,
+    breakToken, continueToken,
 
     identifier, number, booleanLit, string,
 
@@ -153,7 +153,9 @@ fun initKeywords() {
     languageTokens.add(
         Token("break",    Kwd.breakToken,     TokType.none)
     )
-
+    languageTokens.add(
+        Token("continue", Kwd.continueToken,  TokType.none)
+    )
     languageTokens.add(
         Token("read",     Kwd.readToken,      TokType.none)
     )
