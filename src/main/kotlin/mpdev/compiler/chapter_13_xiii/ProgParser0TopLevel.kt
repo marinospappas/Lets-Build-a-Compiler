@@ -10,9 +10,6 @@ package mpdev.compiler.chapter_13_xiii
 // the identifiers space map
 val identifiersSpace = mutableMapOf<String,IdentifierDecl>()
 
-// the offset from base pointer for the next local variable (in the stack)
-var stackVarOffset = 0
-
 /////////// support for variables and functions declaration /////////
 /** our variable types */
 enum class VarType { int }
@@ -104,7 +101,6 @@ fun parseFunDecl() {
         val funName = inp.match(Kwd.identifier).value
         labelPrefix = funName        // set label prefix and label index
         labelIndx = 0
-        stackVarOffset = 0  // reset the offset for stack vars for this function
         inp.match(Kwd.leftParen)
         inp.match(Kwd.rightParen)
         declareFun(funName)
@@ -127,7 +123,6 @@ fun parseMainBlock() {
     labelPrefix = "main"        // set label prefix and label index
     labelIndx = 0
     inp.match(Kwd.mainToken)
-    stackVarOffset = 0  // reset the offset for stack vars for main
     code.mainInit()
     parseBlock()
     code.mainEnd()

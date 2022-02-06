@@ -12,9 +12,6 @@ class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolea
 // the identifiers space map
 val identifiersSpace = mutableMapOf<String,IdentifierDecl>()
 
-// the offset from base pointer for the next local variable (in the stack)
-var stackVarOffset = 0
-
 // the string constants (will be saved to output at the end
 val stringConstants = mutableMapOf<String,String>()
 var stringCnstIndx = 0

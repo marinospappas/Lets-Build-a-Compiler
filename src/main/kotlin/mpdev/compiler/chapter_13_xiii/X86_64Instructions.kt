@@ -17,6 +17,9 @@ class X86_64Instructions(outFile: String = "") {
 
     private var outputLines = 0
 
+    // the offset from base pointer for the next local variable (in the stack)
+    var stackVarOffset = 0
+
     /** initialisation code - class InputProgramScanner */
     init {
         if (outFile != "") {
@@ -84,12 +87,16 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeNl()
         outputCommentNl("function $name")
         outputLabel(name)
+        outputCodeTab("pushq\t%rbx\t\t")
+        outputCommentNl("save \"callee\"-save registers")
         newStackFrame()
     }
 
     /** end of function - tidy up stack */
     private fun funEnd() {
         restoreStackFrame()
+        outputCodeTab("popq\t%rbx\t\t")
+        outputCommentNl("restore \"callee\"-save registers")
     }
 
     /** initial code for main */
@@ -125,6 +132,7 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTab("pushq\t%rbp\t\t")
         outputCommentNl("new stack frame")
         outputCodeTabNl("movq\t%rsp, %rbp")
+        stackVarOffset = 0  // reset the offset for stack vars in this new frame
     }
 
     /** restore stack frame */
@@ -134,11 +142,21 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("popq\t%rbp")
     }
 
-    /** allocate variable space in the stack */
-    fun allocateStackVar(size: Int) = outputCodeTabNl("subq\t$${size}, %rsp")
+    /**
+     * allocate variable space in the stack
+     * returns the new stack offset for this new variable
+     */
+    fun allocateStackVar(size: Int): Int {
+        outputCodeTabNl("subq\t$${size}, %rsp")
+        stackVarOffset -= INT_SIZE
+        return stackVarOffset
+    }
 
     /** release variable space in the stack */
-    fun releaseStackVar(size: Int) = outputCodeTabNl("addq\t$${size}, %rsp")
+    fun releaseStackVar(size: Int) {
+        outputCodeTabNl("addq\t$${size}, %rsp")
+        stackVarOffset += INT_SIZE
+    }
 
     //////////////////////////////////////////////////////////////
 
