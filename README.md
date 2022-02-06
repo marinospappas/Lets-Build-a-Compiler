@@ -7,7 +7,7 @@ This adaptation produces code for x86-64 architecture that the reader can easily
 
 As part of this series, a new Programming Language is defined: **TINSEL** - Chapter 8 onwards.
 
-Full BNF definition of TINSEL [here](TINSEL_BNF.md). TINSEL program example [here](example1.tnsl)
+Full BNF definition of TINSEL [here](TINSEL_BNF.md). TINSEL program examples [here](examples_tinsel)
 
 The repository is split, based on the chapters of the tutorial and will be updated as new chapters are added.
 
