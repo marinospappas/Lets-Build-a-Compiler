@@ -14,13 +14,14 @@
 ## Statements
 ```
 <block> ::= { <statement> * }
-<statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> |
+<statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> | <continue>
                 <return> | <read> | <print> | <assignment> | <function_call> | null [ ; ]
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
 <while> ::= while ( <b-expression> ) <block>
 <repeat> ::= repeat <block> until ( <b-expression> )
 <for> ::= for ( <identifier> = <expression> [ down ] to <expression> [ step <expression> ] ) <block>
 <break> ::= break
+<continue> ::= contnue
 <return> ::= return <b-expression>
 <assignment> ::= <identifier> = <b-expression>
 <funcrion_call> ::= <function_name> ( )

@@ -245,10 +245,10 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** branch if false */
-    fun branchIfFalse(label: String) = outputCodeTabNl("jz\t$label")    // Z flag set = FALSE
+    fun jumpIfFalse(label: String) = outputCodeTabNl("jz\t$label")    // Z flag set = FALSE
 
     /** branch */
-    fun branch(label: String) = outputCodeTabNl("jmp\t$label")
+    fun jump(label: String) = outputCodeTabNl("jmp\t$label")
 
     /** boolean not accumulator */
     fun booleanNotAccumulator() = outputCodeTabNl("xorq\t$1, %rax")
