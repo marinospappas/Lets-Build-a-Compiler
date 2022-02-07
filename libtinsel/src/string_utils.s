@@ -81,7 +81,7 @@ strcat_di_end:
 	jmp	strcat_di_end
 
 strcat_next:
-	call	strcpy_			# cal6l our own strcpy_
+	call	strcpy_			# call our own strcpy_
 
 	movq	%rcx, %rax		# address of dest string in %rax
 	popq	%rcx
