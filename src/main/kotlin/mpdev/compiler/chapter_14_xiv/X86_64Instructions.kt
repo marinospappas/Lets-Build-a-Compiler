@@ -20,6 +20,9 @@ class X86_64Instructions(outFile: String = "") {
     // the offset from base pointer for the next local variable (in the stack)
     var stackVarOffset = 0
 
+    // flag to include the string buffer in the assembly code
+    var includeStringBuffer = false
+
     /** initialisation code - class InputProgramScanner */
     init {
         if (outFile != "") {
@@ -54,16 +57,18 @@ class X86_64Instructions(outFile: String = "") {
     fun outputLabel(s: String) = outputCodeNl("$s:")
 
     /** initialisation code for assembler */
-    fun progInit(progName: String) {
+    fun progInit(progName: String, noMsg: Boolean) {
         outputCommentNl(CODE_ID)
         outputCommentNl("program $progName")
         outputCommentNl("compiled on ${Date()}")
         outputCodeNl(".data")
         outputCodeNl(".align 8")
-        // copyright message
-        outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\\n\"")
-        // newline string
-        outputCodeTabNl("newline_: .string \"\\n\"")
+        if (!noMsg) {
+            // copyright message
+            outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\\n\"")
+            // newline string
+            outputCodeTabNl("newline_: .string \"\\n\"")
+        }
     }
 
     /** declare int variable (64bit) */
@@ -76,10 +81,11 @@ class X86_64Instructions(outFile: String = "") {
 
     /** declare string variable */
     fun declareString(varName: String, initValue: String, length: Int = 0) {
-        if (length > 0)
-            outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length
-        else
+        if (initValue != "")
             outputCodeTabNl("$varName:\t.string \"$initValue\"")
+        else
+            outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length
+
     }
 
     /** initial code for functions */
@@ -108,16 +114,18 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** initial code for main */
-    fun mainInit() {
+    fun mainInit(noMsg: Boolean) {
         outputCodeNl()
         outputCommentNl("main program")
         outputLabel(MAIN_ENTRYPOINT)
         outputCodeTab("pushq\t%rbx\t\t")
         outputCommentNl("save \"callee\"-save registers")
         newStackFrame()
-        outputCommentNl("print hello message")
-        outputCodeTabNl("lea\ttinsel_msg_(%rip), %rdi")
-        outputCodeTabNl("call\twrite_s_")
+        if (!noMsg) {
+            outputCommentNl("print hello message")
+            outputCodeTabNl("lea\ttinsel_msg_(%rip), %rdi")
+            outputCodeTabNl("call\twrite_s_")
+        }
         outputCodeNl()
     }
 
@@ -363,6 +371,7 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("lea\t$STRING_BUFFER(%rip), %rdi")
         outputCodeTabNl("call\tstrcpy_")
         outputCodeTabNl("pushq\t%rax")
+        includeStringBuffer = true
     }
 
     /** add acc string to buf string - both are pointers*/
@@ -385,6 +394,42 @@ class X86_64Instructions(outFile: String = "") {
     fun printStr() {
         outputCodeTabNl("movq\t%rax, %rdi\t\t# string pointer to be printed in rdi")
         outputCodeTabNl("call\twrite_s_")
+    }
+
+    /** read string into variable - address in accumulator*/
+    fun readString(identifier: String, length: Int) {
+        outputCodeTabNl("lea\t$identifier(%rip), %rdi\t\t# address of the string to be read")
+        outputCodeTabNl("movq\t$${length}, %rsi\t\t# max number of bytes to read")
+        outputCodeTabNl("call\tread_s_")
+    }
+
+    /** compare 2 strings for equality */
+    fun compareStringEquals() {
+        outputCodeTab("popq\t%rdi\t\t")
+        outputCommentNl("compare strings - streq_(top-of-stack, %rax)")
+        outputCodeTabNl("movq\t%rax, %rsi")
+        outputCodeTabNl("call\tstreq_")
+        outputCodeTabNl("andq\t$1, %rax")   // set flags - Z flag set = FALSE
+    }
+
+    /** compare 2 strings for non-equality */
+    fun compareStringNotEquals() {
+        outputCodeTab("popq\t%rdi\t\t")
+        outputCommentNl("compare strings - streq_(top-of-stack, %rax)")
+        outputCodeTabNl("movq\t%rax, %rsi")
+        outputCodeTabNl("call\tstreq_")
+        outputCodeTabNl("xorq\t$1, %rax")   // boolean not rax and set flags - Z flag set = FALSE
+    }
+
+    /** string constants */
+    fun stringConstants() {
+        code.outputCodeNl()
+        code.outputCodeNl(".data")
+        code.outputCodeTabNl(".align 8")
+        if (includeStringBuffer) {
+            code.outputCommentNl("buffer for string operations - max str length limit")
+            code.outputCodeTabNl("$STRING_BUFFER:\t.space $STR_BUF_SIZE")
+        }
     }
 
     //////////////////////////////////////////////////////////

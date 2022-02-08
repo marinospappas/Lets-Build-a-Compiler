@@ -14,12 +14,11 @@ import kotlin.system.exitProcess
  * Version 1.0 01.10.2021
  */
 
-const val USAGE = "usage: CompilerMain [-debug] [-o output_file] input_file"
+const val USAGE = "usage: CompilerMain [-debug] [-nomsg] [-o output_file] input_file"
 
-// sizes of various types
-val INT_SIZE = 8    // 64-bit integers
-
+// compiler flags set by cmd line options
 var debugMode = false
+var noCopyrightMsg = false
 
 // the input and output files
 var inFile = ""
@@ -61,6 +60,7 @@ fun processCmdLineArgs(args: Array<String>) {
             when (arg) {
                 "-?", "-h", "-H" -> exit(USAGE)
                 "-debug" -> debugMode = true
+                "-nomsg" -> noCopyrightMsg = true
                 "-o", "-O" -> { outFile = getNextArg(args, ++argIndx, "output_file"); continue }
                 else -> exit("invalid option [$arg]\n$USAGE")
             }

@@ -27,7 +27,7 @@ fun parseProgram() {
  */
 fun parseProgHeader() {
     inp.match(Kwd.startOfProgram)
-    code.progInit(inp.match(Kwd.identifier).value)
+    code.progInit(inp.match(Kwd.identifier).value, noCopyrightMsg)
 }
 
 /**
@@ -48,8 +48,8 @@ fun parseOneVarDecl() {
     val varName = inp.match(Kwd.identifier).value
     inp.match(Kwd.colonToken)
     when (inp.lookahead().encToken) {
-        Kwd.intToken -> parseOneIntDecl(varName)
-        Kwd.stringToken -> parseOneStringDecl(varName)
+        Kwd.intType -> parseOneIntDecl(varName)
+        Kwd.stringType -> parseOneStringDecl(varName)
         else -> inp.expected("variable type (int or string)")
     }
 }
@@ -62,24 +62,27 @@ fun parseOneIntDecl(varName: String) {
         inp.match()
         initValue = initIntVar()
     }
-    declareVar(varName, VarType.int, initValue)
+    declareVar(varName, DataType.int, initValue, INT_SIZE)
 }
 
 /** parse one string var declaration */
 fun parseOneStringDecl(varName: String) {
     var initValue = ""
-    var varLength = 0
+    val varLength: Int
     inp.match()
     if (inp.lookahead().encToken == Kwd.equalsOp) {
         inp.match()
         initValue = initStringVar()
+        varLength = initValue.length
     }
     else {
         inp.match(Kwd.leftParen)
         varLength = inp.match(Kwd.number).value.toInt()
         inp.match(Kwd.rightParen)
     }
-    declareVar(varName, VarType.string, initValue, varLength)
+    if (initValue == "" && varLength == 0)
+        abort("line ${inp.currentLineNumber}: string variable $varName has neither initial value nor length set")
+    declareVar(varName, DataType.string, initValue, varLength)
 }
 
 /** initialisation for int vars */
@@ -112,11 +115,11 @@ fun parseFunDecl() {
         inp.match(Kwd.leftParen)
         inp.match(Kwd.rightParen)
         inp.match(Kwd.colonToken)
-        var funType: VarType = VarType.void
+        var funType: DataType = DataType.void
         when (inp.lookahead().encToken) {
-            Kwd.intToken -> funType = VarType.int
-            Kwd.stringToken -> funType = VarType.string
-            Kwd.voidToken -> funType = VarType.void
+            Kwd.intType -> funType = DataType.int
+            Kwd.stringType -> funType = DataType.string
+            Kwd.voidType -> funType = DataType.void
             else -> inp.expected("function type (int, string or void)")
         }
         inp.match()
@@ -141,7 +144,7 @@ fun parseMainBlock() {
     labelPrefix = MAIN_BLOCK        // set label prefix and label index
     labelIndx = 0
     inp.match(Kwd.mainToken)
-    code.mainInit()
+    code.mainInit(noCopyrightMsg)
     parseBlock()
     code.mainEnd()
 }
@@ -158,11 +161,7 @@ fun parseProgEnd() {
 
 /** add any string constants at the end of the assembler output */
 fun parseStringConstants() {
-    code.outputCodeNl()
-    code.outputCodeNl(".data")
-    code.outputCodeTabNl(".align 8")
-    code.outputCommentNl("buffer for string operations - max str length limit")
-    code.outputCodeTabNl("$STRING_BUFFER:\t.space $STR_BUF_SIZE")
+    code.stringConstants()
     if (stringConstants.isEmpty())
         return
     code.outputCommentNl("constant string values go here")

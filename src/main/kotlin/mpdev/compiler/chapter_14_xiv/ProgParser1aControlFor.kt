@@ -43,14 +43,14 @@ class ForParser {
     private fun parseCtrlVar() {
         // get control var
         controlVarName = inp.match(Kwd.identifier).value
-        if (identifiersSpace[controlVarName] != null)
+        if (identifiersMap[controlVarName] != null)
             abort("line ${inp.currentLineNumber}: identifier $controlVarName already declared")
         inp.match(Kwd.equalsOp)
         // allocate space in the stack for the ctrl var
         ctrlVarOffs = code.allocateStackVar(INT_SIZE)
-        identifiersSpace[controlVarName] = IdentifierDecl(
-            TokType.variable, VarType.int, initialised = true,
-            stackVar = true, ctrlVarOffs, canAssign = false
+        identifiersMap[controlVarName] = IdentifierDecl(
+            TokType.variable, DataType.int, initialised = true, size = INT_SIZE,
+            stackVar = true, stackOffset = ctrlVarOffs, canAssign = false
         )
         // set the ctrl var to FROM
         parseExpression()
@@ -132,7 +132,7 @@ class ForParser {
     private fun cleanUpStack() {
         if (hasStep)
             code.releaseStackVar(INT_SIZE)
-        identifiersSpace.remove(controlVarName)
+        identifiersMap.remove(controlVarName)
         code.releaseStackVar(2*INT_SIZE)
     }
 }

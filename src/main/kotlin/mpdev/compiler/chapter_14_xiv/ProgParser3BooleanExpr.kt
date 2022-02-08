@@ -23,129 +23,182 @@ package mpdev.compiler.chapter_14_xiv
  */
 
 /** parse a Boolean expression */
-fun parseBooleanExpression() {
-    parseBooleanTerm()
+fun parseBooleanExpression(): DataType {
+    val typeT1 = parseBooleanTerm()
     while (inp.lookahead().type == TokType.orOps) {
         code.saveAccumulator()
         when (inp.lookahead().encToken) {
-            Kwd.orOp -> boolOr()
-            Kwd.xorOp -> boolXor()
+            Kwd.orOp -> boolOr(typeT1)
+            Kwd.xorOp -> boolXor(typeT1)
             else -> inp.expected("boolean or or xor operator")
         }
     }
+    return typeT1
 }
 
 /** parse a boolean term */
-fun parseBooleanTerm() {
-    parseNotFactor()
+fun parseBooleanTerm(): DataType {
+    val typeF1 = parseNotFactor()
     while (inp.lookahead().type == TokType.andOps) {
         code.saveAccumulator()
         when (inp.lookahead().encToken) {
-            Kwd.andOp -> boolAnd()
+            Kwd.andOp -> boolAnd(typeF1)
             else -> inp.expected("boolean and operator")
         }
     }
+    return typeF1
 }
 
 /** parse a not factor */
-fun parseNotFactor() {
+fun parseNotFactor(): DataType {
+    val typeF: DataType
     if (inp.lookahead().encToken == Kwd.notOp) {
         inp.match()
-        parseBooleanFactor()
+        typeF = parseBooleanFactor()
         code.booleanNotAccumulator()
     }
     else
-        parseBooleanFactor()
+        typeF = parseBooleanFactor()
+    return typeF
 }
 
 /** parse a boolean factor */
-fun parseBooleanFactor() {
+fun parseBooleanFactor(): DataType {
     if (inp.lookahead().encToken == Kwd.booleanLit) {
         if (inp.match(Kwd.booleanLit).value == BOOLEAN_TRUE)
             code.setAccumulator("1")
         else
             code.clearAccumulator()
+        return DataType.int
     }
     else
-        parseRelation()
+        return parseRelation()
 }
 
 /** parse a relation */
-fun parseRelation() {
-    parseExpression()
+fun parseRelation(): DataType {
+    val typeE1 = parseExpression()
     if (inp.lookahead().type == TokType.relOps) {
-        code.saveAccumulator()
+        if (typeE1 == DataType.string)
+            code.saveString()
+        else
+            code.saveAccumulator()
         when (inp.lookahead().encToken) {
-            Kwd.isEqual -> parseEquals()
-            Kwd.isNotEqual -> parseNotEquals()
-            Kwd.isLess -> parseLess()
-            Kwd.isLessOrEq -> parseLessEqual()
-            Kwd.isGreater -> parseGreater()
-            Kwd.isGreaterOrEq -> parseGreaterEqual()
+            Kwd.isEqual -> parseEquals(typeE1)
+            Kwd.isNotEqual -> parseNotEquals(typeE1)
+            Kwd.isLess -> parseLess(typeE1)
+            Kwd.isLessOrEq -> parseLessEqual(typeE1)
+            Kwd.isGreater -> parseGreater(typeE1)
+            Kwd.isGreaterOrEq -> parseGreaterEqual(typeE1)
             else -> inp.expected("relational operator")
         }
+        return DataType.int
     }
+    else
+        return typeE1
 }
 
 /** parse boolean or */
-fun boolOr() {
+fun boolOr(typeE1: DataType) {
     inp.match()
-    parseBooleanTerm()
+    val typeE2 = parseBooleanTerm()
+    if (incompatibleTypes(typeE1, typeE2))
+        abort ("line ${inp.currentLineNumber}: cannot 'or' $typeE1 with $typeE2")
     code.orAccumulator()
 }
 
 /** parse boolean xor */
-fun boolXor() {
+fun boolXor(typeE1: DataType) {
     inp.match()
-    parseBooleanTerm()
+    val typeE2 = parseBooleanTerm()
+    if (incompatibleTypes(typeE1, typeE2))
+        abort ("line ${inp.currentLineNumber}: cannot 'xor' $typeE1 with $typeE2")
     code.xorAccumulator()
 }
 
 /** parse boolean and */
-fun boolAnd() {
+fun boolAnd(typeF1: DataType) {
     inp.match()
-    parseNotFactor()
+    val typeF2 = parseNotFactor()
+    if (incompatibleTypes(typeF1, typeF2))
+        abort ("line ${inp.currentLineNumber}: cannot 'and' $typeF1 with $typeF2")
     code.andAccumulator()
 }
 
 /** parse is equal to */
-fun parseEquals() {
+fun parseEquals(typeE1: DataType) {
     inp.match()
-    parseExpression()
-    code.compareEquals()
+    val typeE2 = parseExpression()
+    checkCompareTypeCompatibility(typeE1, typeE2)
+    when (typeE1) {
+        DataType.int -> code.compareEquals()
+        DataType.string -> code.compareStringEquals()
+        else -> {}
+    }
 }
 
 /** parse is not equal to */
-fun parseNotEquals() {
+fun parseNotEquals(typeE1: DataType) {
     inp.match()
-    parseExpression()
-    code.compareNotEquals()
+    val typeE2 = parseExpression()
+    checkCompareTypeCompatibility(typeE1, typeE2)
+    when (typeE1) {
+        DataType.int -> code.compareNotEquals()
+        DataType.string -> code.compareStringNotEquals()
+        else -> {}
+    }
 }
 
 /** parse is less than */
-fun parseLess() {
+fun parseLess(typeE1: DataType) {
     inp.match()
-    parseExpression()
-    code.compareLess()
+    val typeE2 = parseExpression()
+    checkCompareTypeCompatibility(typeE1, typeE2)
+    when (typeE1) {
+        DataType.int -> code.compareLess()
+        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'less than' not supported for strings")
+        else -> {}
+    }
 }
 
 /** parse is less than or equal to */
-fun parseLessEqual() {
+fun parseLessEqual(typeE1: DataType) {
     inp.match()
-    parseExpression()
-    code.compareLessEqual()
+    val typeE2 = parseExpression()
+    checkCompareTypeCompatibility(typeE1, typeE2)
+    when (typeE1) {
+        DataType.int -> code.compareLessEqual()
+        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'less than or equal to' not supported for strings")
+        else -> {}
+    }
 }
 
 /** parse is greater than */
-fun parseGreater() {
+fun parseGreater(typeE1: DataType) {
     inp.match()
-    parseExpression()
-    code.compareGreater()
+    val typeE2 = parseExpression()
+    checkCompareTypeCompatibility(typeE1, typeE2)
+    when (typeE1) {
+        DataType.int -> code.compareGreater()
+        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'greater than' not supported for strings")
+        else -> {}
+    }
 }
 
 /** parse is greater than or equal to */
-fun parseGreaterEqual() {
+fun parseGreaterEqual(typeE1: DataType) {
     inp.match()
-    parseExpression()
-    code.compareGreaterEqual()
+    val typeE2 = parseExpression()
+    checkCompareTypeCompatibility(typeE1, typeE2)
+    when (typeE1) {
+        DataType.int -> code.compareGreaterEqual()
+        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'greater than or equal to' not supported for strings")
+        else -> {}
+    }
+}
+
+/** check type compatibility */
+fun checkCompareTypeCompatibility(t1: DataType, t2: DataType) {
+    if (incompatibleTypes(t1, t2))
+        abort("line ${inp.currentLineNumber}: cannot compare $t1 with $t2")
 }

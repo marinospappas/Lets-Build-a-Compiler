@@ -13,6 +13,7 @@
 .global strlen_
 .global strcpy_
 .global strcat_
+.global streq_
 .global atoi_
 .global itoa_
 
@@ -86,7 +87,40 @@ strcat_next:
 	movq	%rcx, %rax		# address of dest string in %rax
 	popq	%rcx
 	ret
-       
+
+##################################
+# check 2 strings for equality
+# params:
+#       rdi: the first string address
+#       rsi: the second string address
+# returns:
+#       rax: 1 if equal 0 if not equal
+#
+streq_:
+	pushq	%rcx
+	pushq   %rbx
+	xorq	%rcx, %rcx		# zero %rcx
+	movq    $1, %rax        # set result to true
+
+streq_next:
+	movb	(%rdi, %rcx), %bl	# get char from first string
+	cmp     %bl, (%rsi, %rcx)   # compare with second string
+	jne     streq_ne            # not equal
+
+	cmpb	$0, %bl     	# check for end of string
+	je	streq_ret
+
+	inc	    %rcx            # next character
+	jmp	    streq_next
+
+streq_ne:
+    xorq    %rax, %rax      # set result to false
+
+streq_ret:
+	popq    %rbx
+	popq	%rcx
+	ret
+
 ###########################
 # convert string to integer
 # params:
