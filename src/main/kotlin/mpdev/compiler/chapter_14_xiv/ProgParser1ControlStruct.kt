@@ -48,7 +48,7 @@ fun parseStatement(breakLabel: String, continueLabel: String) {
         Kwd.printToken -> parsePrint()
         Kwd.printLnToken -> parsePrintLn()
         Kwd.identifier -> {
-            if (inp.lookahead().type == TokType.variable) parseAnyAssignment()
+            if (inp.lookahead().type == TokType.variable) parseAssignment()
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
             else abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
         }
@@ -148,10 +148,11 @@ fun parseReturn() {
     if (labelPrefix == MAIN_BLOCK)
         abort("line ${inp.currentLineNumber}: return is not allowed in [main]")
     hasReturn = true       // set the return flag for this function
-    when (getType(funName)) {
-        VarType.int -> parseBooleanExpression()
-        VarType.string -> parseStringExpression()
-        else -> {}
+    val funType = getType(funName)
+    if (funType != DataType.void) {
+        val expType = parseExpression()
+        if (expType != funType)
+            abort("line ${inp.currentLineNumber}: $funType function cannot return $expType")
     }
     code.returnFromCall()
 }
@@ -169,9 +170,16 @@ fun parseRead() {
             abort("line ${inp.currentLineNumber}: identifier ${varToken.value} not declared")
         if (varToken.type != TokType.variable)
             abort("line ${inp.currentLineNumber}: identifier ${varToken.value} is not a variable")
-        ////////// check type - String vs. Int ********************************************************************
-        code.readInt(varToken.value)
-        code.assignment(varToken.value)
+        val identName = varToken.value
+        val strLen = identifiersMap[identName]?.size!!
+        when (getType(identName)) {
+            DataType.int -> {
+                code.readInt(identName)
+                code.assignment(identName)
+            }
+            DataType.string -> code.readString(identName, strLen)
+            else -> {}
+        }
     } while (inp.lookahead().encToken == Kwd.commaToken)
 }
 
@@ -181,22 +189,23 @@ fun parseRead() {
  */
 fun parsePrint() {
     inp.match()
-    printExpression()
+    printExpressions()
 }
 fun parsePrintLn() {
     inp.match()
     if (inp.lookahead().encToken != Kwd.semiColonToken)
-        printExpression()
+        printExpressions()
     code.printNewline()
 }
 
-fun printExpression() {
+fun printExpressions() {
     do {
         if (inp.lookahead().encToken == Kwd.commaToken)
             inp.match() // skip the comma
-        if ( parseAnyExpression() == VarType.string)
-            code.printStr()
-        else
-            code.printInt()
+        when (parseBooleanExpression()) {
+            DataType.int -> code.printInt()
+            DataType.string -> code.printStr()
+            else -> {}
+        }
     } while (inp.lookahead().encToken == Kwd.commaToken)
 }

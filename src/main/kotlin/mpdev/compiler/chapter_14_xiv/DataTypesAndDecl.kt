@@ -3,14 +3,17 @@ package mpdev.compiler.chapter_14_xiv
 // global vars
 
 /** our variable types */
-enum class VarType { int, string, void, none }
+enum class DataType { int, string, void, none }
 
 /** the declaration space (variables and functions) */
-class IdentifierDecl(var fv: TokType, var type: VarType, var initialised: Boolean = false,
+class IdentifierDecl(var fv: TokType, var type: DataType, var initialised: Boolean = false, var size: Int = 0,
                      var stackVar: Boolean = false, var stackOffset: Int = 0, var canAssign: Boolean = true)
 
+// sizes of various types
+val INT_SIZE = 8    // 64-bit integers
+
 // the identifiers space map
-val identifiersSpace = mutableMapOf<String,IdentifierDecl>()
+val identifiersMap = mutableMapOf<String,IdentifierDecl>()
 
 // the string constants (will be saved to output at the end
 val stringConstants = mutableMapOf<String,String>()
@@ -27,29 +30,29 @@ var hasReturn: Boolean = false
 var funName: String = ""
 
 /** declare a global variable */
-fun declareVar(name: String, type: VarType, initValue: String, length: Int = 0) {
+fun declareVar(name: String, type: DataType, initValue: String, length: Int = 0) {
     // check for duplicate var declaration
-    if (identifiersSpace[name] != null)
+    if (identifiersMap[name] != null)
         abort ("line ${inp.currentLineNumber}: identifier $name already declared")
-    identifiersSpace[name] = IdentifierDecl(TokType.variable, type, initValue!="")
+    identifiersMap[name] = IdentifierDecl(TokType.variable, type, initValue!="", length)
     when (type) {
-        VarType.int -> code.declareInt(name, initValue)
-        VarType.string -> code.declareString(name, initValue, length)
+        DataType.int -> code.declareInt(name, initValue)
+        DataType.string -> code.declareString(name, initValue, length)
         else -> return
     }
 }
 
 /** process a function declaration */
-fun declareFun(name: String, type: VarType) {
-    if (identifiersSpace[name] != null)
+fun declareFun(name: String, type: DataType) {
+    if (identifiersMap[name] != null)
         abort ("line ${inp.currentLineNumber}: identifier $name already declared")
-    identifiersSpace[name] = IdentifierDecl(TokType.function, type)
+    identifiersMap[name] = IdentifierDecl(TokType.function, type)
     code.declareAsmFun(name)
 }
 
 /** return the type of a var/fun */
-fun getType(identifier: String): VarType = identifiersSpace[identifier]?.type?:VarType.none
+fun getType(identifier: String): DataType = identifiersMap[identifier]?.type?:DataType.none
 
 /** return the canAssign flag */
-fun getCanAssign(identifier: String): Boolean = identifiersSpace[identifier]?.canAssign!!
+fun getCanAssign(identifier: String): Boolean = identifiersMap[identifier]?.canAssign?:false
 

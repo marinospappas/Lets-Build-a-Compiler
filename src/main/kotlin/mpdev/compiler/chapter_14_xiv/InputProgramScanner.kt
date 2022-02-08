@@ -129,7 +129,7 @@ class InputProgramScanner(inputFile: String = "") {
                     languageTokens[indx]  // keyword found
                 else
                     // function, variable or other identifier found (determined by Token type)
-                    Token(name, Kwd.identifier, identifiersSpace[name]?.fv ?: TokType.none))
+                    Token(name, Kwd.identifier, identifiersMap[name]?.fv ?: TokType.none))
     }
 
     /** check for a special sequence (operator or other special token) */

@@ -47,12 +47,12 @@ read_s_:
 	syscall				# call the kernel
 					# returns number of bytes read in rax
 	popq	%rsi			# retrieve string address
-        movb    $0, (%rsi,%rax)		# set string terminator
+    movb    $0, (%rsi,%rax)		# set string terminator
 
 	cmp	$0, %rax		# check in case 0 characters read (ctrl-d)
 	je	read_s_ret		# in that case return
 
-	decq	%rax			# pint to the last char
+	decq	%rax			# point to the last char
 	cmpb	$'\n', (%rsi,%rax)	# check for newline
 	jne	read_s_ret
 
