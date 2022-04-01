@@ -58,7 +58,7 @@ enum class Kwd {
     commentEnd,
 
     startOfProgram, endOfProgram,
-    varDecl, funDecl, retToken, mainToken,
+    varDecl, funDecl, retToken, mainToken, exitToken,
     endOfInput, any, invalid, noToken
 }
 
@@ -92,6 +92,9 @@ fun initKeywords() {
     )
     languageTokens.add(
         Token(MAIN_BLOCK,      Kwd.mainToken,      TokType.none)
+    )
+    languageTokens.add(
+        Token("exit",    Kwd.exitToken,     TokType.none)
     )
 
     languageTokens.add(

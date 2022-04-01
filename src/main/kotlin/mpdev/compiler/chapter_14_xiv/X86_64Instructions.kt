@@ -12,6 +12,7 @@ class X86_64Instructions(outFile: String = "") {
     private val CODE_ID = "x86-64 Assembly Code - AT&T format"
     val COMMENT = "#"
     private val MAIN_ENTRYPOINT = "_start"
+    private val MAIN_EXITPOINT = "${MAIN_BLOCK}_exit_"
 
     private var outStream: PrintStream = out
 
@@ -133,6 +134,7 @@ class X86_64Instructions(outFile: String = "") {
     fun mainEnd() {
         outputCodeNl()
         outputCommentNl("end of main")
+        outputLabel(MAIN_EXITPOINT)
         restoreStackFrame()
         outputCodeTab("popq\t%rbx\t\t")
         outputCommentNl("restore \"callee\"-save registers")
@@ -174,6 +176,10 @@ class X86_64Instructions(outFile: String = "") {
         stackVarOffset += INT_SIZE
     }
 
+    /** exit the program */
+    fun exitProgram() {
+        jump(MAIN_EXITPOINT)
+    }
     //////////////////////////////////////////////////////////////
 
     /** set accumulator to a value */

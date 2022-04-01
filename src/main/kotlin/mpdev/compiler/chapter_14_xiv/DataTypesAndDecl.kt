@@ -22,7 +22,7 @@ const val STRING_CONST_PREFIX = "STRCNST_"
 
 // the buffer for string operations
 const val STRING_BUFFER = "string_buffer_"
-const val STR_BUF_SIZE = 1024
+var STR_BUF_SIZE = 1024
 
 /////////// support for variables and functions declaration /////////
 
