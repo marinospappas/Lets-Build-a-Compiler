@@ -7,7 +7,7 @@ package mpdev.compiler.chapter_14_xiv
 
 /**
  * parse assignment
- * <assignment> ::= <identifier> = <b-expression>
+ * <assignment> ::= <identifier> = <expression>
  */
 fun parseAssignment() {
     val identName: String = inp.match(Kwd.identifier).value
@@ -27,7 +27,7 @@ fun parseAssignment() {
 
 /** check if variable can be assigned a value */
 fun checkCanAssign(identName: String) {
-    if (identifiersMap[identName]?.canAssign == false)
+    if (!getCanAssign(identName))
         abort ("line ${inp.currentLineNumber}: variable $identName cannot be assigned a value")
 }
 
@@ -119,6 +119,8 @@ fun parseFactor(): DataType {
 fun parseParenExpression(): DataType {
     inp.match()
     val expType = parseExpression()
+    if (expType == DataType.string)
+        abort("line ${inp.currentLineNumber}: parenthesis not allowed in string expressions")
     inp.match(Kwd.rightParen)
     return expType
 }
@@ -156,10 +158,12 @@ fun parseFunctionCall(): DataType {
  * returns the data type of the variable
  */
 fun parseVariable(): DataType {
-    when (getType(inp.lookahead().value)) {
-        DataType.int -> return parseNumVariable()
-        DataType.string -> return parseStringVariable()
-        else -> {return DataType.void}
+    return when (getType(inp.lookahead().value)) {
+        DataType.int -> parseNumVariable()
+        DataType.string -> parseStringVariable()
+        else -> {
+            DataType.void
+        }
     }
 }
 

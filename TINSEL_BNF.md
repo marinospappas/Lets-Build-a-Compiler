@@ -27,6 +27,8 @@
 <funcrion_call> ::= <function_name> ( )
 <read> :: = read <identifier> [ , <identifier> ] *
 <print> ::= print <b-expression> [ , <b-expression> ] *
+<exit> :: exit [ <exit_code> ]
+
 ```
 
 ## Control structures

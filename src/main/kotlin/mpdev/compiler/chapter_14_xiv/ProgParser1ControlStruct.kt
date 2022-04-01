@@ -52,6 +52,7 @@ fun parseStatement(breakLabel: String, continueLabel: String) {
             else if (inp.lookahead().type == TokType.function) parseFunctionCall()
             else abort("line ${inp.currentLineNumber}: identifier ${inp.lookahead().value} not declared")
         }
+        Kwd.exitToken -> parseExit()
         Kwd.semiColonToken -> inp.match()   // semicolons are simply ignored
         else -> inp.expected("valid keyword, semicolon or identifier")
     }
@@ -208,4 +209,14 @@ fun printExpressions() {
             else -> {}
         }
     } while (inp.lookahead().encToken == Kwd.commaToken)
+}
+
+/**
+ * parse exit
+ * <exit> :: exit [ <exit_code> ]
+ * current version implements exit(0) - exit code will be supported later
+ */
+fun parseExit() {
+    inp.match()
+    code.exitProgram()
 }

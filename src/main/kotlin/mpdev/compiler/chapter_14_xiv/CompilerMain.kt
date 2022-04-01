@@ -1,8 +1,6 @@
 package mpdev.compiler.chapter_14_xiv
 
-import java.io.File
 import java.lang.System.err
-import java.time.format.TextStyle
 import kotlin.system.exitProcess
 
 /**
@@ -14,7 +12,7 @@ import kotlin.system.exitProcess
  * Version 1.0 01.10.2021
  */
 
-const val USAGE = "usage: CompilerMain [-debug] [-nomsg] [-o output_file] input_file"
+const val USAGE = "usage: CompilerMain [-debug] [-nomsg] [-maxstring nnnn] [-o output_file] input_file"
 
 // compiler flags set by cmd line options
 var debugMode = false
@@ -61,6 +59,7 @@ fun processCmdLineArgs(args: Array<String>) {
                 "-?", "-h", "-H" -> exit(USAGE)
                 "-debug" -> debugMode = true
                 "-nomsg" -> noCopyrightMsg = true
+                "-maxstring" -> { STR_BUF_SIZE = getNextArg(args, ++argIndx, "output_file").toInt(); continue }
                 "-o", "-O" -> { outFile = getNextArg(args, ++argIndx, "output_file"); continue }
                 else -> exit("invalid option [$arg]\n$USAGE")
             }
@@ -105,6 +104,6 @@ fun main(args: Array<String>) {
         exit("end of debug run")
     }
     parseProgram()
-    println("Successful compilation, ${inp.currentLineNumber-1} source lines, ${code.getOutputLines()} assembly lines")
+    println("Successful compilation, $inFile: ${inp.currentLineNumber-1} source lines, $outFile: ${code.getOutputLines()} assembly lines")
                                         // -1 is needed as an extra new line was added when the input was read
 }
