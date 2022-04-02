@@ -55,6 +55,7 @@ fun parseNotFactor(): DataType {
     if (inp.lookahead().encToken == Kwd.notOp) {
         inp.match()
         typeF = parseBooleanFactor()
+        checkOperandTypeCompatibility(typeF, DataType.none, BOOLEAN_NOT)
         code.booleanNotAccumulator()
     }
     else
@@ -102,8 +103,7 @@ fun parseRelation(): DataType {
 fun boolOr(typeE1: DataType) {
     inp.match()
     val typeE2 = parseBooleanTerm()
-    if (incompatibleTypes(typeE1, typeE2))
-        abort ("line ${inp.currentLineNumber}: cannot 'or' $typeE1 with $typeE2")
+    checkOperandTypeCompatibility(typeE1, typeE2, OR)
     code.orAccumulator()
 }
 
@@ -111,8 +111,7 @@ fun boolOr(typeE1: DataType) {
 fun boolXor(typeE1: DataType) {
     inp.match()
     val typeE2 = parseBooleanTerm()
-    if (incompatibleTypes(typeE1, typeE2))
-        abort ("line ${inp.currentLineNumber}: cannot 'xor' $typeE1 with $typeE2")
+    checkOperandTypeCompatibility(typeE1, typeE2, XOR)
     code.xorAccumulator()
 }
 
@@ -120,8 +119,7 @@ fun boolXor(typeE1: DataType) {
 fun boolAnd(typeF1: DataType) {
     inp.match()
     val typeF2 = parseNotFactor()
-    if (incompatibleTypes(typeF1, typeF2))
-        abort ("line ${inp.currentLineNumber}: cannot 'and' $typeF1 with $typeF2")
+    checkOperandTypeCompatibility(typeF1, typeF2, AND)
     code.andAccumulator()
 }
 
@@ -129,7 +127,7 @@ fun boolAnd(typeF1: DataType) {
 fun parseEquals(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkCompareTypeCompatibility(typeE1, typeE2)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_EQ)
     when (typeE1) {
         DataType.int -> code.compareEquals()
         DataType.string -> code.compareStringEquals()
@@ -141,7 +139,7 @@ fun parseEquals(typeE1: DataType) {
 fun parseNotEquals(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkCompareTypeCompatibility(typeE1, typeE2)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_NE)
     when (typeE1) {
         DataType.int -> code.compareNotEquals()
         DataType.string -> code.compareStringNotEquals()
@@ -153,10 +151,9 @@ fun parseNotEquals(typeE1: DataType) {
 fun parseLess(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkCompareTypeCompatibility(typeE1, typeE2)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_LE)
     when (typeE1) {
         DataType.int -> code.compareLess()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'less than' not supported for strings")
         else -> {}
     }
 }
@@ -165,10 +162,9 @@ fun parseLess(typeE1: DataType) {
 fun parseLessEqual(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkCompareTypeCompatibility(typeE1, typeE2)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_LE)
     when (typeE1) {
         DataType.int -> code.compareLessEqual()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'less than or equal to' not supported for strings")
         else -> {}
     }
 }
@@ -177,10 +173,9 @@ fun parseLessEqual(typeE1: DataType) {
 fun parseGreater(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkCompareTypeCompatibility(typeE1, typeE2)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_GT)
     when (typeE1) {
         DataType.int -> code.compareGreater()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'greater than' not supported for strings")
         else -> {}
     }
 }
@@ -189,16 +184,9 @@ fun parseGreater(typeE1: DataType) {
 fun parseGreaterEqual(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkCompareTypeCompatibility(typeE1, typeE2)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_GE)
     when (typeE1) {
         DataType.int -> code.compareGreaterEqual()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: compare 'greater than or equal to' not supported for strings")
         else -> {}
     }
-}
-
-/** check type compatibility */
-fun checkCompareTypeCompatibility(t1: DataType, t2: DataType) {
-    if (incompatibleTypes(t1, t2))
-        abort("line ${inp.currentLineNumber}: cannot compare $t1 with $t2")
 }

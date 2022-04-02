@@ -1,1 +1,1 @@
-Error: line 4: expected [(expression)|identifier|number] found string [abc]
+Error: line 5: int function cannot return string

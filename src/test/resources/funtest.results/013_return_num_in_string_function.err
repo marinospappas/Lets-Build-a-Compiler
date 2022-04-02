@@ -1,1 +1,1 @@
-Error: line 10: expected [string literal or string identifier] found number [0]
+Error: line 11: string function cannot return int

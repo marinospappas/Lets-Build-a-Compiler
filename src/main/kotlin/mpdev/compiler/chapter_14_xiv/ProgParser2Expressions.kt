@@ -14,10 +14,8 @@ fun parseAssignment() {
     checkCanAssign(identName)
     val typeVar = getType(identName)
     inp.match(Kwd.equalsOp)
-    //parseBooleanExpression()
-    val typeExp = parseExpression()
-    if (incompatibleTypes(typeVar, typeExp))
-        abort ("line ${inp.currentLineNumber}: $typeVar variable cannot be assigned $typeExp value")
+    val typeExp = parseBooleanExpression()
+    checkOperandTypeCompatibility(typeVar, typeExp, ASSIGN)
     when (typeVar) {
         DataType.int -> parseNumAssignment(identName)
         DataType.string -> parseStringAssignment(identName)
@@ -88,6 +86,7 @@ fun parseSignedFactor(): DataType {
             code.setAccumulator("-${inp.match(Kwd.number).value}")
         else {
             factType = parseFactor()
+            checkOperandTypeCompatibility(factType, DataType.none, SIGNED)
             code.negateAccumulator()
         }
     }
@@ -171,8 +170,7 @@ fun parseVariable(): DataType {
 fun add(typeT1: DataType) {
     inp.match()
     val typeT2 = parseTerm()
-    if (incompatibleTypes(typeT1, typeT2))
-        abort ("line ${inp.currentLineNumber}: cannot add $typeT2 to $typeT1")
+    checkOperandTypeCompatibility(typeT1, typeT2, ADD)
     when (typeT1) {
         DataType.int -> addNumber()
         DataType.string -> addString()
@@ -184,11 +182,9 @@ fun add(typeT1: DataType) {
 fun subtract(typeT1: DataType) {
     inp.match()
     val typeT2 = parseTerm()
-    if (incompatibleTypes(typeT1, typeT2))
-        abort ("line ${inp.currentLineNumber}: cannot subtract $typeT2 from $typeT1")
+    checkOperandTypeCompatibility(typeT1, typeT2, SUBTRACT)
     when (typeT1) {
         DataType.int -> subtractNumber()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: subtraction not supported for strings")
         else -> {}
     }
 }
@@ -197,11 +193,9 @@ fun subtract(typeT1: DataType) {
 fun multiply(typeF1: DataType) {
     inp.match()
     val typeF2 = parseFactor()
-    if (incompatibleTypes(typeF1, typeF2))
-        abort ("line ${inp.currentLineNumber}: cannot multiply $typeF1 by $typeF2")
+    checkOperandTypeCompatibility(typeF1, typeF2, MULTIPLY)
     when (typeF1) {
         DataType.int -> multiplyNumber()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: multiplication not supported for strings")
         else -> {}
     }
 }
@@ -210,21 +204,27 @@ fun multiply(typeF1: DataType) {
 fun divide(typeF1: DataType) {
     inp.match()
     val typeF2 = parseFactor()
-    if (incompatibleTypes(typeF1, typeF2))
-        abort ("line ${inp.currentLineNumber}: cannot divide $typeF1 by $typeF2")
+    checkOperandTypeCompatibility(typeF1, typeF2, DIVIDE)
     when (typeF1) {
         DataType.int -> divideNumber()
-        DataType.string -> abort ("line ${inp.currentLineNumber}: division not supported for strings")
         else -> {}
     }
 }
 
 /**
- * check for compatible data types
- * at this stage string is not compatible with intare
- * while string with string and int with int
+ * check for compatible data types for the specific operation
+ * if the specific operation is not defined in the compatibility map
+ * check also the specific types against the ALL_OPS keyword
  */
-fun incompatibleTypes(t1: DataType, t2: DataType): Boolean {
-    return t1 == DataType.string && t2 != DataType.string
-            || t2 == DataType.string && t1 != DataType.string
+fun checkOperandTypeCompatibility(t1: DataType, t2: DataType, operation: String) {
+    var typesAreCompatible = typesCompatibility[TypesAndOpsCombi(t1, t2, operation)] ?: false
+    if (!typesAreCompatible)
+        typesAreCompatible = typesCompatibility[TypesAndOpsCombi(t1, t2, ALL_OPS)] ?: false
+    if (!typesAreCompatible) {
+        var message = "line ${inp.currentLineNumber}: $operation $t1 "
+        if (t2 != DataType.none)
+            message += "with $t2 "
+        message += "not supported"
+        abort(message)
+    }
 }

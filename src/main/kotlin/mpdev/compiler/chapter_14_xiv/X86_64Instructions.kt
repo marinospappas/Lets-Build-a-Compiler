@@ -66,7 +66,7 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeNl(".align 8")
         if (!noMsg) {
             // copyright message
-            outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\\n\"")
+            outputCodeTabNl("tinsel_msg_: .string \"TINSEL version 2.0 for x86-84 (Linux) Apr 2022 (c) M.Pappas\\n\"")
             // newline string
             outputCodeTabNl("newline_: .string \"\\n\"")
         }
