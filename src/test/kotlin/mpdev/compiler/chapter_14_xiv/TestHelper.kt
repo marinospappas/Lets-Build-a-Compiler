@@ -141,6 +141,8 @@ class TestHelper(var testDir: String = "") {
         for (i in 0 until upperLimit) {
             if (expList[i].startsWith("# compiled on"))
                 continue
+            if (expList[i].contains("tinsel version",true))
+                continue
             if (expList[i] != outList[i]) {
                 return "Assembly Line ${(i + 1)} - EXPECTED: ${expList[i]} - RECEIVED: ${outList[i]}"
             }

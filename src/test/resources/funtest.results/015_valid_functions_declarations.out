@@ -16,7 +16,8 @@
 
 # function abc
 abc:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
 	movq	i(%rip), %rax
 	testq	%rax, %rax
@@ -25,45 +26,51 @@ abc:
 	testq	%rax, %rax
 	popq	%rbx
 	addq	%rbx, %rax
-	movq	%rbp, %rsp
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	ret
 
 # function xyz
 xyz:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
 	movq	$8, %rax
 	testq	%rax, %rax
 	movq	%rax, i(%rip)
-	movq	%rbp, %rsp
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	ret
 
 # function wow
 wow:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
 	lea	STRCNST_1(%rip), %rax
-	movq	%rbp, %rsp
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	ret
 # main program section
 
 # main program
 _start:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
-	pushq	%rbx
 # print hello message
 	lea	tinsel_msg_(%rip), %rdi
 	call	write_s_
 
 
 # end of main
-	movq	(%rbp), %rbx
-	movq	%rbp, %rsp
+main_exit_:
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	movq	$60, %rax		# exit system call
 	xorq	%rdi, %rdi		# exit code 0
 	syscall
@@ -72,7 +79,5 @@ _start:
 
 .data
 	.align 8
-# buffer for string operations - max str length limit
-	string_buffer_:	.space 1024
 # constant string values go here
 	STRCNST_1:	.string "hello World!"
