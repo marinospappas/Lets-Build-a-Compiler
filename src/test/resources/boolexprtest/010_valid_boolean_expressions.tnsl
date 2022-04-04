@@ -5,7 +5,7 @@ var a: int
 var s: string = "abc"
 
 main {
-    if (i == 1 && s == "abc") {
+    if (i == 1 && s != "") {
         println "ok"
     }
     if (i > 0 && j <= 0) {
