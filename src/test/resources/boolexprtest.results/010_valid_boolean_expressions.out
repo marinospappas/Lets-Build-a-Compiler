@@ -1,6 +1,6 @@
 # x86-64 Assembly Code - AT&T format
 # program booleantest
-# compiled on Mon Apr 04 11:30:16 CEST 2022
+# compiled on Mon Apr 04 14:43:47 CEST 2022
 .data
 .align 8
 	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Apr 2022 (c) M.Pappas\n"
@@ -42,7 +42,7 @@ _start:
 	popq	%rdi		# compare strings - streq_(top-of-stack, %rax)
 	movq	%rax, %rsi
 	call	streq_
-	andq	$1, %rax
+	xorq	$1, %rax
 	popq	%rbx
 	andq	%rbx, %rax
 	jz	main_L0_
@@ -113,7 +113,7 @@ main_L2_:
 	lea	string_buffer_(%rip), %rdi
 	call	strcpy_
 	pushq	%rax
-	lea	STRCNST_1(%rip), %rax
+	lea	STRCNST_3(%rip), %rax
 	popq	%rdi		# compare strings - streq_(top-of-stack, %rax)
 	movq	%rax, %rsi
 	call	streq_
@@ -147,7 +147,7 @@ main_L3_:
 	lea	string_buffer_(%rip), %rdi
 	call	strcpy_
 	pushq	%rax
-	lea	STRCNST_1(%rip), %rax
+	lea	STRCNST_3(%rip), %rax
 	popq	%rdi		# compare strings - streq_(top-of-stack, %rax)
 	movq	%rax, %rsi
 	call	streq_
@@ -173,5 +173,6 @@ main_exit_:
 # buffer for string operations - max str length limit
 	string_buffer_:	.space 1024
 # constant string values go here
-	STRCNST_1:	.string "abc"
+	STRCNST_1:	.string ""
 	STRCNST_2:	.string "ok"
+	STRCNST_3:	.string "abc"

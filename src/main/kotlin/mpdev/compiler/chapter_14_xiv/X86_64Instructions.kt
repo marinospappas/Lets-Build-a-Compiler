@@ -82,7 +82,7 @@ class X86_64Instructions(outFile: String = "") {
 
     /** declare string variable */
     fun declareString(varName: String, initValue: String, length: Int = 0) {
-        if (initValue != "")
+        if (length == 0 || initValue != "")
             outputCodeTabNl("$varName:\t.string \"$initValue\"")
         else
             outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length

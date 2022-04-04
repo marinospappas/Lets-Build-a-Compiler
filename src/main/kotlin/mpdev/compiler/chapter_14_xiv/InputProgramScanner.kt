@@ -214,7 +214,7 @@ class InputProgramScanner(inputFile: String = "") {
         return value
     }
 
-    /** get a string constant */
+    /** get a string literal */
     private fun getString(): String {
         var value = ""
         if (nextChar != '"')
