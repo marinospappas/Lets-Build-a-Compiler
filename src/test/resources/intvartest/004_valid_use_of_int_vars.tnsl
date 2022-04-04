@@ -1,6 +1,6 @@
 program intvartest
 
-var i1: int, i2: int
+var i1: int, i2: int = -3
 
 main {
     i1 = +i2 + ((-i2) + 5) *8

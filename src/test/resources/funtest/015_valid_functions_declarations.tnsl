@@ -20,6 +20,11 @@ fun wow(): string {
 
 //-- main program section
 main {
+    println abc()
+    xyz()
+    println i
+    println wow()
+
 }
 
 endprogram

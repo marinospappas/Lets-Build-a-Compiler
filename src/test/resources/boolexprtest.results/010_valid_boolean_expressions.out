@@ -1,0 +1,177 @@
+# x86-64 Assembly Code - AT&T format
+# program booleantest
+# compiled on Mon Apr 04 11:30:16 CEST 2022
+.data
+.align 8
+	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Apr 2022 (c) M.Pappas\n"
+	newline_: .string "\n"
+	i:	.quad 1
+	j:	.quad 0
+	a:	.quad 0
+	s:	.string "abc"
+
+.text
+.align 8
+.global _start
+
+# main program
+_start:
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
+	movq	%rsp, %rbp
+# print hello message
+	lea	tinsel_msg_(%rip), %rdi
+	call	write_s_
+
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$1, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	sete	%al
+	andq	$1, %rax
+	pushq	%rax
+	lea	s(%rip), %rax
+	movq	%rax, %rsi		# save string - strcpy_(string_buffer, %rax)
+	lea	string_buffer_(%rip), %rdi
+	call	strcpy_
+	pushq	%rax
+	lea	STRCNST_1(%rip), %rax
+	popq	%rdi		# compare strings - streq_(top-of-stack, %rax)
+	movq	%rax, %rsi
+	call	streq_
+	andq	$1, %rax
+	popq	%rbx
+	andq	%rbx, %rax
+	jz	main_L0_
+	lea	STRCNST_2(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+main_L0_:
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$0, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setg	%al
+	andq	$1, %rax
+	pushq	%rax
+	movq	j(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$0, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setle	%al
+	andq	$1, %rax
+	popq	%rbx
+	andq	%rbx, %rax
+	jz	main_L1_
+	lea	STRCNST_2(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+main_L1_:
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$5, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setg	%al
+	andq	$1, %rax
+	pushq	%rax
+	movq	j(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$-1, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setg	%al
+	andq	$1, %rax
+	popq	%rbx
+	orq	%rbx, %rax
+	jz	main_L2_
+	lea	STRCNST_2(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+main_L2_:
+	lea	s(%rip), %rax
+	movq	%rax, %rsi		# save string - strcpy_(string_buffer, %rax)
+	lea	string_buffer_(%rip), %rdi
+	call	strcpy_
+	pushq	%rax
+	lea	STRCNST_1(%rip), %rax
+	popq	%rdi		# compare strings - streq_(top-of-stack, %rax)
+	movq	%rax, %rsi
+	call	streq_
+	andq	$1, %rax
+	movq	%rax, a(%rip)
+	movq	a(%rip), %rax
+	testq	%rax, %rax
+	jz	main_L3_
+	movq	a(%rip), %rax
+	testq	%rax, %rax
+	xorq	$1, %rax
+	pushq	%rax
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	pushq	%rax
+	movq	$0, %rax
+	testq	%rax, %rax
+	popq	%rbx
+	cmp	%rax, %rbx
+	setg	%al
+	andq	$1, %rax
+	popq	%rbx
+	andq	%rbx, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+main_L3_:
+	lea	s(%rip), %rax
+	movq	%rax, %rsi		# save string - strcpy_(string_buffer, %rax)
+	lea	string_buffer_(%rip), %rdi
+	call	strcpy_
+	pushq	%rax
+	lea	STRCNST_1(%rip), %rax
+	popq	%rdi		# compare strings - streq_(top-of-stack, %rax)
+	movq	%rax, %rsi
+	call	streq_
+	xorq	$1, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+
+# end of main
+main_exit_:
+	movq	%rbp, %rsp		# restore stack frame
+	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
+	movq	$60, %rax		# exit system call
+	xorq	%rdi, %rdi		# exit code 0
+	syscall
+
+# end program
+
+.data
+	.align 8
+# buffer for string operations - max str length limit
+	string_buffer_:	.space 1024
+# constant string values go here
+	STRCNST_1:	.string "abc"
+	STRCNST_2:	.string "ok"

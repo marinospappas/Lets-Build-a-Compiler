@@ -1,1 +1,1 @@
-Error: line 8: expected [(expression)|identifier|number] found [)]
+Error: line 8: expected [valid factor (expression, number or string)] found [)]

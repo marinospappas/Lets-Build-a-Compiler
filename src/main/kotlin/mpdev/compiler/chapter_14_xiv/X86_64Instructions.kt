@@ -166,14 +166,14 @@ class X86_64Instructions(outFile: String = "") {
      */
     fun allocateStackVar(size: Int): Int {
         outputCodeTabNl("subq\t$${size}, %rsp")
-        stackVarOffset -= INT_SIZE
+        stackVarOffset -= size
         return stackVarOffset
     }
 
     /** release variable space in the stack */
     fun releaseStackVar(size: Int) {
         outputCodeTabNl("addq\t$${size}, %rsp")
-        stackVarOffset += INT_SIZE
+        stackVarOffset += size
     }
 
     /** exit the program */

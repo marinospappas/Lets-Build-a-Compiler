@@ -1,11 +1,11 @@
 program fortest
 
-var limit: int
+var limit: int = 10
 
 main {
     for(i=1 to limit) {
         for (j=i down to 1) {
-            print i*j
+            print i*j, " "
         }
         println;
     }

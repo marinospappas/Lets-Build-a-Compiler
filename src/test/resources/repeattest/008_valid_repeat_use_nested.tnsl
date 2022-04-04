@@ -8,13 +8,16 @@ var i: int, j: int
 // main program
 //-- repeat blocks
 main {
-    i = 10; j = 10
+    i = 0; j = 10
     repeat {
         i = i + 1
+        j = 10
         repeat {
             j = j + 2*i
-        } until(j > 100)
-    } until(i >= j)
+            println "j: ", j
+        } until(j > 20)
+        println "i: ", i
+    } until(i >= j/6)
 }
 
 endprogram

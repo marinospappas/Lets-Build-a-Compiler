@@ -1,0 +1,24 @@
+program booleantest
+
+var i: int = 1, j: int = 0
+var a: int
+var s: string = "abc"
+
+main {
+    if (i == 1 && s == "abc") {
+        println "ok"
+    }
+    if (i > 0 && j <= 0) {
+        println "ok"
+    }
+    if (i > 5 || j > -1) {
+        println "ok"
+    }
+    a = s == "abc"
+    if (a) {
+        println ! a && i > 0
+    }
+    println s != "abc"
+}
+
+endprogram

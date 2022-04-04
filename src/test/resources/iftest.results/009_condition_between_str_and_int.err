@@ -1,1 +1,1 @@
-Error: line 6: expected [string] found number [5]
+Error: line 6: compare eq string with int not supported

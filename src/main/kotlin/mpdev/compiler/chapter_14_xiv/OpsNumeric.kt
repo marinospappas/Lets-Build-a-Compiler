@@ -9,8 +9,7 @@ fun parseNumber(): DataType {
 /** process a numeric variable */
 fun parseNumVariable(): DataType {
     val varName = inp.match(Kwd.identifier).value
-    val localVar = identifiersMap[varName]?.stackVar
-    if (localVar == true)
+    if (identifiersMap[varName]?.stackVar == true)
         identifiersMap[varName]?.stackOffset?.let { code.setAccumulatorToLocalVar(it) }
     else
         code.setAccumulatorToVar(varName)

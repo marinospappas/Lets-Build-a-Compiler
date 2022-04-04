@@ -1,0 +1,11 @@
+program stringtest
+
+var s: string(20), s1: string(20), s2: string(20)
+
+main {
+    s1 = "Hello"
+    s2 = "World"
+    s = s1 / s2;
+}
+
+endprogram

@@ -1,1 +1,1 @@
-Error: line 7: expected [variable of type int] found identifier [s1]
+Error: line 8: add int with string not supported

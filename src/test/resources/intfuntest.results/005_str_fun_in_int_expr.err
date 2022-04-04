@@ -1,1 +1,1 @@
-Error: line 10: expected [function of type int] found identifier [a_fun]
+Error: line 11: add int with string not supported

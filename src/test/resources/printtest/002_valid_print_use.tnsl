@@ -1,6 +1,6 @@
 program printtest
 
-var i: int, s: string = "abcd"
+var i: int = 5, s: string = "abcd"
 
 main {
     print i, " -> ", s

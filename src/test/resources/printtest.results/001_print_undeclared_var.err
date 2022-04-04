@@ -1,1 +1,1 @@
-Error: line 6: identifier [k] not declared
+Error: line 6: undeclared identifier [k]

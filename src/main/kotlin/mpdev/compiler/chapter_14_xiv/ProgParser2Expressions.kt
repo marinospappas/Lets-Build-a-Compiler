@@ -77,13 +77,16 @@ fun parseTerm(): DataType {
  * <signed factor> ::= [ addop ] <factor>
  */
 fun parseSignedFactor(): DataType {
-    var factType = DataType.void
+    var factType: DataType
     if (inp.lookahead().encToken == Kwd.addOp)
         inp.match()
     if (inp.lookahead().encToken == Kwd.subOp) {
         inp.match()
-        if (inp.lookahead().encToken == Kwd.number)
+        if (inp.lookahead().encToken == Kwd.number) {
+            factType = DataType.int
+            checkOperandTypeCompatibility(factType, DataType.none, SIGNED)
             code.setAccumulator("-${inp.match(Kwd.number).value}")
+        }
         else {
             factType = parseFactor()
             checkOperandTypeCompatibility(factType, DataType.none, SIGNED)
@@ -106,7 +109,7 @@ fun parseFactor(): DataType {
         Kwd.identifier -> return parseIdentifier()
         Kwd.number -> return parseNumber()
         Kwd.string -> return parseStringLiteral()
-        else -> inp.expected("valid factor (num or string)")
+        else -> inp.expected("valid factor (expression, number or string)")
     }
     return DataType.void    // dummy instruction
 }
@@ -160,9 +163,7 @@ fun parseVariable(): DataType {
     return when (getType(inp.lookahead().value)) {
         DataType.int -> parseNumVariable()
         DataType.string -> parseStringVariable()
-        else -> {
-            DataType.void
-        }
+        else -> DataType.void
     }
 }
 
@@ -211,20 +212,3 @@ fun divide(typeF1: DataType) {
     }
 }
 
-/**
- * check for compatible data types for the specific operation
- * if the specific operation is not defined in the compatibility map
- * check also the specific types against the ALL_OPS keyword
- */
-fun checkOperandTypeCompatibility(t1: DataType, t2: DataType, operation: String) {
-    var typesAreCompatible = typesCompatibility[TypesAndOpsCombi(t1, t2, operation)] ?: false
-    if (!typesAreCompatible)
-        typesAreCompatible = typesCompatibility[TypesAndOpsCombi(t1, t2, ALL_OPS)] ?: false
-    if (!typesAreCompatible) {
-        var message = "line ${inp.currentLineNumber}: $operation $t1 "
-        if (t2 != DataType.none)
-            message += "with $t2 "
-        message += "not supported"
-        abort(message)
-    }
-}

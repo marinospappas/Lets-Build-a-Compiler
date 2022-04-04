@@ -1,0 +1,9 @@
+program stringtest
+
+var s: string = "abcd"
+
+main {
+    println s, s1
+}
+
+endprogram

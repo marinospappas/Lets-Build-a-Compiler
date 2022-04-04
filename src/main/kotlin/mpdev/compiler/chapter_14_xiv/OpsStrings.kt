@@ -3,10 +3,15 @@ package mpdev.compiler.chapter_14_xiv
 /** parse string literal */
 fun parseStringLiteral(): DataType {
     val stringValue = inp.match(Kwd.string).value
-    // save the string in the map of constant strings
-    val strAddr = STRING_CONST_PREFIX + (++stringCnstIndx).toString()
-    stringConstants[strAddr] = stringValue
-    code.getStringAddress(strAddr)
+    // check if this string exists already in our map of constant strings and add it if not
+    var stringAddress = ""
+    stringConstants.forEach { (k, v) -> if (v == stringValue) stringAddress = k }
+    if (stringAddress == "") {  // if not found
+        // save the string in the map of constant strings
+        stringAddress = STRING_CONST_PREFIX + (++stringCnstIndx).toString()
+        stringConstants[stringAddress] = stringValue
+    }
+    code.getStringAddress(stringAddress)
     return DataType.string
 }
 

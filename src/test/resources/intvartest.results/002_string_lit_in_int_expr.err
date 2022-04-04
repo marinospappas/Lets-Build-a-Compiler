@@ -1,1 +1,1 @@
-Error: line 6: expected [(expression)|identifier|number] found string [123]
+Error: line 7: add int with string not supported

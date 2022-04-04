@@ -1,0 +1,9 @@
+program stringtest
+
+var s: string(20), i: int = 5, j: int = 2
+
+main {
+    s = (i + 2) * j;
+}
+
+endprogram

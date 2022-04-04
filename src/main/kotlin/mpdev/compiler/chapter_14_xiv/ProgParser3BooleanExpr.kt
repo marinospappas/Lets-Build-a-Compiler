@@ -151,7 +151,7 @@ fun parseNotEquals(typeE1: DataType) {
 fun parseLess(typeE1: DataType) {
     inp.match()
     val typeE2 = parseExpression()
-    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_LE)
+    checkOperandTypeCompatibility(typeE1, typeE2, COMPARE_LT)
     when (typeE1) {
         DataType.int -> code.compareLess()
         else -> {}
