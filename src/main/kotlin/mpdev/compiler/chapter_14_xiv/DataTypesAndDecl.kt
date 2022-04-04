@@ -1,7 +1,5 @@
 package mpdev.compiler.chapter_14_xiv
 
-import javax.xml.crypto.Data
-
 // global vars
 
 /** our variable types */
