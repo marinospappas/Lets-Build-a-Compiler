@@ -3,7 +3,8 @@ program fortest
 var limit: int
 
 main {
-    for(i=1 to "a"
+    for(i=1 to "a") {
+    }
 }
 
 endprogram

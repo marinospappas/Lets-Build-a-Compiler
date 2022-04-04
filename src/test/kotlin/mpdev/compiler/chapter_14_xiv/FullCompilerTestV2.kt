@@ -3,7 +3,6 @@ package mpdev.compiler.chapter_14_xiv
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.*
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
-import java.util.stream.Stream
 
 /**
  * Full Compiler Test Version 2
@@ -78,21 +77,26 @@ class FullCompilerTestV2 {
         }
         @Test
         @Order(6)
+        fun `Test Continue Statement`(testReporter: TestReporter) {
+            TestHelper("continuetest").runAllTests(testReporter, multiThreaded)
+        }
+        @Test
+        @Order(7)
         fun `Test Read Statement`(testReporter: TestReporter) {
             TestHelper("readtest").runAllTests(testReporter, multiThreaded)
         }
         @Test
-        @Order(7)
+        @Order(8)
         fun `Test Print Statement`(testReporter: TestReporter) {
             TestHelper("printtest").runAllTests(testReporter, multiThreaded)
         }
         @Test
-        @Order(8)
+        @Order(9)
         fun `Test Return Statement`(testReporter: TestReporter) {
             TestHelper("returntest").runAllTests(testReporter, multiThreaded)
         }
         @Test
-        @Order(9)
+        @Order(10)
         fun `Test For Structure`(testReporter: TestReporter) {
             TestHelper("fortest").runAllTests(testReporter, multiThreaded)
         }
@@ -120,46 +124,32 @@ class FullCompilerTestV2 {
         }
     }
 
-    @Disabled
-    @TestInstance(Lifecycle.PER_CLASS)
-    @Nested
-    @DisplayName("Boolean Expressions Tests")
-    @TestMethodOrder(OrderAnnotation::class)
-    inner class ProgParser3Test {
-
-        private lateinit var h1: TestHelper
-        @Test
-        @Order(1)
-        fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            h1.runTest(testName, testReporter)
-        }
-
-        // parameter provider functions
-        private fun programTestFileProvider(): Stream<String> {
-            h1 = TestHelper("programtest")
-            return h1.getFilesList()
-        }
-    }
-
-    @Disabled
     @TestInstance(Lifecycle.PER_CLASS)
     @Nested
     @DisplayName("String Expressions Tests")
     @TestMethodOrder(OrderAnnotation::class)
     inner class ProgParser4Test {
-
-        private lateinit var h1: TestHelper
         @Test
         @Order(1)
-        fun `Test Overall Program`(testName: String, testReporter: TestReporter) {
-            h1.runTest(testName, testReporter)
+        fun `Test String Variables`(testReporter: TestReporter) {
+            TestHelper("stringvartest").runAllTests(testReporter, multiThreaded)
         }
-
-        // parameter provider functions
-        private fun programTestFileProvider(): Stream<String> {
-            h1 = TestHelper("programtest")
-            return h1.getFilesList()
+        @Test
+        @Order(2)
+        fun `Test String Expressions`(testReporter: TestReporter) {
+            TestHelper("stringexprtest").runAllTests(testReporter, multiThreaded)
         }
     }
 
+    @TestInstance(Lifecycle.PER_CLASS)
+    @Nested
+    @DisplayName("Boolean Expressions Tests")
+    @TestMethodOrder(OrderAnnotation::class)
+    inner class ProgParser3Test {
+        @Test
+        @Order(1)
+        fun `Test Boolean Expressions`(testReporter: TestReporter) {
+            TestHelper("boolexprtest").runAllTests(testReporter, multiThreaded)
+        }
+    }
 }

@@ -3,7 +3,7 @@ program numtest
 var i1: int
 
 main {
-    i1 = 5 + "a"
+    i1 = 5 + "a";
 }
 
 endprogram

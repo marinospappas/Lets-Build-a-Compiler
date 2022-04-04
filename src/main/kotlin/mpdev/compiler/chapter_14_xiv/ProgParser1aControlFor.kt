@@ -23,7 +23,7 @@ class ForParser {
         postLabel(label1)   // actual start of the loop
         stepAndCheck()      // increase (or decrease) ctrl var and check
         code.jumpIfFalse(label2)  // if limit reached, exit
-        parseBlock(label2)    // the FOR block
+        parseBlock(label2, label1)    // the FOR block
         code.jump(label1) // loop back to the beginning of the loop
         postLabel(label2)   // exit point of the loop
         cleanUpStack()
@@ -53,7 +53,9 @@ class ForParser {
             stackVar = true, stackOffset = ctrlVarOffs, canAssign = false
         )
         // set the ctrl var to FROM
-        parseExpression()
+        val expType = parseExpression()
+        if (expType != DataType.int)
+            abort("line ${inp.currentLineNumber}: expected integer expression found $expType")
         code.assignmentLocalVar(ctrlVarOffs)
     }
 
@@ -70,7 +72,9 @@ class ForParser {
         // get TO value and store in the stack
         inp.match(Kwd.toToken)
         toOffs = code.allocateStackVar(INT_SIZE)
-        parseExpression()
+        val expType = parseExpression()
+        if (expType != DataType.int)
+            abort("line ${inp.currentLineNumber}: expected integer expression found $expType")
         code.assignmentLocalVar(toOffs)
     }
 
@@ -81,7 +85,9 @@ class ForParser {
             hasStep = true
             // allocate space in the stack and save step value
             stepOffs = code.allocateStackVar(INT_SIZE)
-            parseExpression()
+            val expType = parseExpression()
+            if (expType != DataType.int)
+                abort("line ${inp.currentLineNumber}: expected integer expression found $expType")
             code.assignmentLocalVar(stepOffs)
         }
     }

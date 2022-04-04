@@ -1,0 +1,11 @@
+program booleantest
+
+var i: int = 5, j: int = -1
+
+main {
+    if ( (i > 0) && (j < 0) ) {
+        println "ok"
+    }
+}
+
+endprogram

@@ -1,0 +1,17 @@
+program beaktest
+
+var i: int
+
+main {
+    while (i<0) {
+        i = i + 1
+        if (i == 8) { continue }
+        repeat {
+            i = i+1
+            if (i <= 10) { continue }
+        }
+        until (i > 20)
+    }
+}
+
+endprogram

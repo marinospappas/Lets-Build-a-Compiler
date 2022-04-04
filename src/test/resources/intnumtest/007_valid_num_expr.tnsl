@@ -4,6 +4,7 @@ var i1: int
 
 main {
     i1 = +5 + (-10) + ((128+4)*2 - 325)/6
+    println i1
 }
 
 endprogram

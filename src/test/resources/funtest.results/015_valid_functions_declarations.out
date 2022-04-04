@@ -1,9 +1,9 @@
 # x86-64 Assembly Code - AT&T format
 # program funtest
-# compiled on Tue Jan 25 17:59:26 CET 2022
+# compiled on Mon Apr 04 08:09:31 CEST 2022
 .data
 .align 8
-	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\n"
+	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Apr 2022 (c) M.Pappas\n"
 	newline_: .string "\n"
 	i:	.quad 5
 
@@ -65,6 +65,23 @@ _start:
 	lea	tinsel_msg_(%rip), %rdi
 	call	write_s_
 
+	call	abc
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+	call	xyz
+	movq	i(%rip), %rax
+	testq	%rax, %rax
+	movq	%rax, %rdi		# value to be printed in rdi
+	call	write_i_
+	lea	newline_(%rip), %rdi
+	call	write_s_
+	call	wow
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
+	lea	newline_(%rip), %rdi
+	call	write_s_
 
 # end of main
 main_exit_:

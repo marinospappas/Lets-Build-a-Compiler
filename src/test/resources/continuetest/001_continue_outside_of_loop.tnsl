@@ -1,0 +1,9 @@
+program beaktest
+
+var i: int
+
+main {
+    continue
+}
+
+endprogram

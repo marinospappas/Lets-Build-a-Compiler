@@ -60,7 +60,11 @@ fun getCanAssign(identifier: String): Boolean = identifiersMap[identifier]?.canA
 
 // type compatibility between different types for each operation
 
-class TypesAndOpsCombi(var type1: DataType, var type2: DataType, var operation: String)
+class TypesAndOpsCombi(var type1: DataType, var type2: DataType, var operation: String) {
+    override fun toString(): String {
+        return type1.toString() + type2.toString() + operation
+    }
+}
 
 // definitions of operations
 const val ALL_OPS = "all ops"
@@ -82,13 +86,32 @@ const val COMPARE_LT = "compare lt"
 const val COMPARE_LE = "compare le"
 
 
-val typesCompatibility = mutableMapOf(
+val typesCompatibility = mapOf(
     // int with int allowed for all operations
-    TypesAndOpsCombi(DataType.int, DataType.int, ALL_OPS) to true,
+    TypesAndOpsCombi(DataType.int, DataType.int, ALL_OPS).toString() to true,
+    TypesAndOpsCombi(DataType.int, DataType.none, ALL_OPS).toString() to true,
     // string with string allowed only for assign, add, compare_eq compare_ne
-    TypesAndOpsCombi(DataType.string, DataType.string, ASSIGN) to true,
-    TypesAndOpsCombi(DataType.string, DataType.string, ADD) to true,
-    TypesAndOpsCombi(DataType.string, DataType.string, COMPARE_EQ) to true,
-    TypesAndOpsCombi(DataType.string, DataType.string, COMPARE_NE) to true,
+    TypesAndOpsCombi(DataType.string, DataType.string, ASSIGN).toString() to true,
+    TypesAndOpsCombi(DataType.string, DataType.string, ADD).toString() to true,
+    TypesAndOpsCombi(DataType.string, DataType.string, COMPARE_EQ).toString() to true,
+    TypesAndOpsCombi(DataType.string, DataType.string, COMPARE_NE).toString() to true,
     // all other combinations forbidden unless set here
     )
+
+/**
+ * check for compatible data types for the specific operation
+ * if the specific operation is not defined in the compatibility map
+ * check also the specific types against the ALL_OPS keyword
+ */
+fun checkOperandTypeCompatibility(t1: DataType, t2: DataType, operation: String) {
+    var typesAreCompatible = typesCompatibility[TypesAndOpsCombi(t1, t2, operation).toString()] ?: false
+    if (!typesAreCompatible)
+        typesAreCompatible = typesCompatibility[TypesAndOpsCombi(t1, t2, ALL_OPS).toString()] ?: false
+    if (!typesAreCompatible) {
+        var message = "line ${inp.currentLineNumber}: $operation $t1 "
+        if (t2 != DataType.none)
+            message += "with $t2 "
+        message += "not supported"
+        abort(message)
+    }
+}

@@ -8,7 +8,14 @@ var def: int = -5
 var i: int
 
 // main program here
-main { }
+main {
+    w = "hello!"
+    println abc
+    println xyz
+    println w
+    println def
+    println i
+}
 
 // end of program
 endprogram

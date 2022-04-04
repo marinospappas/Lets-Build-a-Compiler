@@ -1,1 +1,1 @@
-Error: line 6: expected [(expression)|identifier|number] found string [a]
+Error: line 6: expected integer expression found string

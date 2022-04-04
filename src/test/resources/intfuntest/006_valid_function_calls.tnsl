@@ -9,6 +9,7 @@ fun a_fun(): int {
 main {
     a_fun()
     i = i * 2 + (a_fun() + 1)/2 - 5*a_fun()
+    println i
 }
 
 endprogram

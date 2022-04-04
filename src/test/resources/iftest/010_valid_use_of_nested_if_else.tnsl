@@ -1,7 +1,7 @@
 program iftest
 
-var i: int
-var x: int
+var i: int = 0
+var x: int = 1
 
 main {
     if (i<0) {
@@ -13,10 +13,11 @@ main {
     }
     else {
         if (x) {
-            i = 0
+            i = 10
         }
     }
     }
+    println i
 }
 
 endprogram

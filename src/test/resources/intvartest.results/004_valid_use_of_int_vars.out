@@ -1,12 +1,12 @@
 # x86-64 Assembly Code - AT&T format
 # program intvartest
-# compiled on Mon Jan 31 10:08:38 CET 2022
+# compiled on Mon Apr 04 09:23:08 CEST 2022
 .data
 .align 8
-	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\n"
+	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Apr 2022 (c) M.Pappas\n"
 	newline_: .string "\n"
 	i1:	.quad 0
-	i2:	.quad 0
+	i2:	.quad -3
 
 .text
 .align 8
@@ -14,9 +14,9 @@
 
 # main program
 _start:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
-	pushq	%rbx
 # print hello message
 	lea	tinsel_msg_(%rip), %rdi
 	call	write_s_
@@ -53,9 +53,10 @@ _start:
 	call	write_s_
 
 # end of main
-	movq	(%rbp), %rbx
-	movq	%rbp, %rsp
+main_exit_:
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	movq	$60, %rax		# exit system call
 	xorq	%rdi, %rdi		# exit code 0
 	syscall
@@ -64,5 +65,3 @@ _start:
 
 .data
 	.align 8
-# buffer for string operations - max str length limit
-	string_buffer_:	.space 1024

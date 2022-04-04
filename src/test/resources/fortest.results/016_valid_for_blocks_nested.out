@@ -1,11 +1,11 @@
 # x86-64 Assembly Code - AT&T format
 # program fortest
-# compiled on Thu Jan 27 17:47:29 CET 2022
+# compiled on Mon Apr 04 07:54:21 CEST 2022
 .data
 .align 8
-	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Feb 2022 (c) M.Pappas\n"
+	tinsel_msg_: .string "TINSEL version 2.0 for x86-84 (Linux) Apr 2022 (c) M.Pappas\n"
 	newline_: .string "\n"
-	limit:	.quad 0
+	limit:	.quad 10
 
 .text
 .align 8
@@ -13,9 +13,9 @@
 
 # main program
 _start:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
-	pushq	%rbx
 # print hello message
 	lea	tinsel_msg_(%rip), %rdi
 	call	write_s_
@@ -79,6 +79,9 @@ main_L2_:
 	imulq	%rbx, %rax
 	movq	%rax, %rdi		# value to be printed in rdi
 	call	write_i_
+	lea	STRCNST_1(%rip), %rax
+	movq	%rax, %rdi		# string pointer to be printed in rdi
+	call	write_s_
 	jmp	main_L2_
 main_L3_:
 	addq	$16, %rsp
@@ -125,7 +128,7 @@ main_L4_:
 	setle	%al
 	andq	$1, %rax
 	jz	main_L5_
-	lea	STRCNST_1(%rip), %rax
+	lea	STRCNST_2(%rip), %rax
 	movq	%rax, %rdi		# string pointer to be printed in rdi
 	call	write_s_
 	movq	-8(%rbp), %rax
@@ -140,9 +143,10 @@ main_L5_:
 	addq	$16, %rsp
 
 # end of main
-	movq	(%rbp), %rbx
-	movq	%rbp, %rsp
+main_exit_:
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	movq	$60, %rax		# exit system call
 	xorq	%rdi, %rdi		# exit code 0
 	syscall
@@ -151,7 +155,6 @@ main_L5_:
 
 .data
 	.align 8
-# buffer for string operations - max str length limit
-	string_buffer_:	.space 1024
 # constant string values go here
-	STRCNST_1:	.string "every 3 "
+	STRCNST_1:	.string " "
+	STRCNST_2:	.string "every 3 "

@@ -1,0 +1,11 @@
+program beaktest
+
+main {
+    for (i = 0 to 20) {
+        if (i == 8) { break }
+        print i, " "
+    }
+    println;
+}
+
+endprogram

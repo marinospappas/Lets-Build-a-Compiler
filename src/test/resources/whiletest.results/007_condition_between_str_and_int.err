@@ -1,1 +1,1 @@
-Error: line 6: expected [variable of type int] found identifier [a]
+Error: line 6: compare eq int with string not supported

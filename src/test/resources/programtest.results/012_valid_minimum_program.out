@@ -12,18 +12,19 @@
 
 # main program
 _start:
-	pushq	%rbp
+	pushq	%rbx		# save "callee"-save registers
+	pushq	%rbp		# new stack frame
 	movq	%rsp, %rbp
-	pushq	%rbx
 # print hello message
 	lea	tinsel_msg_(%rip), %rdi
 	call	write_s_
 
 
 # end of main
-	movq	(%rbp), %rbx
-	movq	%rbp, %rsp
+main_exit_:
+	movq	%rbp, %rsp		# restore stack frame
 	popq	%rbp
+	popq	%rbx		# restore "callee"-save registers
 	movq	$60, %rax		# exit system call
 	xorq	%rdi, %rdi		# exit code 0
 	syscall
@@ -32,5 +33,3 @@ _start:
 
 .data
 	.align 8
-# buffer for string operations - max str length limit
-	string_buffer_:	.space 1024
