@@ -59,7 +59,7 @@ fun processCmdLineArgs(args: Array<String>) {
                 "-?", "-h", "-H" -> exit(USAGE)
                 "-debug" -> debugMode = true
                 "-nomsg" -> noCopyrightMsg = true
-                "-maxstring" -> { STR_BUF_SIZE = getNextArg(args, ++argIndx, "output_file").toInt(); continue }
+                "-maxstring" -> { STR_BUF_SIZE = getNextArg(args, ++argIndx, "max_string").toInt(); continue }
                 "-o", "-O" -> { outFile = getNextArg(args, ++argIndx, "output_file"); continue }
                 else -> exit("invalid option [$arg]\n$USAGE")
             }
