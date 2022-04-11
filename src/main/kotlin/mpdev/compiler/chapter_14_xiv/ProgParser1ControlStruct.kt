@@ -203,7 +203,9 @@ fun printExpressions() {
     do {
         if (inp.lookahead().encToken == Kwd.commaToken)
             inp.match() // skip the comma
-        when (parseBooleanExpression()) {
+        val exprType = parseBooleanExpression()
+        checkOperandTypeCompatibility(exprType, DataType.none, PRINT)
+        when (exprType) {
             DataType.int -> code.printInt()
             DataType.string -> code.printStr()
             else -> {}

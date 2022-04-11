@@ -89,6 +89,7 @@ const val COMPARE_GT = "compare gt"
 const val COMPARE_GE = "compare ge"
 const val COMPARE_LT = "compare lt"
 const val COMPARE_LE = "compare le"
+const val PRINT = "print"
 
 val typesCompatibility = mapOf(
     // int with int allowed for all operations
@@ -99,6 +100,7 @@ val typesCompatibility = mapOf(
     TypesAndOpsCombi(DataType.string, DataType.string, ADD) to true,
     TypesAndOpsCombi(DataType.string, DataType.string, COMPARE_EQ) to true,
     TypesAndOpsCombi(DataType.string, DataType.string, COMPARE_NE) to true,
+    TypesAndOpsCombi(DataType.string, DataType.none, PRINT) to true,
     // all other combinations forbidden unless set here
 )
 
