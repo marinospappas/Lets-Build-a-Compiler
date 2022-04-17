@@ -6,7 +6,8 @@
 <program> ::= <prog header> [ <var declarations> ] [ <fun declarations> ] <main block> <prog end>`
 <program header> ::= program <identifier>
 <variable declaration> ::= var <identifier> : <type> [ = <value> | string(<length>) ]
-<function declaration> ::= fun <identifier> : <type> ( ) <block>
+<function declaration> ::= fun <identifier> : <type> ( [ <param declaration> ] * ) <block>
+<param declaration> ::= <identrifier> : <type>
 <main block> ::= main <block>
 <program end> ::= endprogram
 ```

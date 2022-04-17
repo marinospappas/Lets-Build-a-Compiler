@@ -4,7 +4,7 @@
 # to be used with tinsel output
 # also integer read and write by converting string to int using atoi and vice-versa
 # Author: M. Pappas
-# Version 1.0 28.11.2021
+# Version 1.1 16.04.2022
 ###################################################################################
 
 
@@ -42,10 +42,14 @@ read_s_:
 	movq	%rsi, %rdx		# string size was in rsi - must be in rdx
 	movq	%rdi, %rsi		# string address was in rdi - must be in rsi
 	pushq	%rsi			# save string address
+	pushq	%r10			# save function parameter registers
+	pushq	%r11
 	xorq	%rax, %rax		# system call 0 = read
 	movq	%rax, %rdi		# file descriptor 0
 	syscall				# call the kernel
 					# returns number of bytes read in rax
+	popq	%r11			# restore function parameter registers
+	popq	%r10
 	popq	%rsi			# retrieve string address
     movb    $0, (%rsi,%rax)		# set string terminator
 
@@ -84,7 +88,12 @@ write_s_:
 	movq	%rdi, %rsi		# string addess must be in rsi
 	movq	$1, %rax		# system call 1 = write
 	movq	%rax, %rdi		# file descriptor 1
+	pushq	%r10			# save function parameter registers
+	pushq	%r11
 	syscall				# call the kernel
+
+	popq	%r11			# restore function parameter registers
+	popq	%r10
 
 	popq	%rsi
 	popq	%rdi
