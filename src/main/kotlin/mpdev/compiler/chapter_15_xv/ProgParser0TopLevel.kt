@@ -181,7 +181,7 @@ fun parseFunctionBlock() {
     parseBlock()
     if (!hasReturn)
         abort("line ${inp.currentLineNumber}: function $funName has no ${inp.decodeToken(Kwd.retToken)}")
-    // clean up declarations of parameters
+    // clean up declarations of parameters so that the names can be reused in other functions
     funParamsMap[funName]?.forEach { identifiersMap.remove(it.name) }
 }
 

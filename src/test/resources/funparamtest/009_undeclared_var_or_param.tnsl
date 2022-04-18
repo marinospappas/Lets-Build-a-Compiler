@@ -1,0 +1,11 @@
+program testfunparam
+
+fun fun1(i: int, j: int): int {
+    i1 = i + 1
+    return i1
+}
+
+main {
+}
+
+endprogram

@@ -1,0 +1,14 @@
+program testfunparam
+
+var name: string(20)
+
+fun fun1(i: int, j: int, s: string): int {
+    name = s + i
+    return i1
+}
+
+main {
+    fun1(1,2,"abc")
+}
+
+endprogram

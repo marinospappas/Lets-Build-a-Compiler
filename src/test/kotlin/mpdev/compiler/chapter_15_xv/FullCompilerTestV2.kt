@@ -1,4 +1,4 @@
-package mpdev.compiler.chapter_14_xiv
+package mpdev.compiler.chapter_15_xv
 
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.*
@@ -42,6 +42,11 @@ class FullCompilerTestV2 {
         @Order(4)
         fun `Test Main Block`(testReporter: TestReporter) {
             TestHelper("maintest").runAllTests(testReporter, multiThreaded)
+        }
+        @Test
+        @Order(5)
+        fun `Test Functions Parameters`(testReporter: TestReporter) {
+            TestHelper("funparamtest").runAllTests(testReporter, multiThreaded)
         }
     }
 
