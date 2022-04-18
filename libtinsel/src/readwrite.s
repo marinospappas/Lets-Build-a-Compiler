@@ -36,7 +36,6 @@ read_s_:
 	pushq	%rbx
 	pushq	%rdi
 	pushq	%rsi
-	pushq	%rbx
 
 	# setup read call parametrs from this function's parameters
 	movq	%rsi, %rdx		# string size was in rsi - must be in rdx
@@ -63,7 +62,6 @@ read_s_:
 	movb    $0, (%rsi,%rax)		# remove the newline
 
 read_s_ret:
-	popq	%rbx
 	popq	%rsi
 	popq	%rdi
 	popq	%rbx

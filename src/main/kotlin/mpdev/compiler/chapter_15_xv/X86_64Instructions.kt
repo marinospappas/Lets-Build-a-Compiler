@@ -135,7 +135,7 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("movq\t%rax, ${funTempParamsCpuRegisters[paramIndx]}")
     }
 
-    /** set a function input param register from the temporay register */
+    /** set a function input param register from the temporary register */
     fun setFunParamReg(paramIndx: Int) {
         outputCodeTabNl("movq\t${funTempParamsCpuRegisters[paramIndx]}, ${funInpParamsCpuRegisters[paramIndx]}")
     }

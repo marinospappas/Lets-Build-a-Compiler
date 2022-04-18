@@ -1,0 +1,20 @@
+program testfunparam
+
+var name: string = "Marinos"
+var greet: string = "Good Morning"
+
+fun fun1(i: int, j: int, s: string): void {
+    println s, ": ", i+j
+    return
+}
+
+fun fun2(s1: string, s2: string): string {
+    return s1 + ", " + s2
+}
+
+main {
+    println fun2(greet, name)
+    fun1(5, 6, "sum")
+}
+
+endprogram

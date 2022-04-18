@@ -168,7 +168,7 @@ fun parseAssignFunParams(functionName: String) {
             inp.match(Kwd.commaToken)
         val paramExprType = parseBooleanExpression()
         if (paramExprType != paramTypeList[i].type)
-            abort ("line ${inp.currentLineNumber}: parameter #${i+1} must be type ${paramTypeList[i]}, found $paramExprType")
+            abort ("line ${inp.currentLineNumber}: parameter #${i+1} must be type ${paramTypeList[i].type}, found $paramExprType")
         when (paramExprType) {
             DataType.int -> code.setIntTempFunParam(i)      // the same code is used both for int and for string parameters
             DataType.string -> code.setIntTempFunParam(i)   // i.e. moves %rax to the appropriate register for this parameter

@@ -1,18 +1,17 @@
-package mpdev.compiler.chapter_14_xiv
+package mpdev.compiler.chapter_15_xv
 
 import org.junit.jupiter.api.TestReporter
 import java.io.File
 import java.lang.System.err
 import java.util.stream.Stream
-import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf.Type.Argument.Projection
 import kotlin.test.assertEquals
 
-var PROJECT_DIR: String = "./"
+var PROJECT_DIR: String = "."
 
 class TestHelper(var testDir: String = "") {
 
     init {
-        PROJECT_DIR = File("./.idea").canonicalPath.toString().replace(".idea","")
+        PROJECT_DIR = File("./.idea").canonicalPath.toString().replace("/.idea","")
     }
 
     companion object {
