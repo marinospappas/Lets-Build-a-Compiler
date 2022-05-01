@@ -281,10 +281,7 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** call a function */
-    fun callFunction(subroutine: String) {
-        outputCodeTabNl("call\t${subroutine}")
-        outputCodeTabNl("testq\t%rax, %rax")    // also set flags - Z flag set = FALSE
-    }
+    fun callFunction(subroutine: String) = outputCodeTabNl("call\t${subroutine}")
 
     /** return from function */
     fun returnFromCall() {
