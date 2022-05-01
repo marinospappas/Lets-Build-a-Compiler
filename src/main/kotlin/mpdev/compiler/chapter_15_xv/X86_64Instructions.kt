@@ -37,11 +37,12 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** register names for the function params - in order 1-6 (x86-64 architecture specific) */
-    // these registers hold the fun params at the time of the call - 5 params maximum allowed
+    // these registers hold the fun params at the time of the call
     val funInpParamsCpuRegisters = arrayOf("%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9")
     // during the assignment of the parameters, their values are saved temporarily here,
     // so that they are not corrupted by function calls executed during the assignment of the parameters
     val funTempParamsCpuRegisters = arrayOf("%rbx", "%r12", "%r13", "%r14", "%r15", "%rax")
+    // 6 params maximum allowed
     val MAX_FUN_PARAMS = funInpParamsCpuRegisters.size
 
     /** output lines */
@@ -280,7 +281,10 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** call a function */
-    fun callFunction(subroutine: String) = outputCodeTabNl("call\t${subroutine}")
+    fun callFunction(subroutine: String) {
+        outputCodeTabNl("call\t${subroutine}")
+        outputCodeTabNl("testq\t%rax, %rax")    // also set flags - Z flag set = FALSE
+    }
 
     /** return from function */
     fun returnFromCall() {

@@ -25,7 +25,8 @@
 <continue> ::= contnue
 <return> ::= return <b-expression>
 <assignment> ::= <identifier> = <b-expression>
-<funcrion_call> ::= <function_name> ( )
+<funcrion_call> ::= <function_name> ( [ <fun param> ] *)
+<fun param> ::= <b-expression>
 <read> :: = read <identifier> [ , <identifier> ] *
 <print> ::= print <b-expression> [ , <b-expression> ] *
 <exit> :: exit [ <exit_code> ]
