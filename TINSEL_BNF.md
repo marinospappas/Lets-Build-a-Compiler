@@ -3,7 +3,7 @@
 
 ## Program
 ```
-<program> ::= <prog header> [ <var declarations> ] [ <fun declarations> ] <main block> <prog end>`
+<program> ::= <prog header> [ <variable declarations> ] [ <function declarations> ] <main block> <prog end>`
 <program header> ::= program <identifier>
 <variable declaration> ::= var <identifier> : <type> [ = <value> | string(<length>) ]
 <function declaration> ::= fun <identifier> : <type> ( [ <param declaration> ] * ) <block>
@@ -14,7 +14,7 @@
 
 ## Statements
 ```
-<block> ::= { <statement> * }
+<block> ::= { [ <variable declarations> ] <statement> * }
 <statement> ::= <block> | <if> | <while> | <repeat> | <for> | <break> | <continue>
                 <return> | <read> | <print> | <assignment> | <function_call> | null [ ; ]
 <if> ::= if ( <b-expression> ) <block> [ else <block> ]
