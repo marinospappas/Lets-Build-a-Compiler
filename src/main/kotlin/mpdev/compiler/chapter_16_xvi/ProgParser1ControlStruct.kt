@@ -43,7 +43,8 @@ fun releaseLocalVars(blockName: String) {
         localVarSize += identifiersMap[it]?.size!!
         identifiersMap.remove(it)
     }
-    code.releaseStackVar(localVarSize)
+    if (localVarSize > 0)
+        code.releaseStackVar(localVarSize)
 }
 
 /**

@@ -26,8 +26,11 @@ fun parseStringVariable(): DataType {
 }
 
 /** parse string assignment */
-fun parseStringAssignment(identName: String) {
-    code.assignmentString(identName)
+fun parseStringAssignment(varName: String) {
+    if (identifiersMap[varName]?.isStackVar == true)
+        identifiersMap[varName]?.stackOffset?.let { code.assignmentLocalVar(it) }
+    else
+        code.assignmentString(varName)
 }
 
 /** add strings */

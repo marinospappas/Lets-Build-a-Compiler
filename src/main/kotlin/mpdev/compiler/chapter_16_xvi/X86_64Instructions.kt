@@ -95,7 +95,6 @@ class X86_64Instructions(outFile: String = "") {
             outputCodeTabNl("$varName:\t.string \"$initValue\"")
         else
             outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length
-
     }
 
     /** initial code for functions */

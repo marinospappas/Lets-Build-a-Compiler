@@ -18,7 +18,10 @@ fun parseNumVariable(): DataType {
 
 /** process assignment to numeric var (int for now) */
 fun parseNumAssignment(varName: String) {
-    code.assignment(varName)
+    if (identifiersMap[varName]?.isStackVar == true)
+        identifiersMap[varName]?.stackOffset?.let { code.assignmentLocalVar(it) }
+    else
+        code.assignment(varName)
 }
 
 /** process a numeric addition */
