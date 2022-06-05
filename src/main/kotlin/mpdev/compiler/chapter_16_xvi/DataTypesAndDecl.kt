@@ -64,11 +64,29 @@ fun declareGlobalVar(name: String, type: DataType, initValue: String, length: In
 
 /** declare a local variable */
 fun declareLocalVar(name: String, type: DataType, initValue: String, length: Int) {
-    val paramVarOffs = code.allocateStackVar(length)
+    val stackOffset = code.allocateStackVar(INT_SIZE)
     identifiersMap[name] = IdentifierDecl(
-        TokType.variable, type, initialised = true, size = length, isStackVar = true, stackOffset = paramVarOffs
+        TokType.variable, type, initialised = true, size = length, isStackVar = true, stackOffset = stackOffset
     )
+    when (type) {
+        DataType.int -> initLocalIntVar(stackOffset, initValue)
+        DataType.string -> initLocalStringVar(name, stackOffset, initValue, length)
+        else -> return
+    }
+}
 
+/** initialise a local int var */
+fun initLocalIntVar(stackOffset: Int, initValue: String) {
+    if (initValue.isEmpty())
+        return
+    code.initLocalVarInt(stackOffset, initValue)
+}
+
+/** initialise a local string var */
+fun initLocalStringVar(name: String, stackOffset: Int, initValue: String, length: Int) {
+    if (initValue.isEmpty() && length == 0)
+        abort("line ${inp.currentLineNumber}: local variable $name not initialised");
+    code.initLocalVarString(stackOffset, initValue, length)
 }
 
 /** process a function declaration */

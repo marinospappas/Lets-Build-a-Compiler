@@ -209,6 +209,19 @@ class X86_64Instructions(outFile: String = "") {
         stackVarOffset += size
     }
 
+    /** initiliase an int stack var */
+    fun initLocalVarInt(stackOffset : Int, initValue: String) {
+        outputCodeTab("movq\t$$initValue, ")
+        if (stackOffset != 0)
+            outputCode("$stackOffset")
+        outputCodeNl("(%rbp)")
+    }
+
+    /** initiliase a str stack var */
+    fun initLocalVarString(stackOffset : Int, initValue: String, length: Int) {
+
+    }
+
     /** exit the program */
     fun exitProgram() {
         jump(MAIN_EXITPOINT)
@@ -426,6 +439,17 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTab("movq\t%rax, %rsi\t\t")
         outputCommentNl("assign string - strcpy_(identifier, %rax)")
         outputCodeTabNl("lea\t${identifier}(%rip), %rdi")
+        outputCodeTabNl("call\tstrcpy_")
+    }
+
+    /** set string variable from accumulator (var and acc are pointers */
+    fun assignmentStringLocalVar(stackOffset: Int) {
+        outputCodeTab("movq\t%rax, %rsi\t\t")
+        outputCommentNl("assign string - strcpy_(identifier, %rax)")
+        outputCodeTab("movq\t")
+        if (stackOffset != 0)
+            outputCode("$stackOffset")
+        outputCodeNl("(%rbp), %rdi")
         outputCodeTabNl("call\tstrcpy_")
     }
 

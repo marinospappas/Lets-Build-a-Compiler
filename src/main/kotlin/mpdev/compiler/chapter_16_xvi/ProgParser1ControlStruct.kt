@@ -10,6 +10,7 @@ var labelIndx: Int = 0
 var labelPrefix = ""
 const val BLOCK_NAME = "block_"
 var blockId = 0
+var mustRestoreSP = false;
 
 /** create a unique label*/
 fun newLabel(): String = "${labelPrefix}_L${labelIndx++}_"
@@ -25,11 +26,12 @@ fun postLabel(label: String) = code.outputLabel(label)
  */
 fun parseBlock(breakLabel: String = "", continueLabel: String = "") {
     inp.match(Kwd.startBlock)
+    mustRestoreSP = true;
     val blockName = "$BLOCK_NAME${blockId++}"       // blockName is used as key to the local vars map for this block
     while (inp.lookahead().type != TokType.endOfBlock && !inp.isEndOfProgram()) {
         parseStatement(breakLabel, continueLabel, blockName)
     }
-    releaseLocalVars(blockName)
+    releaseLocalVars(blockName, mustRestoreSP)
     inp.match(Kwd.endBlock)
 }
 
@@ -37,13 +39,13 @@ fun parseBlock(breakLabel: String = "", continueLabel: String = "") {
  * releaseLocalVars
  * releases any local variables allocated in this block
  */
-fun releaseLocalVars(blockName: String) {
+fun releaseLocalVars(blockName: String, restoreSP: Boolean) {
     var localVarSize = 0
     localVarsMap[blockName]?.forEach {
         localVarSize += identifiersMap[it]?.size!!
         identifiersMap.remove(it)
     }
-    if (localVarSize > 0)
+    if (localVarSize > 0 && restoreSP)
         code.releaseStackVar(localVarSize)
 }
 
@@ -184,6 +186,7 @@ fun parseReturn() {
             abort("line ${inp.currentLineNumber}: $funType function cannot return $expType")
     }
     code.returnFromCall()
+    mustRestoreSP = false;
 }
 
 /**
