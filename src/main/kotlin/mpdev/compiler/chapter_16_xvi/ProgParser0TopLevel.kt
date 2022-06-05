@@ -73,15 +73,16 @@ fun parseOneIntDecl(varName: String, scope: VarScope) {
 /** parse one string var declaration */
 fun parseOneStringDecl(varName: String, scope: VarScope) {
     var initValue = ""
-    val varLength: Int
+    var varLength = 0
     inp.match()
     if (inp.lookahead().encToken == Kwd.equalsOp) {
         inp.match()
         initValue = initStringVar()
         varLength = initValue.length
     }
-    else {
-        inp.match(Kwd.leftParen)
+    else
+    if (inp.lookahead().encToken == Kwd.leftParen) {
+        inp.match()
         varLength = inp.match(Kwd.number).value.toInt()
         inp.match(Kwd.rightParen)
     }

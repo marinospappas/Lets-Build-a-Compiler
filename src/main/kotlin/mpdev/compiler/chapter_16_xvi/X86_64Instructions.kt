@@ -89,14 +89,6 @@ class X86_64Instructions(outFile: String = "") {
             outputCodeTabNl("$varName:\t.quad $initValue")
     }
 
-    /** declare string variable */
-    fun declareString(varName: String, initValue: String, length: Int = 0) {
-        if (length == 0 || initValue != "")
-            outputCodeTabNl("$varName:\t.string \"$initValue\"")
-        else
-            outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length
-    }
-
     /** initial code for functions */
     fun funInit() {
         outputCodeNl()
@@ -215,11 +207,6 @@ class X86_64Instructions(outFile: String = "") {
         if (stackOffset != 0)
             outputCode("$stackOffset")
         outputCodeNl("(%rbp)")
-    }
-
-    /** initiliase a str stack var */
-    fun initLocalVarString(stackOffset : Int, initValue: String, length: Int) {
-
     }
 
     /** exit the program */
@@ -413,6 +400,26 @@ class X86_64Instructions(outFile: String = "") {
 
     ////////// string operations ///////////////////////
 
+    /** declare string global variable */
+    fun declareString(varName: String, initValue: String, length: Int = 0) {
+        if (length == 0 || initValue != "")
+            outputCodeTabNl("$varName:\t.string \"$initValue\"")
+        else
+            outputCodeTabNl("$varName:\t.space $length") // uninitialised string vars must have length
+    }
+
+    /** initialise a str stack var */
+    fun initLocalVarString(stackOffset : Int, constStrAddress: String) {
+        //TODO: ...
+        outputCodeTab("movq\t")
+        if (stackOffset != 0)
+            outputCode("$stackOffset")
+        outputCode("(%rbp), %rsi\t\t")
+        outputCommentNl("initialise string - strcpy_(const(%rip), offset(%rbp)")
+        outputCodeTabNl("lea\t$constStrAddress(%rip), %rdi")
+        outputCodeTabNl("call\tstrcpy_")
+    }
+
     /** get address of string variable in accumulator */
     fun getStringVarAddress(identifier: String) = outputCodeTabNl("lea\t${identifier}(%rip), %rax")
 
@@ -445,7 +452,7 @@ class X86_64Instructions(outFile: String = "") {
     /** set string variable from accumulator (var and acc are pointers */
     fun assignmentStringLocalVar(stackOffset: Int) {
         outputCodeTab("movq\t%rax, %rsi\t\t")
-        outputCommentNl("assign string - strcpy_(identifier, %rax)")
+        outputCommentNl("assign string - strcpy_(offset(%rbp), %rax)")
         outputCodeTab("movq\t")
         if (stackOffset != 0)
             outputCode("$stackOffset")

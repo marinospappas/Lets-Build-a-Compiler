@@ -84,9 +84,21 @@ fun initLocalIntVar(stackOffset: Int, initValue: String) {
 
 /** initialise a local string var */
 fun initLocalStringVar(name: String, stackOffset: Int, initValue: String, length: Int) {
-    if (initValue.isEmpty() && length == 0)
-        abort("line ${inp.currentLineNumber}: local variable $name not initialised");
-    code.initLocalVarString(stackOffset, initValue, length)
+    var constStringAddress = ""
+    var stringValue = ""
+    if (initValue.isNotEmpty())
+        stringValue = initValue
+    else if (length > 0)
+        stringValue = 0.toChar().toString().repeat(length)
+    else
+        abort ("line ${inp.currentLineNumber}: local variable $name is not initialised")
+    stringConstants.forEach { (k, v) -> if (v == stringValue) constStringAddress = k }
+    if (constStringAddress == "") {  // if not found
+        // save the string in the map of constant strings
+        constStringAddress = STRING_CONST_PREFIX + (++stringCnstIndx).toString()
+        stringConstants[constStringAddress] = stringValue
+    }
+    code.initLocalVarString(stackOffset, constStringAddress)
 }
 
 /** process a function declaration */

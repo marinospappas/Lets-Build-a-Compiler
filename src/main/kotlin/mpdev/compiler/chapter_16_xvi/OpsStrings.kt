@@ -28,7 +28,7 @@ fun parseStringVariable(): DataType {
 /** parse string assignment */
 fun parseStringAssignment(varName: String) {
     if (identifiersMap[varName]?.isStackVar == true)
-        identifiersMap[varName]?.stackOffset?.let { code.assignmentLocalVar(it) }
+        identifiersMap[varName]?.stackOffset?.let { code.assignmentStringLocalVar(it) }
     else
         code.assignmentString(varName)
 }
