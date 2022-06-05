@@ -10,7 +10,7 @@ var labelIndx: Int = 0
 var labelPrefix = ""
 const val BLOCK_NAME = "block_"
 var blockId = 0
-var mustRestoreSP = false;
+var mustRestoreSP = false
 
 /** create a unique label*/
 fun newLabel(): String = "${labelPrefix}_L${labelIndx++}_"
@@ -26,7 +26,7 @@ fun postLabel(label: String) = code.outputLabel(label)
  */
 fun parseBlock(breakLabel: String = "", continueLabel: String = "") {
     inp.match(Kwd.startBlock)
-    mustRestoreSP = true;
+    mustRestoreSP = true
     val blockName = "$BLOCK_NAME${blockId++}"       // blockName is used as key to the local vars map for this block
     while (inp.lookahead().type != TokType.endOfBlock && !inp.isEndOfProgram()) {
         parseStatement(breakLabel, continueLabel, blockName)
@@ -186,7 +186,7 @@ fun parseReturn() {
             abort("line ${inp.currentLineNumber}: $funType function cannot return $expType")
     }
     code.returnFromCall()
-    mustRestoreSP = false;
+    mustRestoreSP = false
 }
 
 /**
@@ -205,14 +205,31 @@ fun parseRead() {
         val identName = varToken.value
         val strLen = identifiersMap[identName]?.size!!
         when (getType(identName)) {
-            DataType.int -> {
-                code.readInt(identName)
-                code.assignment(identName)
-            }
-            DataType.string -> code.readString(identName, strLen)
+            DataType.int -> parseReadInt(identName)
+            DataType.string -> parseReadString(identName, strLen)
             else -> {}
         }
     } while (inp.lookahead().encToken == Kwd.commaToken)
+}
+
+/** parse a read int instruction */
+fun parseReadInt(identName: String) {
+    if (identifiersMap[identName]?.isStackVar!!) {
+        code.readIntLocal(identifiersMap[identName]?.stackOffset!!)
+        code.assignmentLocalVar(identifiersMap[identName]?.stackOffset!!)
+    }
+    else {
+        code.readInt(identName)
+        code.assignment(identName)
+    }
+}
+
+/** parse a read string instruction */
+fun parseReadString(identName: String, strLen: Int) {
+    if (identifiersMap[identName]?.isStackVar!!)
+        code.readStringLocal(identifiersMap[identName]?.stackOffset!!, strLen)
+    else
+        code.readString(identName, strLen)
 }
 
 /**

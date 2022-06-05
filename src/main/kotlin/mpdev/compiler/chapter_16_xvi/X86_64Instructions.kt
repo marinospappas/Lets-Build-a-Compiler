@@ -386,9 +386,18 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("call\twrite_i_")
     }
 
-    /** read int into variable */
+    /** read global int var into variable */
     fun readInt(identifier: String) {
         outputCodeTabNl("lea\t$identifier(%rip), %rdi\t\t# address of the variable to be read")
+        outputCodeTabNl("call\tread_i_")
+    }
+
+    /** read local int var into variable */
+    fun readIntLocal(stackOffset: Int) {
+        outputCodeTab("movq\t")
+        if (stackOffset != 0)
+            outputCode("$stackOffset")
+        outputCodeNl("(%rbp), %rdi\t\t# address of the variable to be read")
         outputCodeTabNl("call\tread_i_")
     }
 
@@ -410,14 +419,12 @@ class X86_64Instructions(outFile: String = "") {
 
     /** initialise a str stack var */
     fun initLocalVarString(stackOffset : Int, constStrAddress: String) {
-        //TODO: ...
-        outputCodeTab("movq\t")
+        outputCodeTabNl("lea\t$constStrAddress(%rip), %rax")
+        outputCodeTab("movq\t%rax, ")
         if (stackOffset != 0)
             outputCode("$stackOffset")
-        outputCode("(%rbp), %rsi\t\t")
-        outputCommentNl("initialise string - strcpy_(const(%rip), offset(%rbp)")
-        outputCodeTabNl("lea\t$constStrAddress(%rip), %rdi")
-        outputCodeTabNl("call\tstrcpy_")
+        outputCode("(%rbp)\t\t")
+        outputCommentNl("initialise local var string address")
     }
 
     /** get address of string variable in accumulator */
@@ -466,9 +473,19 @@ class X86_64Instructions(outFile: String = "") {
         outputCodeTabNl("call\twrite_s_")
     }
 
-    /** read string into variable - address in accumulator*/
+    /** read string into global variable - address in accumulator*/
     fun readString(identifier: String, length: Int) {
         outputCodeTabNl("lea\t$identifier(%rip), %rdi\t\t# address of the string to be read")
+        outputCodeTabNl("movq\t$${length}, %rsi\t\t# max number of bytes to read")
+        outputCodeTabNl("call\tread_s_")
+    }
+
+    /** read string into local variable - address in accumulator*/
+    fun readStringLocal(stackOffset: Int, length: Int) {
+        outputCodeTab("movq\t")
+        if (stackOffset != 0)
+            outputCode("$stackOffset")
+        outputCodeNl("(%rbp), %rdi\t\t# address of the string to be read")
         outputCodeTabNl("movq\t$${length}, %rsi\t\t# max number of bytes to read")
         outputCodeTabNl("call\tread_s_")
     }

@@ -221,6 +221,11 @@ fun parseStringConstants() {
         return
     code.outputCommentNl("constant string values go here")
     for (s in stringConstants.keys) {
-        stringConstants[s]?.let { code.declareString(s, it) }
+        stringConstants[s]?.let {
+            if (it.isNotEmpty() && it[0] >= ' ')
+                code.declareString(s, it)
+            else
+                code.declareString(s, "", it.length)
+        }
     }
 }
