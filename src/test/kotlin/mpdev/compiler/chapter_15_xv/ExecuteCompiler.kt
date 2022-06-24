@@ -4,13 +4,12 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 
-val JDK_DIR = "/home/marinos/.jdks/openjdk-17.0.2"
-val INTELLIJ_DIR = "/snap/intellij-idea-community/357"
+val JDK_DIR = "/home/marinos/.jdks/openjdk-18.0.1.1"
+val INTELLIJ_DIR = "/snap/intellij-idea-community/361"
 val COMPILER = mutableListOf("${JDK_DIR}/bin/java",
-    "-javaagent:${INTELLIJ_DIR}/lib/idea_rt.jar=44723:${INTELLIJ_DIR}/bin",
     "-Dfile.encoding=UTF-8",
-    "-classpath", "${PROJECT_DIR}/out/production/CompilerV2:${INTELLIJ_DIR}/plugins/Kotlin/kotlinc/lib/kotlin-stdlib.jar:${INTELLIJ_DIR}/plugins/Kotlin/kotlinc/lib/kotlin-reflect.jar:${INTELLIJ_DIR}/plugins/Kotlin/kotlinc/lib/kotlin-test.jar",
-    "mpdev.compiler.chapter_15_xv.CompilerMainKt",
+    "-classpath", "${PROJECT_DIR}/out/production/Lets-Build-a-Compiler:${INTELLIJ_DIR}/plugins/Kotlin/kotlinc/lib/kotlin-stdlib.jar:${INTELLIJ_DIR}/plugins/Kotlin/kotlinc/lib/kotlin-reflect.jar:${INTELLIJ_DIR}/plugins/Kotlin/kotlinc/lib/kotlin-test.jar",
+    "mpdev.compiler.chapter_16_xvi.CompilerMainKt",
     "-o")    // need to add outfile and sourcefile
 
 class ExecuteCompiler {

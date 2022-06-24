@@ -1,11 +1,11 @@
 package mpdev.compiler.chapter_15_xv
 
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import java.io.File
 import java.util.stream.Stream
-import kotlin.test.assertEquals
 
 @DisplayName("Compiler Full Test")
 @TestMethodOrder(OrderAnnotation::class)
