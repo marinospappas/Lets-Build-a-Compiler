@@ -1,1 +1,1 @@
-Error: line 5: expected [(] found [endprogram]
+Error: line 5: string variable xyz has neither initial value nor length set
