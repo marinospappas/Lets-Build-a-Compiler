@@ -509,7 +509,7 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** string constants */
-    fun stringConstants() {
+    fun stringConstantsDataSpace() {
         code.outputCodeNl()
         code.outputCodeNl(".data")
         code.outputCodeTabNl(".align 8")

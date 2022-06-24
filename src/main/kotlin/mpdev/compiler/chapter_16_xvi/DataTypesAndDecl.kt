@@ -14,6 +14,7 @@ class IdentifierDecl(var fv: TokType, var type: DataType, var initialised: Boole
 
 // sizes of various types
 val INT_SIZE = 8    // 64-bit integers
+val STRPTR_SIZE = 8     // string pointer 64 bit
 
 // the identifiers space map
 val identifiersMap = mutableMapOf<String,IdentifierDecl>()
@@ -30,7 +31,12 @@ val localVarsMap = mutableMapOf<String,MutableList<String>>()
 // the string constants (will be included in the output file at the end of the compilation)
 val stringConstants = mutableMapOf<String,String>()
 var stringCnstIndx = 0
-const val STRING_CONST_PREFIX = "STRCNST_"
+const val STRING_PREFIX = "STRCNST_"
+
+// space for string local vars (will be included in the output file at the end of the compilation)
+val stringLocalVars = mutableMapOf<String,String>()
+var stringLVarsIndx = 0
+const val STRING_LVAR_PREFIX = "STRLVAR_"
 
 // the buffer for string operations
 const val STRING_BUFFER = "string_buffer_"
@@ -84,7 +90,6 @@ fun initLocalIntVar(stackOffset: Int, initValue: String) {
 
 /** initialise a local string var */
 fun initLocalStringVar(name: String, stackOffset: Int, initValue: String, length: Int) {
-    var constStringAddress = ""
     var stringValue = ""
     if (initValue.isNotEmpty())
         stringValue = initValue
@@ -92,13 +97,10 @@ fun initLocalStringVar(name: String, stackOffset: Int, initValue: String, length
         stringValue = 0.toChar().toString().repeat(length)
     else
         abort ("line ${inp.currentLineNumber}: local variable $name is not initialised")
-    stringConstants.forEach { (k, v) -> if (v == stringValue) constStringAddress = k }
-    if (constStringAddress == "") {  // if not found
-        // save the string in the map of constant strings
-        constStringAddress = STRING_CONST_PREFIX + (++stringCnstIndx).toString()
-        stringConstants[constStringAddress] = stringValue
-    }
-    code.initLocalVarString(stackOffset, constStringAddress)
+    // save the string in the map of string local vars
+    val localStringVarAddress = STRING_LVAR_PREFIX + (++stringLVarsIndx).toString()
+    stringLocalVars[localStringVarAddress] = stringValue
+    code.initLocalVarString(stackOffset, localStringVarAddress)
 }
 
 /** process a function declaration */

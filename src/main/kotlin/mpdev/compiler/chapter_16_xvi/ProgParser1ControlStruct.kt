@@ -42,7 +42,12 @@ fun parseBlock(breakLabel: String = "", continueLabel: String = "") {
 fun releaseLocalVars(blockName: String, restoreSP: Boolean) {
     var localVarSize = 0
     localVarsMap[blockName]?.forEach {
-        localVarSize += identifiersMap[it]?.size!!
+        localVarSize +=
+            when (identifiersMap[it]?.type) {
+                DataType.int-> INT_SIZE
+                DataType.string-> STRPTR_SIZE
+                else-> INT_SIZE
+            }
         identifiersMap.remove(it)
     }
     if (localVarSize > 0 && restoreSP)
