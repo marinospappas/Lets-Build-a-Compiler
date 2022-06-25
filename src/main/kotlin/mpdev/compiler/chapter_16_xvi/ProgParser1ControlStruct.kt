@@ -45,7 +45,7 @@ fun releaseLocalVars(blockName: String, restoreSP: Boolean) {
         localVarSize +=
             when (identifiersMap[it]?.type) {
                 DataType.int-> INT_SIZE
-                DataType.string-> STRPTR_SIZE
+                DataType.string-> STRPTR_SIZE + identifiersMap[it]?.size!!
                 else-> INT_SIZE
             }
         identifiersMap.remove(it)

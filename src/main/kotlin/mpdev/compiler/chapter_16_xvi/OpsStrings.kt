@@ -8,7 +8,7 @@ fun parseStringLiteral(): DataType {
     stringConstants.forEach { (k, v) -> if (v == stringValue) stringAddress = k }
     if (stringAddress == "") {  // if not found
         // save the string in the map of constant strings
-        stringAddress = STRING_PREFIX + (++stringCnstIndx).toString()
+        stringAddress = STRING_CONST_PREFIX + (++stringCnstIndx).toString()
         stringConstants[stringAddress] = stringValue
     }
     code.getStringVarAddress(stringAddress)

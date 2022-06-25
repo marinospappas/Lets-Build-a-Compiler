@@ -418,13 +418,16 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** initialise a str stack var */
-    fun initLocalVarString(stackOffset : Int, constStrAddress: String) {
-        outputCodeTabNl("lea\t$constStrAddress(%rip), %rax")
-        outputCodeTab("movq\t%rax, ")
-        if (stackOffset != 0)
-            outputCode("$stackOffset")
-        outputCode("(%rbp)\t\t")
+    fun initLocalVarString(stackOffset: Int, stringDataOffset: Int, constStrAddress: String) {
+        outputCodeTabNl("lea\t$stringDataOffset(%rbp), %rax")
+        outputCodeTab("movq\t%rax, $stackOffset(%rbp)\t\t")
         outputCommentNl("initialise local var string address")
+        if (constStrAddress.isNotEmpty()) {
+            outputCodeTabNl("lea\t$constStrAddress(%rip), %rsi")
+            outputCodeTabNl("movq\t$stackOffset(%rbp), %rdi")
+            outputCodeTab("call\tstrcpy_\t\t")
+            outputCommentNl("initialise local var string")
+        }
     }
 
     /** get address of string variable in accumulator */
