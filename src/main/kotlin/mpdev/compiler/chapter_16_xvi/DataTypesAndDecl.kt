@@ -65,23 +65,29 @@ fun declareGlobalVar(name: String, type: DataType, initValue: String, length: In
 
 /** declare a local variable */
 fun declareLocalVar(name: String, type: DataType, initValue: String, length: Int) {
-    val stackOffset = code.allocateStackVar(INT_SIZE)
+    val stackOffset: Int
     val lengthRoundedTo64bits = (length / 8 + 1) * 8
+    when (type) {
+        DataType.int -> {
+            stackOffset = code.allocateStackVar(INT_SIZE)
+            initLocalIntVar(stackOffset, initValue)
+        }
+        DataType.string -> {
+            stackOffset = code.allocateStackVar(STRPTR_SIZE)
+            initLocalStringVar(name, stackOffset, initValue, lengthRoundedTo64bits)
+        }
+        else -> return
+    }
     identifiersMap[name] = IdentifierDecl(
         TokType.variable, type, initialised = true, size = lengthRoundedTo64bits, isStackVar = true, stackOffset = stackOffset
     )
-    when (type) {
-        DataType.int -> initLocalIntVar(stackOffset, initValue)
-        DataType.string -> initLocalStringVar(name, stackOffset, initValue, lengthRoundedTo64bits)
-        else -> return
-    }
 }
 
 /** initialise a local int var */
 fun initLocalIntVar(stackOffset: Int, initValue: String) {
     if (initValue.isEmpty())
         return
-    code.initLocalVarInt(stackOffset, initValue)
+    code.initStackVarInt(stackOffset, initValue)
 }
 
 /** initialise a local string var */
@@ -97,7 +103,7 @@ fun initLocalStringVar(name: String, stackOffset: Int, initValue: String, length
         stringConstants[constStringAddress] = initValue
     }
     val stringDataOffset = code.allocateStackVar(length)
-    code.initLocalVarString(stackOffset, stringDataOffset, constStringAddress)
+    code.initStackVarString(stackOffset, stringDataOffset, constStringAddress)
 }
 
 /** process a function declaration */
