@@ -66,12 +66,13 @@ fun declareGlobalVar(name: String, type: DataType, initValue: String, length: In
 /** declare a local variable */
 fun declareLocalVar(name: String, type: DataType, initValue: String, length: Int) {
     val stackOffset = code.allocateStackVar(INT_SIZE)
+    val lengthRoundedTo64bits = (length / 8 + 1) * 8
     identifiersMap[name] = IdentifierDecl(
-        TokType.variable, type, initialised = true, size = length, isStackVar = true, stackOffset = stackOffset
+        TokType.variable, type, initialised = true, size = lengthRoundedTo64bits, isStackVar = true, stackOffset = stackOffset
     )
     when (type) {
         DataType.int -> initLocalIntVar(stackOffset, initValue)
-        DataType.string -> initLocalStringVar(name, stackOffset, initValue, length)
+        DataType.string -> initLocalStringVar(name, stackOffset, initValue, lengthRoundedTo64bits)
         else -> return
     }
 }
