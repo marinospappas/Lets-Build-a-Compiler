@@ -18,7 +18,7 @@ fun parseProgram() {
         parseFunDecl()
     parseMainBlock()
     parseProgEnd()
-    parseStringConstantsAndLocalVars()
+    parseStringConstants()
 }
 
 /**
@@ -215,14 +215,13 @@ fun parseProgEnd() {
 }
 
 /** add any string constants at the end of the assembler output */
-fun parseStringConstantsAndLocalVars() {
+fun parseStringConstants() {
     code.stringConstantsDataSpace()
     if (stringConstants.isEmpty())
         return
     code.outputCommentNl("constant string values go here")
-    val stringsMap = stringConstants + stringLocalVars
-    for (s in stringsMap.keys) {
-        stringsMap[s]?.let {
+    for (s in stringConstants.keys) {
+        stringConstants[s]?.let {
             if (it.isNotEmpty() && it[0] >= ' ')
                 code.declareString(s, it)
             else
