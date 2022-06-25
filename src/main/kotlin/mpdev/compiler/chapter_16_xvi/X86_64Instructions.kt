@@ -202,7 +202,7 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** initiliase an int stack var */
-    fun initLocalVarInt(stackOffset : Int, initValue: String) {
+    fun initStackVarInt(stackOffset : Int, initValue: String) {
         outputCodeTab("movq\t$$initValue, ")
         if (stackOffset != 0)
             outputCode("$stackOffset")
@@ -418,7 +418,7 @@ class X86_64Instructions(outFile: String = "") {
     }
 
     /** initialise a str stack var */
-    fun initLocalVarString(stackOffset: Int, stringDataOffset: Int, constStrAddress: String) {
+    fun initStackVarString(stackOffset: Int, stringDataOffset: Int, constStrAddress: String) {
         outputCodeTabNl("lea\t$stringDataOffset(%rbp), %rax")
         outputCodeTab("movq\t%rax, $stackOffset(%rbp)\t\t")
         outputCommentNl("initialise local var string address")
