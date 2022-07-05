@@ -2,6 +2,7 @@ package mpdev.compiler.chapter_16_xvi
 
 import java.lang.System.err
 import kotlin.system.exitProcess
+import kotlin.system.measureTimeMillis
 
 /**
  * A Simple Compiler
@@ -101,7 +102,8 @@ fun main(args: Array<String>) {
         debugCompiler()
         exit("end of debug run")
     }
-    parseProgram()
+    val elapsedTime = measureTimeMillis { parseProgram() }
     println("Successful compilation, $inFile: ${inp.currentLineNumber-1} source lines, $outFile: ${code.getOutputLines()} assembly lines")
                                         // -1 is needed as an extra new line was added when the input was read
+    println("Completed in: $elapsedTime milliseconds")
 }
