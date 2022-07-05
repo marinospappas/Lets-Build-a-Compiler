@@ -1,0 +1,1 @@
+jar cvfm tinsel.jar META-INF/MANIFEST.MF -C out/production/Lets-Build-a-Compiler .
